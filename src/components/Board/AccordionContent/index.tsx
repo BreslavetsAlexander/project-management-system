@@ -1,34 +1,36 @@
 import React from 'react';
 import { UpSquareOutlined } from '@ant-design/icons';
+import { ISSUES } from '../../../constants/issues';
 import { IProps } from './types';
 import styles from './styles.module.scss';
 
-export const AccordionContent: React.FC<IProps> = () => {
-  return (
-    <div className={styles.content}>
-      <div className={styles.section}>
-        <div className={styles.title}>To Do</div>
-        <div className={styles.issues}>
-          <div className={styles.issue}>
-            <UpSquareOutlined className={styles.icon} />
-            <div>
-              <h4 className={styles.projectName}>Project name</h4>
-              <h3 className={styles.issueName}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, vel?
-              </h3>
-            </div>
+export class AccordionContent extends React.Component<IProps> {
+  getSection(status: string) {
+    const issues = this.props.issues
+      .filter((item) => item.status === status)
+      .map((item) => (
+        <div className={styles.issue} key={item.id}>
+          <UpSquareOutlined className={styles.icon} />
+          <div>
+            <h4 className={styles.projectName}>Project name</h4>
+            <h3 className={styles.issueName}>{item.title}</h3>
           </div>
         </div>
+      ));
+
+    return (
+      <div className={styles.section} key={status}>
+        <div className={styles.title}>{status}</div>
+        <div className={styles.issues}>{issues}</div>
       </div>
-      <div className={styles.section}>
-        <div className={styles.title}>In Progress</div>
+    );
+  }
+
+  render() {
+    return (
+      <div className={styles.content}>
+        {Object.values(ISSUES.statuses).map((status) => this.getSection(status))}
       </div>
-      <div className={styles.section}>
-        <div className={styles.title}>In Review</div>
-      </div>
-      <div className={styles.section}>
-        <div className={styles.title}>Done</div>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}

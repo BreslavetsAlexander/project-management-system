@@ -4,9 +4,11 @@
   "description": "project-management-system",
   "main": "index.tsx",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --hot",
+    "start": "npm-run-all --parallel dev db",
+    "dev": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production",
-    "prettier": "prettier --write ./src/**/*.{js,jsx,ts,tsx,css,scss,sass}"
+    "prettier": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,sass}",
+    "db": "json-server --watch ./db/db.json -p 3001"
   },
   "keywords": [],
   "author": "Breslavets Alexander",
