@@ -1,6 +1,6 @@
-@import '~reset-css/reset.css';
 @import '~antd/dist/antd.css';
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import '~reset-css/reset.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 * {
   margin: 0;
@@ -10,4 +10,8 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+}
+
+.app {
+  min-height: 100vh;
 }

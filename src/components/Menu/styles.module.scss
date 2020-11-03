@@ -1,0 +1,18 @@
+.sider {
+  &[class*='ant-layout-sider'],
+  div[class*='ant-layout-sider-trigger'] {
+    background-color: #307ae9;
+  }
+
+  .menu {
+    &[class*='ant-menu-dark'] {
+      background-color: #307ae9;
+    }
+
+    .menuItem {
+      margin: 0 !important;
+      font-size: 16px;
+      color: #ffffff;
+    }
+  }
+}

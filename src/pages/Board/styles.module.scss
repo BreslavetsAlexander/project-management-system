@@ -1,0 +1,28 @@
+.board {
+  .collapse {
+    background-color: transparent;
+
+    .panel {
+      background-color: #fafafa;
+      margin-bottom: 20px;
+      border: none;
+
+      .header {
+        .name {
+          font-size: 16px;
+          font-weight: 500;
+          margin-right: 5px;
+        }
+
+        .count {
+          font-size: 13px;
+          color: #686868;
+        }
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
