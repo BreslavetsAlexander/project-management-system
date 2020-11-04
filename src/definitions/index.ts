@@ -9,6 +9,7 @@ export interface IIssue {
   title: string;
   description: string;
   status: string;
+  priority: string;
   employeeId: number | null;
 }
 
