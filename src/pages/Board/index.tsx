@@ -2,27 +2,15 @@ import React from 'react';
 import { Collapse, Typography } from 'antd';
 import { AccordionContent } from '../../components/Board/AccordionContent';
 import { LayoutContent } from '../../components/LayoutContent';
-import { IEmployeeWithIssues } from '../../definitions';
-import { EmployeesRepository, IssuesRepository } from '../../services/repositories';
+import { IEmployee } from '../../definitions';
+import { EmployeesRepository } from '../../services/repositories';
 import styles from './styles.module.scss';
 
 export const Board = () => {
-  const [employees, setEmployees] = React.useState<IEmployeeWithIssues[] | null>([]);
+  const [employees, setEmployees] = React.useState<IEmployee[] | null>([]);
 
   React.useEffect(() => {
-    const employeesPromise = EmployeesRepository.getAll();
-    const issuesPromise = IssuesRepository.getAll();
-
-    Promise.all([employeesPromise, issuesPromise]).then(([employeesList, issuesList]) => {
-      const employeeWithIssues = employeesList.map((item) => {
-        return {
-          ...item,
-          issues: issuesList.filter((issue) => issue.employeeId === item.id),
-        };
-      });
-
-      setEmployees(employeeWithIssues);
-    });
+    EmployeesRepository.getAll().then((res) => setEmployees(res));
   }, []);
 
   if (!employees) {
@@ -48,6 +36,8 @@ export const Board = () => {
       </Collapse.Panel>
     );
   });
+
+  console.log(employees);
 
   return (
     <LayoutContent className={styles.board}>

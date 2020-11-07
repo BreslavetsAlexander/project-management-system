@@ -34,7 +34,7 @@ class _HttpProvider {
     return this.send(newUrl, 'GET');
   }
 
-  post<T>(url: string, data: T): Promise<T> {
+  post<T>(url: string, data: Partial<T>): Promise<T> {
     return this.send(url, 'POST', data);
   }
 

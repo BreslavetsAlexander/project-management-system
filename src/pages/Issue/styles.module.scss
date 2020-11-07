@@ -1,0 +1,29 @@
+.layoutContent {
+  .projectName {
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    .changeIssueStatus {
+      margin: 0 10px;
+    }
+  }
+
+  .people {
+    margin-top: 20px;
+    font-size: 16px;
+
+    .select {
+      margin-left: 15px;
+      width: 220px;
+    }
+
+    .author {
+      margin-top: 10px;
+    }
+  }
+
+  .tabs {
+    margin-top: 20px;
+  }
+}

@@ -29,18 +29,20 @@
   "issues": [
     {
       "id": 1,
-      "title": "Sint amet mollit ullamco in reprehenderit minim ullamco voluptate occaecat sunt id est.",
-      "description": "Dolor dolor magna nostrud dolor laboris commodo ipsum esse fugiat aliquip aute ad. Sit ea aute voluptate ullamco ipsum.",
-      "employeeId": 5,
-      "status": "Done",
-      "priority": "High"
+      "title": "Sint amet mollit ullamco in reprehenderit min-1",
+      "description": "Dolor dolor magna nostrud dolor laboris commodo ipsum",
+      "employeeId": 2,
+      "authorId": 1,
+      "status": "In Review",
+      "priority": "Low"
     },
     {
       "id": 2,
       "title": "Exercitation culpa ex sunt eu officia nostrud tempor occaecat ipsum exercitation ut amet ut est.",
       "description": "Do pariatur aliqua incididunt anim laboris labore irure anim dolore et nulla sint id est. Irure occaecat sunt nostrud in elit eiusmod.",
       "employeeId": 5,
-      "status": "In Review",
+      "authorId": 1,
+      "status": "In Progress",
       "priority": "Low"
     },
     {
@@ -48,6 +50,7 @@
       "title": "Aliqua Lorem adipisicing reprehenderit do elit dolor ipsum et adipisicing non.",
       "description": "Reprehenderit reprehenderit Lorem amet ea commodo ullamco laborum sunt tempor eiusmod sit occaecat. Exercitation do eiusmod pariatur est reprehenderit.",
       "employeeId": 3,
+      "authorId": 1,
       "status": "In Progress",
       "priority": "High"
     },
@@ -55,15 +58,17 @@
       "id": 4,
       "title": "Sunt non incididunt enim tempor sint eu non non nostrud dolore exercitation officia id.",
       "description": "Quis est irure deserunt id laboris aute eu mollit aute voluptate amet culpa. Occaecat eiusmod pariatur cupidatat anim dolore.",
-      "employeeId": 2,
-      "status": "To Do",
+      "employeeId": 1,
+      "authorId": 1,
+      "status": "In Review",
       "priority": "Low"
     },
     {
       "id": 5,
       "title": "Velit ea id id aliqua ullamco esse proident.",
       "description": "Excepteur nisi quis proident duis aliqua. Sunt laboris do nostrud cillum officia duis.",
-      "employeeId": 2,
+      "employeeId": 4,
+      "authorId": 1,
       "status": "Done",
       "priority": "Medium"
     },
@@ -71,9 +76,11 @@
       "id": 6,
       "title": "lorem 123",
       "description": "Sunt laboris cillum do duis nostrud officia.",
-      "employeeId": 2,
+      "employeeId": 1,
+      "authorId": 2,
       "status": "Done",
       "priority": "Medium"
     }
-  ]
+  ],
+  "workLogs": []
 }

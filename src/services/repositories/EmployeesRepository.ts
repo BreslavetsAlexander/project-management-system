@@ -4,11 +4,15 @@ import { HttpProvider } from '../httpProvider';
 
 class _EmployeesRepository {
   getAll() {
-    return HttpProvider.get<IEmployee[]>(API.EMPLOYEES.LIST);
+    return HttpProvider.get<IEmployee[]>(API.EMPLOYEES.LIST, {
+      [API.RELATIONSHIPS.EMBED]: 'issues',
+    });
   }
 
   getById(id: number) {
-    return HttpProvider.get<IEmployee>(API.EMPLOYEES.DETAIL(id));
+    return HttpProvider.get<IEmployee>(API.EMPLOYEES.DETAIL(id), {
+      [API.RELATIONSHIPS.EMBED]: 'issues',
+    });
   }
 }
 

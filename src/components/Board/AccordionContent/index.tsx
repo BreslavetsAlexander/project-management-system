@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ISSUES } from '../../../constants/issues';
+import { ROUTES } from './../../../constants/routes';
 import { IProps } from './types';
 import styles from './styles.module.scss';
 
@@ -23,7 +25,9 @@ export class AccordionContent extends React.Component<IProps> {
             {priorityIcon}
             <div>
               <h4 className={styles.projectName}>Project name</h4>
-              <h3 className={styles.issueName}>{item.title}</h3>
+              <h3 className={styles.issueName}>
+                <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
+              </h3>
             </div>
           </div>
         );

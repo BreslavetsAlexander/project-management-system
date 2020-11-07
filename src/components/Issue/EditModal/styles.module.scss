@@ -1,0 +1,20 @@
+.modal {
+  div[class*='ant-modal-content'] {
+    div[class*='ant-modal-footer'] {
+      display: none;
+    }
+  }
+
+  .buttons {
+    margin: 0;
+
+    div[class*='ant-form-item-control'] {
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    .cancel {
+      margin-right: 15px;
+    }
+  }
+}

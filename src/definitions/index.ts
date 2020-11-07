@@ -2,6 +2,14 @@ export interface IEmployee {
   id: number;
   name: string;
   email: string;
+  issues: IIssue[];
+}
+
+export interface IWorkLog {
+  id: number;
+  date: string;
+  time: string;
+  issueId: number;
 }
 
 export interface IIssue {
@@ -10,9 +18,7 @@ export interface IIssue {
   description: string;
   status: string;
   priority: string;
-  employeeId: number | null;
-}
-
-export interface IEmployeeWithIssues extends IEmployee {
-  issues: IIssue[];
+  employeeId: number;
+  employee: IEmployee;
+  authorId: number;
 }

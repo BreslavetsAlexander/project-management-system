@@ -41,6 +41,11 @@
 
         .issueName {
           font-size: 15px;
+          color: #000000;
+
+          a {
+            color: inherit;
+          }
         }
 
         &:first-child {

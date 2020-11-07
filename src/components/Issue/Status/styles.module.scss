@@ -1,0 +1,18 @@
+.status {
+  margin-top: 20px;
+
+  .steps {
+    div[class*='ant-steps-item-process'],
+    div[class*='ant-steps-item-wait'] {
+      div[class*='ant-steps-item-container'] {
+        div[class*='ant-steps-item-content'] {
+          div[class*='ant-steps-item-title'] {
+            &::after {
+              background-color: #cccccc !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
