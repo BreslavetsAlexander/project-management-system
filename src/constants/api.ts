@@ -13,6 +13,10 @@ export const API = {
     LIST: `${BASE_URL}/worklogs`,
     DETAIL: (id: number | string) => `${BASE_URL}/worklogs/${id}`,
   },
+  PROJECTS: {
+    LIST: `${BASE_URL}/projects`,
+    DETAIL: (id: number | string) => `${BASE_URL}/projects/${id}`,
+  },
   RELATIONSHIPS: {
     EMBED: '_embed',
     EXPAND: '_expand',

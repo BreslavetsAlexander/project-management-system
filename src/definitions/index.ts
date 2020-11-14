@@ -2,7 +2,7 @@ export interface IEmployee {
   id: number;
   name: string;
   email: string;
-  issues: IIssue[];
+  projectId: number;
 }
 
 export interface IWorkLog {
@@ -19,6 +19,12 @@ export interface IIssue {
   status: string;
   priority: string;
   employeeId: number;
-  employee: IEmployee;
+  projectId: number;
   authorId: number;
+}
+
+export interface IProject {
+  id: number;
+  title: string;
+  description: string;
 }

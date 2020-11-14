@@ -1,18 +1,14 @@
 import { API } from './../../constants/api';
 import { IEmployee } from './../../definitions';
-import { HttpProvider } from '../httpProvider';
+import { HttpProvider, IParams } from '../httpProvider';
 
 class _EmployeesRepository {
-  getAll() {
-    return HttpProvider.get<IEmployee[]>(API.EMPLOYEES.LIST, {
-      [API.RELATIONSHIPS.EMBED]: 'issues',
-    });
+  getAll<T = IEmployee>(params?: IParams) {
+    return HttpProvider.get<T[]>(API.EMPLOYEES.LIST, params);
   }
 
-  getById(id: number) {
-    return HttpProvider.get<IEmployee>(API.EMPLOYEES.DETAIL(id), {
-      [API.RELATIONSHIPS.EMBED]: 'issues',
-    });
+  getById<T = IEmployee>(id: number | string, params?: IParams) {
+    return HttpProvider.get<T>(API.EMPLOYEES.DETAIL(id), params);
   }
 }
 

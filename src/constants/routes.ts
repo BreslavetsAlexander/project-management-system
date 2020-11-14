@@ -4,7 +4,13 @@ const buildRoute = (template: string, value: string): string => {
 
 export const ROUTES = {
   HOME: '/',
-  BOARD: '/board',
+  PROJECTS: {
+    LIST: '/projects',
+    DETAIL: {
+      TEMPLATE: '/projects/:id',
+      ROUTE: (id: number | string) => buildRoute(ROUTES.PROJECTS.DETAIL.TEMPLATE, `${id}`),
+    },
+  },
   ISSUES: {
     LIST: '/issues',
     DETAIL: {

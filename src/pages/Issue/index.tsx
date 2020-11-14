@@ -30,7 +30,7 @@ class _Issue extends React.Component<IProps, IState> {
   componentDidMount() {
     Promise.all([
       IssuesRepository.getById(this.props.match.params.id),
-      EmployeesRepository.getAll(),
+      EmployeesRepository.getAll({ projectId: this.props.match.params.id }),
     ]).then(([issue, employees]) => {
       this.setState({ issue, employees });
     });
@@ -60,7 +60,7 @@ class _Issue extends React.Component<IProps, IState> {
 
   renderPeople() {
     const author = this.state.employees?.find((item) => item.id === this.state.issue?.authorId);
-    // const assignee = this.state.employees?.find((item) => item.id === this.state.issue?.assigneeId);
+    const assignee = this.state.employees?.find((item) => item.id === this.state.issue?.employeeId);
     const selectOptions = this.state.employees?.map((item) => {
       return {
         title: item.name,
@@ -75,7 +75,7 @@ class _Issue extends React.Component<IProps, IState> {
           <span>Assignee:</span>
           <Select
             className={styles.select}
-            defaultValue={this.state.issue?.employee?.id || 1}
+            defaultValue={assignee?.id || 1}
             options={selectOptions || []}
             onChange={this.onSelect}
           />
@@ -86,6 +86,7 @@ class _Issue extends React.Component<IProps, IState> {
   }
 
   setEditVisible = (editVisible: boolean) => this.setState({ editVisible });
+
   setLogWorkVisible = (logWorkVisible: boolean) => this.setState({ logWorkVisible });
 
   onEdit = (values: IFormEditValues) => {

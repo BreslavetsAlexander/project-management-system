@@ -1,22 +1,14 @@
 import { API } from './../../constants/api';
 import { IIssue } from './../../definitions';
-import { HttpProvider } from '../httpProvider';
+import { HttpProvider, IParams } from '../httpProvider';
 
 class _IssuesRepository {
-  getAll() {
-    return HttpProvider.get<IIssue[]>(API.ISSUES.LIST, {
-      [API.RELATIONSHIPS.EXPAND]: 'employee',
-    });
+  getAll<T = IIssue>(params?: IParams) {
+    return HttpProvider.get<T[]>(API.ISSUES.LIST, params);
   }
 
-  getById(id: number | string) {
-    return HttpProvider.get<IIssue>(API.ISSUES.DETAIL(id), {
-      [API.RELATIONSHIPS.EXPAND]: 'employee',
-    });
-  }
-
-  getByEmployeeId(employeeId: number | string) {
-    return HttpProvider.get<IIssue[]>(API.ISSUES.LIST, { employeeId });
+  getById<T = IIssue>(id: number | string, params?: IParams) {
+    return HttpProvider.get<T>(API.ISSUES.DETAIL(id), params);
   }
 
   update(id: number | string, data: Partial<IIssue>) {

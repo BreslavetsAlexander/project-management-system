@@ -24,10 +24,10 @@ export class AccordionContent extends React.Component<IProps> {
             key={item.id}>
             {priorityIcon}
             <div>
-              <h4 className={styles.projectName}>Project name</h4>
               <h3 className={styles.issueName}>
                 <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
               </h3>
+              <h4 className={styles.projectName}>{item.description}</h4>
             </div>
           </div>
         );

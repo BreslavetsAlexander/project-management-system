@@ -8,8 +8,8 @@ export const MENU = [
     icon: HomeOutlined,
   },
   {
-    title: 'Board',
-    to: ROUTES.BOARD,
+    title: 'Projects',
+    to: ROUTES.PROJECTS.LIST,
     icon: TableOutlined,
   },
 ];
