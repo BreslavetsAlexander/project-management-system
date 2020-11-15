@@ -1,9 +1,13 @@
 .projects {
-  .card {
-    .info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+  .list {
+    margin-top: 20px;
+
+    .card {
+      .info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
   }
 }

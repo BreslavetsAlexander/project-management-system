@@ -42,7 +42,7 @@ class _HttpProvider {
     return this.send(url, 'PATCH', data);
   }
 
-  delete(url: string): Promise<any> {
+  delete(url: string): Promise<{}> {
     return this.send(url, 'DELETE');
   }
 

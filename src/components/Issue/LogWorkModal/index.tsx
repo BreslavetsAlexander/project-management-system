@@ -19,7 +19,7 @@ export class LogWorkModal extends React.Component<IProps> {
 
   getForm() {
     return (
-      <Form layout="inline" initialValues={this.getInitialValues()} onFinish={this.props.onSubmit}>
+      <Form layout='inline' initialValues={this.getInitialValues()} onFinish={this.props.onSubmit}>
         <div className={styles.pickersWrap}>
           <FormDatePicker
             className={styles.formDatePicker}
@@ -29,7 +29,7 @@ export class LogWorkModal extends React.Component<IProps> {
           <FormTimePicker
             label={INPUTS.TIME.label}
             name={INPUTS.TIME.name}
-            placeholder="Log your work"
+            placeholder='Log your work'
           />
         </div>
         <div className={styles.buttonsWrap}>
@@ -37,7 +37,7 @@ export class LogWorkModal extends React.Component<IProps> {
             <Button danger className={styles.cancel} onClick={() => this.props.setVisible(false)}>
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               Save
             </Button>
           </Form.Item>
@@ -50,7 +50,7 @@ export class LogWorkModal extends React.Component<IProps> {
     return (
       <Modal
         visible={this.props.visible}
-        title="Log Work"
+        title='Log Work'
         className={styles.modal}
         closable={false}>
         {this.getForm()}

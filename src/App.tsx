@@ -10,7 +10,7 @@ import { Projects } from './pages/Projects';
 
 export const App: React.FC = () => {
   return (
-    <Layout className="app">
+    <Layout className='app'>
       <Menu />
       <Layout>
         <Route exact path={ROUTES.HOME} component={Home} />

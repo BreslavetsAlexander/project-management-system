@@ -3,12 +3,24 @@ import { IProject } from './../../definitions';
 import { HttpProvider, IParams } from '../httpProvider';
 
 class _ProjectsRepository {
-  getAll<T = IProject>(params?: IParams) {
-    return HttpProvider.get<T[]>(API.PROJECTS.LIST, params);
+  getAll(params?: IParams) {
+    return HttpProvider.get<IProject[]>(API.PROJECTS.LIST(), params);
   }
 
-  getById<T = IProject>(id: number | string, params?: IParams) {
-    return HttpProvider.get<T>(API.PROJECTS.DETAIL(id), params);
+  getById(id: number | string, params?: IParams) {
+    return HttpProvider.get<IProject>(API.PROJECTS.DETAIL(id), params);
+  }
+
+  create(data: Partial<IProject>) {
+    return HttpProvider.post<IProject>(API.PROJECTS.LIST(), data);
+  }
+
+  update(id: number | string, data: Partial<IProject>) {
+    return HttpProvider.patch<IProject>(API.PROJECTS.DETAIL(id), data);
+  }
+
+  delete(id: number | string) {
+    return HttpProvider.delete(API.PROJECTS.DETAIL(id));
   }
 }
 

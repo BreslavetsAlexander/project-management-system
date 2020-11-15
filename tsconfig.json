@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "removeComments": true,
     "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "types": ["node"],
     "lib": ["es5", "es6", "dom"]
   },

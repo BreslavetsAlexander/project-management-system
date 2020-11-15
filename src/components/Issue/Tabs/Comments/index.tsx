@@ -9,7 +9,7 @@ export const CommentsTab: React.FC<IProps> = (props) => {
       author={<a>{props.author}</a>}
       content={<p>{props.content}</p>}
       datetime={
-        <p title="title">
+        <p title='title'>
           <span>span</span>
         </p>
       }

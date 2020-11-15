@@ -3,12 +3,12 @@ import { IEmployee } from './../../definitions';
 import { HttpProvider, IParams } from '../httpProvider';
 
 class _EmployeesRepository {
-  getAll<T = IEmployee>(params?: IParams) {
-    return HttpProvider.get<T[]>(API.EMPLOYEES.LIST, params);
+  getAll(params?: IParams) {
+    return HttpProvider.get<IEmployee[]>(API.EMPLOYEES.LIST(), params);
   }
 
-  getById<T = IEmployee>(id: number | string, params?: IParams) {
-    return HttpProvider.get<T>(API.EMPLOYEES.DETAIL(id), params);
+  getById(id: number | string, params?: IParams) {
+    return HttpProvider.get<IEmployee>(API.EMPLOYEES.DETAIL(id), params);
   }
 }
 

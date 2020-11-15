@@ -30,7 +30,7 @@ class _Issue extends React.Component<IProps, IState> {
   componentDidMount() {
     Promise.all([
       IssuesRepository.getById(this.props.match.params.id),
-      EmployeesRepository.getAll({ projectId: this.props.match.params.id }),
+      EmployeesRepository.getAll({ currentProjectId: this.props.match.params.id }),
     ]).then(([issue, employees]) => {
       this.setState({ issue, employees });
     });
@@ -50,8 +50,10 @@ class _Issue extends React.Component<IProps, IState> {
     this.updateStatus(TRANSFORM_STATUS[this.state.issue.status]);
   };
 
-  onSelect = (employeeId: number) => {
-    IssuesRepository.update(this.state.issue?.id!, { employeeId }).then((res) => console.log(res));
+  onSelect = (currentEmployeeId: number) => {
+    IssuesRepository.update(this.state.issue?.id!, { currentEmployeeId }).then((res) =>
+      console.log(res),
+    );
   };
 
   onChangeStep = (current: number) => {
@@ -60,7 +62,9 @@ class _Issue extends React.Component<IProps, IState> {
 
   renderPeople() {
     const author = this.state.employees?.find((item) => item.id === this.state.issue?.authorId);
-    const assignee = this.state.employees?.find((item) => item.id === this.state.issue?.employeeId);
+    const assignee = this.state.employees?.find(
+      (item) => item.id === this.state.issue?.currentEmployeeId,
+    );
     const selectOptions = this.state.employees?.map((item) => {
       return {
         title: item.name,

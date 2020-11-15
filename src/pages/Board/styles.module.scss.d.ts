@@ -1,4 +1,5 @@
 export const board: string;
+export const buttons: string;
 export const collapse: string;
 export const panel: string;
 export const header: string;

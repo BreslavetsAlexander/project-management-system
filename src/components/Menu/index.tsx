@@ -15,8 +15,8 @@ const _Menu: React.FC<RouteComponentProps> = (props) => {
       collapsed={collapsed}
       onCollapse={() => setCollapsed(!collapsed)}>
       <MenuAntd
-        theme="dark"
-        mode="inline"
+        theme='dark'
+        mode='inline'
         className={styles.menu}
         selectedKeys={menuItem ? [menuItem.to] : []}>
         {MENU.map((item) => (

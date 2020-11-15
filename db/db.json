@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Vang Moss",
       "email": "vangmoss@cosmetex.com",
-      "projectId": 1
+      "currentProjectId": 1
     }
   ],
   "issues": [
@@ -12,8 +12,8 @@
       "id": 1,
       "title": "Issue-123",
       "description": "Dolor dolor magna",
-      "employeeId": 1,
-      "projectId": 1,
+      "currentEmployeeId": 1,
+      "currentProjectId": 1,
       "authorId": 1,
       "status": "In Progress",
       "priority": "Low"
@@ -22,9 +22,9 @@
   "workLogs": [],
   "projects": [
     {
-      "id": 1,
-      "title": "project 1",
-      "description": "project 1 description"
+      "title": "Sint amet 1",
+      "description": "zc",
+      "id": 1
     }
   ]
 }
