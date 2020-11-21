@@ -4,9 +4,12 @@ import { Collapse, Typography, Button, Modal } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { AccordionContent } from '../../components/Board/AccordionContent';
 import { ProjectModal } from '../../components/ProjectModal';
+import { IssueModal } from '../../components/IssueModal';
 import { IProps as IValues } from '../../components/ProjectModal/types';
+import { IProps as IIssueProps } from '../../components/IssueModal/types';
 import { LayoutContent } from '../../components/LayoutContent';
 import { ROUTES } from '../../constants/routes';
+import { ISSUES } from '../../constants/issues';
 import {
   ProjectsRepository,
   IssuesRepository,
@@ -19,7 +22,8 @@ class _Board extends React.Component<IProps, IState> {
   state: IState = {
     project: null,
     projectEmployees: null,
-    editVisible: false,
+    projectModalVisible: false,
+    issueModalVisible: false,
   };
 
   componentDidMount() {
@@ -46,7 +50,9 @@ class _Board extends React.Component<IProps, IState> {
     );
   }
 
-  setEditVisible = (editVisible: boolean) => this.setState({ editVisible });
+  setProjectModalVisible = (projectModalVisible: boolean) => this.setState({ projectModalVisible });
+
+  setIssueModalVisible = (issueModalVisible: boolean) => this.setState({ issueModalVisible });
 
   onEdit = (values: IValues['values']) => {
     ProjectsRepository.update(this.state.project?.id!, {
@@ -54,7 +60,7 @@ class _Board extends React.Component<IProps, IState> {
       description: values.description,
     }).then((project) => {
       this.setState({ project });
-      this.setEditVisible(false);
+      this.setProjectModalVisible(false);
     });
   };
 
@@ -71,6 +77,21 @@ class _Board extends React.Component<IProps, IState> {
           this.props.history.push(ROUTES.PROJECTS.LIST);
         });
       },
+    });
+  };
+
+  onCreate = (values: IIssueProps['values']) => {
+    IssuesRepository.create({
+      title: values.title,
+      description: values.description,
+      currentEmployeeId: 1,
+      currentProjectId: this.state.project?.id,
+      authorId: 1,
+      status: ISSUES.STATUSES.TO_DO,
+      priority: values.priority,
+    }).then((issue) => {
+      this.setIssueModalVisible(false);
+      this.props.history.push(ROUTES.ISSUES.DETAIL.ROUTE(issue.id));
     });
   };
 
@@ -103,13 +124,15 @@ class _Board extends React.Component<IProps, IState> {
       <LayoutContent className={styles.board}>
         <Typography.Title>{this.state.project?.title}</Typography.Title>
         <div className={styles.buttons}>
-          <Button icon={<EditOutlined />} onClick={() => this.setEditVisible(true)}>
+          <Button icon={<EditOutlined />} onClick={() => this.setProjectModalVisible(true)}>
             Edit
           </Button>
           <Button danger type='primary' onClick={this.onDelete}>
             Delete
           </Button>
-          <Button type='primary'>Create issue</Button>
+          <Button type='primary' onClick={() => this.setIssueModalVisible(true)}>
+            Create issue
+          </Button>
         </div>
         <Collapse bordered={false} accordion className={styles.collapse}>
           {collapsePanels}
@@ -117,13 +140,25 @@ class _Board extends React.Component<IProps, IState> {
         <ProjectModal
           title='Edit project'
           buttonText='Edit'
-          visible={this.state.editVisible}
-          setVisible={this.setEditVisible}
+          visible={this.state.projectModalVisible}
+          setVisible={this.setProjectModalVisible}
           values={{
             title: this.state.project?.title!,
             description: this.state.project?.description!,
           }}
           onSubmit={this.onEdit}
+        />
+        <IssueModal
+          title='Create issue'
+          buttonText='Create'
+          visible={this.state.issueModalVisible}
+          setVisible={this.setIssueModalVisible}
+          values={{
+            title: '',
+            description: '',
+            priority: ISSUES.PRIORITIES.LOW.name,
+          }}
+          onSubmit={this.onCreate}
         />
       </LayoutContent>
     );

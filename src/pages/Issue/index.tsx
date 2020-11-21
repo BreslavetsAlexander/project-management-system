@@ -1,12 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Typography, Button } from 'antd';
+import { Typography, Button, Form } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { LayoutContent } from './../../components/LayoutContent';
-import { Select } from './../../components/Select';
+import { FormSelect } from './../../components/FormSelect';
 import { IssueStatus } from './../../components/Issue/Status';
 import { Tabs } from './../../components/Issue/Tabs';
-import { EditModal } from './../../components/Issue/EditModal';
+import { IssueModal } from './../../components/IssueModal';
 import { LogWorkModal } from './../../components/Issue/LogWorkModal';
 import { ISSUES } from './../../constants/issues';
 import { DATES_FORMATS } from './../../constants/datesFormats';
@@ -30,7 +30,7 @@ class _Issue extends React.Component<IProps, IState> {
   componentDidMount() {
     Promise.all([
       IssuesRepository.getById(this.props.match.params.id),
-      EmployeesRepository.getAll({ currentProjectId: this.props.match.params.id }),
+      EmployeesRepository.getAll(),
     ]).then(([issue, employees]) => {
       this.setState({ issue, employees });
     });
@@ -50,21 +50,17 @@ class _Issue extends React.Component<IProps, IState> {
     this.updateStatus(TRANSFORM_STATUS[this.state.issue.status]);
   };
 
-  onSelect = (currentEmployeeId: number) => {
-    IssuesRepository.update(this.state.issue?.id!, { currentEmployeeId }).then((res) =>
-      console.log(res),
-    );
+  onSelect = (changedValues: { currentEmployeeId: number }) => {
+    IssuesRepository.update(this.state.issue?.id!, {
+      currentEmployeeId: changedValues.currentEmployeeId,
+    }).then((res) => console.log(res));
   };
 
   onChangeStep = (current: number) => {
     this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
   };
 
-  renderPeople() {
-    const author = this.state.employees?.find((item) => item.id === this.state.issue?.authorId);
-    const assignee = this.state.employees?.find(
-      (item) => item.id === this.state.issue?.currentEmployeeId,
-    );
+  renderSelect() {
     const selectOptions = this.state.employees?.map((item) => {
       return {
         title: item.name,
@@ -72,17 +68,26 @@ class _Issue extends React.Component<IProps, IState> {
       };
     });
 
+    const assignee = this.state.employees?.find(
+      (item) => item.id === this.state.issue?.currentEmployeeId,
+    );
+
+    return (
+      <Form initialValues={{ currentEmployeeId: assignee?.id }} onValuesChange={this.onSelect}>
+        <FormSelect name='currentEmployeeId' options={selectOptions || []} />
+      </Form>
+    );
+  }
+
+  renderPeople() {
+    const author = this.state.employees?.find((item) => item.id === this.state.issue?.authorId);
+
     return (
       <div className={styles.people}>
         <Typography.Title level={3}>People</Typography.Title>
         <div>
           <span>Assignee:</span>
-          <Select
-            className={styles.select}
-            defaultValue={assignee?.id || 1}
-            options={selectOptions || []}
-            onChange={this.onSelect}
-          />
+          {this.renderSelect()}
         </div>
         <div className={styles.author}>Author: {author?.name}</div>
       </div>
@@ -141,10 +146,11 @@ class _Issue extends React.Component<IProps, IState> {
           priority={this.state.issue.priority}
           description={this.state.issue.description}
         />
-        <EditModal
+        <IssueModal
+          title='Edit issue'
+          buttonText='Edit'
           visible={this.state.editVisible}
           setVisible={this.setEditVisible}
-          issueId={this.state.issue.id}
           values={{
             title: this.state.issue.title,
             description: this.state.issue.description,

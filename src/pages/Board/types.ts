@@ -14,5 +14,6 @@ interface IEmployeeWithIssues extends IEmployee {
 export interface IState {
   project: IProject | null;
   projectEmployees: IEmployeeWithIssues[] | null;
-  editVisible: boolean;
+  projectModalVisible: boolean;
+  issueModalVisible: boolean;
 }

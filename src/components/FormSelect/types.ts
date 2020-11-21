@@ -1,11 +1,11 @@
 interface IOption {
-  value: string;
-  label: string;
+  title: string;
+  value: string | number;
 }
 
 export interface IProps {
-  label: string;
+  label?: string;
   name: string;
-  message?: string;
   options: IOption[];
+  message?: string;
 }
