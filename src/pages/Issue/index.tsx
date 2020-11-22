@@ -73,7 +73,10 @@ class _Issue extends React.Component<IProps, IState> {
     );
 
     return (
-      <Form initialValues={{ currentEmployeeId: assignee?.id }} onValuesChange={this.onSelect}>
+      <Form
+        className={styles.form}
+        initialValues={{ currentEmployeeId: assignee?.id }}
+        onValuesChange={this.onSelect}>
         <FormSelect name='currentEmployeeId' options={selectOptions || []} />
       </Form>
     );
@@ -85,7 +88,7 @@ class _Issue extends React.Component<IProps, IState> {
     return (
       <div className={styles.people}>
         <Typography.Title level={3}>People</Typography.Title>
-        <div>
+        <div className={styles.assignee}>
           <span>Assignee:</span>
           {this.renderSelect()}
         </div>
