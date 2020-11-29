@@ -1,18 +1,20 @@
 .sider {
   &[class*='ant-layout-sider'],
-  div[class*='ant-layout-sider-trigger'] {
-    background-color: #307ae9;
+  div[class*='ant-layout-sider-trigger'],
+  .menu[class*='ant-menu-dark'] {
+    background-color: #003a8c;
   }
 
   .menu {
-    &[class*='ant-menu-dark'] {
-      background-color: #307ae9;
-    }
-
-    .menuItem {
-      margin: 0 !important;
+    li.menuItem {
       font-size: 16px;
       color: #ffffff;
+      margin: 0;
+      padding-right: 0;
+
+      a {
+        color: inherit;
+      }
     }
   }
 }

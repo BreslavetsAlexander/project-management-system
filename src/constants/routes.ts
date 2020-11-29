@@ -18,4 +18,5 @@ export const ROUTES = {
       ROUTE: (id: number | string) => buildRoute(ROUTES.ISSUES.DETAIL.TEMPLATE, `${id}`),
     },
   },
+  PROFILE: '/profile',
 };

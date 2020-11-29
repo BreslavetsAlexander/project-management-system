@@ -1,11 +1,12 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: path.resolve(__dirname, './src/index.tsx'),
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'main.js',
@@ -61,15 +62,24 @@ module.exports = {
   plugins: [
     new ErrorOverlayPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: path.resolve(__dirname, './src/index.html'),
+    }),
+    new BaseHrefWebpackPlugin({
+      baseHref: '/',
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        { from: path.resolve(__dirname, './static'), to: path.resolve(__dirname, './dist') },
+        {
+          from: path.resolve(__dirname, './static'),
+          to: path.resolve(__dirname, './dist'),
+        },
       ],
     }),
   ],
+  stats: {
+    children: false,
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.css', '.scss', '.sass'],
   },

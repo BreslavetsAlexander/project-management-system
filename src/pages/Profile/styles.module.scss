@@ -1,0 +1,24 @@
+.profile {
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+
+    .icon {
+      font-size: 100px;
+      color: #003a8c;
+    }
+
+    .info {
+      .name {
+        margin: 0 0 5px;
+        font-size: 25px;
+        font-weight: 500;
+
+        .username {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

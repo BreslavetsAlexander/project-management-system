@@ -1,4 +1,4 @@
-import { HomeOutlined, TableOutlined } from '@ant-design/icons';
+import { HomeOutlined, TableOutlined, UserOutlined } from '@ant-design/icons';
 import { ROUTES } from './routes';
 
 export const MENU = [
@@ -11,5 +11,10 @@ export const MENU = [
     title: 'Projects',
     to: ROUTES.PROJECTS.LIST,
     icon: TableOutlined,
+  },
+  {
+    title: 'Profile',
+    to: ROUTES.PROFILE,
+    icon: UserOutlined,
   },
 ];
