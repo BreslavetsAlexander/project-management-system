@@ -1,14 +1,27 @@
+@import '../../assets/variables.scss';
+
 .sider {
+  .logoLink {
+    display: block;
+    margin: 20px 0;
+    text-align: center;
+
+    .logo {
+      font-size: 65px;
+      color: $white;
+    }
+  }
+
   &[class*='ant-layout-sider'],
   div[class*='ant-layout-sider-trigger'],
   .menu[class*='ant-menu-dark'] {
-    background-color: #003a8c;
+    background-color: $darkBlue;
   }
 
   .menu {
     li.menuItem {
       font-size: 16px;
-      color: #ffffff;
+      color: $white;
       margin: 0;
       padding-right: 0;
 

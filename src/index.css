@@ -15,7 +15,3 @@ body {
 .app {
   min-height: 100vh;
 }
-
-.app section[class*='ant-layout'] {
-  background-color: #fff2e8;
-}
