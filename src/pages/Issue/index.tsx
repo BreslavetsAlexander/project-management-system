@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Typography, Button, Form } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { LayoutContent } from './../../components/LayoutContent';
+import { withLoader } from './../../components/hoc';
 import { FormSelect } from './../../components/FormSelect';
 import { IssueStatus } from './../../components/Issue/Status';
 import { Tabs } from './../../components/Issue/Tabs';
@@ -28,18 +28,22 @@ class _Issue extends React.Component<IProps, IState> {
   };
 
   componentDidMount() {
-    Promise.all([
-      IssuesRepository.getById(this.props.match.params.id),
-      EmployeesRepository.getAll(),
-    ]).then(([issue, employees]) => {
-      this.setState({ issue, employees });
-    });
+    this.props
+      .fetching(
+        Promise.all([
+          IssuesRepository.getById(this.props.match.params.id),
+          EmployeesRepository.getAll(),
+        ]),
+      )
+      .then(([issue, employees]) => {
+        this.setState({ issue, employees });
+      });
   }
 
   updateStatus(status: string) {
-    IssuesRepository.update(this.state.issue?.id!, { status }).then((issue) =>
-      this.setState({ issue }),
-    );
+    this.props
+      .fetching(IssuesRepository.update(this.state.issue?.id!, { status }))
+      .then((issue) => this.setState({ issue }));
   }
 
   onChange = () => {
@@ -128,7 +132,7 @@ class _Issue extends React.Component<IProps, IState> {
     }
 
     return (
-      <LayoutContent className={styles.layoutContent}>
+      <div className={styles.layoutContent}>
         <h4 className={styles.projectName}>Project name</h4>
         <Typography.Title>
           {`[Project name - ${this.state.issue.id}]`} {this.state.issue.title}
@@ -166,9 +170,9 @@ class _Issue extends React.Component<IProps, IState> {
           setVisible={this.setLogWorkVisible}
           onSubmit={this.onLogWork}
         />
-      </LayoutContent>
+      </div>
     );
   }
 }
 
-export const Issue = withRouter(_Issue);
+export const Issue = withRouter(withLoader(_Issue));

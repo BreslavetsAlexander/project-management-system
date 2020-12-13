@@ -1,0 +1,14 @@
+.wrapper {
+  min-height: 100%;
+
+  &[class*='ant-spin-nested-loading'] {
+    .spin {
+      min-height: 100%;
+    }
+
+    .loader[class*='ant-spin-dot'] {
+      transform: translate(-50%, -50%);
+      margin: 0;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tabs, Timeline, Form, Button, Collapse } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { LayoutContent } from './../../components/LayoutContent';
 import { AccordionContent } from './../../components/Board/AccordionContent';
 import { FormInput } from './../../components/FormInput';
 import styles from './styles.module.scss';
@@ -9,7 +8,7 @@ import styles from './styles.module.scss';
 export class Profile extends React.Component<{}, {}> {
   render() {
     return (
-      <LayoutContent className={styles.profile}>
+      <div className={styles.profile}>
         <div className={styles.header}>
           <UserOutlined className={styles.icon} />
           <div className={styles.info}>
@@ -47,7 +46,7 @@ export class Profile extends React.Component<{}, {}> {
             </Timeline>
           </Tabs.TabPane>
         </Tabs>
-      </LayoutContent>
+      </div>
     );
   }
 }

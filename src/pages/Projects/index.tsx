@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { List, Button, Card, Typography } from 'antd';
-import { LayoutContent } from '../../components/LayoutContent';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IProps as IProjectModalProps } from '../../components/ProjectModal/types';
+import { IWithLoaderProps, withLoader } from '../../components/hoc';
 import { ProjectsRepository, IssuesRepository } from '../../services/repositories';
 import { ROUTES } from '../../constants/routes';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
-export class Projects extends React.Component<{}, IState> {
+class _Projects extends React.Component<IWithLoaderProps, IState> {
   state: IState = {
     projects: [],
     visible: false,
@@ -19,16 +19,18 @@ export class Projects extends React.Component<{}, IState> {
     const projectsPromise = ProjectsRepository.getAll();
     const issuesPromise = IssuesRepository.getAll();
 
-    Promise.all([projectsPromise, issuesPromise]).then(([projectsList, ussuesList]) => {
-      const projects = projectsList.map((item) => {
-        return {
-          ...item,
-          issues: ussuesList.filter((issue) => issue.currentProjectId === item.id),
-        };
-      });
+    this.props
+      .fetching(Promise.all([projectsPromise, issuesPromise]))
+      .then(([projectsList, ussuesList]) => {
+        const projects = projectsList.map((item) => {
+          return {
+            ...item,
+            issues: ussuesList.filter((issue) => issue.currentProjectId === item.id),
+          };
+        });
 
-      this.setState({ projects });
-    });
+        this.setState({ projects });
+      });
   }
 
   setVisible = (visible: boolean) => this.setState({ visible });
@@ -50,7 +52,7 @@ export class Projects extends React.Component<{}, IState> {
 
   render() {
     return (
-      <LayoutContent className={styles.projects}>
+      <div className={styles.projects}>
         <Typography.Title>Projects list</Typography.Title>
         <Button type='primary' onClick={() => this.setVisible(true)}>
           Create project
@@ -59,6 +61,9 @@ export class Projects extends React.Component<{}, IState> {
           className={styles.list}
           grid={{ gutter: 16, column: 4 }}
           dataSource={this.state.projects}
+          loading={false}
+          loadMore={false}
+          locale={{ emptyText: null }}
           renderItem={(item) => (
             <List.Item>
               <Card title={item.title} className={styles.card}>
@@ -82,7 +87,9 @@ export class Projects extends React.Component<{}, IState> {
           }}
           onSubmit={this.onSubmit}
         />
-      </LayoutContent>
+      </div>
     );
   }
 }
+
+export const Projects = withLoader(_Projects);

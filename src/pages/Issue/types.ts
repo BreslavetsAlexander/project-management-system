@@ -1,5 +1,6 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { Moment } from 'moment';
+import { IWithLoaderProps } from '../../components/hoc';
 import { IIssue, IEmployee } from '../../definitions/index';
 
 interface IParams {
@@ -24,4 +25,4 @@ export interface IFormLogWorkValues {
   time: Moment;
 }
 
-export type IProps = RouteComponentProps<IParams>;
+export type IProps = RouteComponentProps<IParams> & IWithLoaderProps;

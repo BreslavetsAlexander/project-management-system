@@ -3,11 +3,11 @@ import { withRouter } from 'react-router-dom';
 import { Collapse, Typography, Button, Modal } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { AccordionContent } from '../../components/Board/AccordionContent';
+import { withLoader } from '../../components/hoc';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IssueModal } from '../../components/IssueModal';
 import { IProps as IValues } from '../../components/ProjectModal/types';
 import { IProps as IIssueProps } from '../../components/IssueModal/types';
-import { LayoutContent } from '../../components/LayoutContent';
 import { ROUTES } from '../../constants/routes';
 import { ISSUES } from '../../constants/issues';
 import {
@@ -21,7 +21,7 @@ import styles from './styles.module.scss';
 class _Board extends React.Component<IProps, IState> {
   state: IState = {
     project: null,
-    projectEmployees: null,
+    projectEmployees: [],
     projectModalVisible: false,
     issueModalVisible: false,
   };
@@ -33,8 +33,9 @@ class _Board extends React.Component<IProps, IState> {
       currentProjectId: this.props.match.params.id,
     });
 
-    Promise.all([projectPromise, issuesPromise, employeesPromise]).then(
-      ([project, issuesList, employees]) => {
+    this.props
+      .fetching(Promise.all([projectPromise, issuesPromise, employeesPromise]))
+      .then(([project, issuesList, employees]) => {
         const projectEmployees = employees.map((employee) => {
           return {
             ...employee,
@@ -46,8 +47,7 @@ class _Board extends React.Component<IProps, IState> {
           project,
           projectEmployees,
         });
-      },
-    );
+      });
   }
 
   setProjectModalVisible = (projectModalVisible: boolean) => this.setState({ projectModalVisible });
@@ -96,11 +96,11 @@ class _Board extends React.Component<IProps, IState> {
   };
 
   render() {
-    if (!this.state.projectEmployees && !this.state.project) {
+    if (!this.state.project) {
       return null;
     }
 
-    const collapsePanels = this.state.projectEmployees?.map((item) => {
+    const collapsePanels = this.state.projectEmployees.map((item) => {
       const header = (
         <div className={styles.header}>
           <span className={styles.name}>{item.name}</span>
@@ -121,7 +121,7 @@ class _Board extends React.Component<IProps, IState> {
     });
 
     return (
-      <LayoutContent className={styles.board}>
+      <div className={styles.board}>
         <Typography.Title>{this.state.project?.title}</Typography.Title>
         <div className={styles.buttons}>
           <Button icon={<EditOutlined />} onClick={() => this.setProjectModalVisible(true)}>
@@ -160,9 +160,9 @@ class _Board extends React.Component<IProps, IState> {
           }}
           onSubmit={this.onCreate}
         />
-      </LayoutContent>
+      </div>
     );
   }
 }
 
-export const Board = withRouter(_Board);
+export const Board = withRouter(withLoader(_Board));

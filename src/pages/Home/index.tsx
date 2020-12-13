@@ -1,12 +1,11 @@
 import React from 'react';
 import { UserOutlined, SmileOutlined } from '@ant-design/icons';
-import { LayoutContent } from './../../components/LayoutContent';
-import { Loader } from './../../components/Loader';
+import { IWithLoaderProps, withLoader } from './../../components/hoc';
 import { Result } from 'antd';
 
 import { List } from 'antd';
 
-export const Home: React.FC = () => {
+const _Home: React.FC<IWithLoaderProps> = () => {
   const activity = [
     'commented on [NAME-123] - Test 123',
     'started progress on [NAME-123] - Test 123',
@@ -104,8 +103,7 @@ export const Home: React.FC = () => {
   );
 
   return (
-    <LayoutContent>
-      <Loader />
+    <div>
       <div
         style={{
           display: 'flex',
@@ -118,6 +116,8 @@ export const Home: React.FC = () => {
         </div>
         {activityStream}
       </div>
-    </LayoutContent>
+    </div>
   );
 };
+
+export const Home = withLoader(_Home);
