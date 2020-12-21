@@ -1,123 +1,111 @@
 import React from 'react';
-import { UserOutlined, SmileOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { Row, Col, Result, Typography, List } from 'antd';
+import { HeatMapOutlined, UserOutlined } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
-import { Result } from 'antd';
+import { IssuesRepository, ActivityRepository } from './../../services/repositories';
+import { ROUTES } from './../../constants/routes';
+import { IState } from './types';
+import styles from './styles.module.scss';
 
-import { List } from 'antd';
+class _Home extends React.Component<IWithLoaderProps, IState> {
+  state: IState = {
+    issues: [],
+    activity: [],
+  };
 
-const _Home: React.FC<IWithLoaderProps> = () => {
-  const activity = [
-    'commented on [NAME-123] - Test 123',
-    'started progress on [NAME-123] - Test 123',
-    'logged 3 hours on [NAME-123] - Test 123',
-    'created [NAME-123] - Test 123',
-    'changed the Assignee to Another Men on [NAME-123] - Test 123',
-    'updated the descreption on [NAME-123] - Test 123',
-    'updated the title on [NAME-123] - Test 123',
-    'changed the status to To Do on [NAME-123] - Test 123',
-    'changed the status to In Progress on [NAME-123] - Test 123',
-    'changed the status to In Review on [NAME-123] - Test 123',
-    'changed the status to Done on [NAME-123] - Test 123',
-  ];
+  componentDidMount() {
+    const issuesPromise = IssuesRepository.getAll();
+    const activityPromise = ActivityRepository.getAll();
+    this.props
+      .fetching(Promise.all([issuesPromise, activityPromise]))
+      .then(([issues, activity]) => this.setState({ issues, activity }));
+  }
 
-  const activityStream = (
-    <div className='right' style={{ flexBasis: '50%', padding: '0 20px' }}>
-      <div
-        style={{ fontSize: '20px', backgroundColor: '#003a8c', color: '#ffffff', padding: '10px' }}>
-        Activity Stream
+  getIntroduction() {
+    return (
+      <div className={styles.introduction}>
+        <div className={styles.sectionTitle}>Introduction</div>
+        <Result
+          className={styles.result}
+          icon={<HeatMapOutlined />}
+          title='Welcome to JIRA Clone'
+        />
+        <p className={styles.text}>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati nemo corporis, animi
+          sit architecto molestiae.
+        </p>
       </div>
-      <div style={{ marginTop: '15px' }}>
-        {/* {activity.map((item) => (
-          <div
-            style={{
-              display: 'flex',
-              marginBottom: '10px',
-              paddingBottom: '5px',
-              borderBottom: '1px solid #003a8c',
-            }}
-            key={item}>
-            <UserOutlined style={{ fontSize: '70px', color: '#003a8c' }} />
-            <div style={{ marginTop: '10px' }}>
-              <p>
-                <span>Jhon Smith</span> {item}
-              </p>
-            </div>
-          </div>
-        ))} */}
+    );
+  }
 
+  getAssignedToMe() {
+    return (
+      <div className={styles.assignedToMe}>
+        <div className={styles.sectionTitle}>Assigned to Me</div>
         <List
-          itemLayout='horizontal'
-          dataSource={activity}
+          size='large'
+          dataSource={this.state.issues}
           renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<UserOutlined style={{ fontSize: '70px', color: '#003a8c' }} />}
-                title={`Jhon Smith ${item}`}
-                description='05.12.2020 16:17'
-              />
+            <List.Item className={styles.listItem}>
+              <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
+              <div>{item.status}</div>
             </List.Item>
           )}
         />
       </div>
-    </div>
-  );
+    );
+  }
 
-  const assignedToMe = (
-    <div style={{ marginTop: '30px' }}>
-      <div
-        style={{
-          fontSize: '20px',
-          backgroundColor: '#003a8c',
-          color: '#ffffff',
-          padding: '10px',
-        }}>
-        Assigned to Me
-      </div>
-      <List
-        size='large'
-        bordered
-        dataSource={activity}
-        renderItem={(item) => <List.Item>{item}</List.Item>}
-      />
-    </div>
-  );
+  getActivityStream() {
+    return (
+      <div className={styles.activityStream}>
+        <div className={styles.sectionTitle}>Activity Stream</div>
+        <List
+          className={styles.list}
+          itemLayout='horizontal'
+          dataSource={this.state.activity.reverse()}
+          renderItem={(item) => {
+            const issueRoute = ROUTES.ISSUES.DETAIL.ROUTE(item.entity.id);
+            const projectRoute = ROUTES.PROJECTS.DETAIL.ROUTE(item.entity.id);
+            const to = item.type === 'issue' ? issueRoute : projectRoute;
+            const link = <Link to={to}>{item.entity.name}</Link>;
+            const title = (
+              <p>
+                {`${item.employee.name} ${item.text} ${item.type} `}
+                {link}
+              </p>
+            );
 
-  const introduction = (
-    <div style={{ border: '1px solid #003a8c' }}>
-      <div
-        style={{
-          fontSize: '20px',
-          backgroundColor: '#003a8c',
-          color: '#ffffff',
-          padding: '10px',
-        }}>
-        Introduction
+            return (
+              <List.Item className={styles.listItem}>
+                <List.Item.Meta
+                  avatar={<UserOutlined className={styles.userIcon} />}
+                  title={title}
+                  description={item.date}
+                />
+              </List.Item>
+            );
+          }}
+        />
       </div>
-      <Result
-        icon={<SmileOutlined />}
-        title='Welcome to JIRA Clone'
-        subTitle='Thanks for choosing'
-      />
-      <p>Using this app you can ...</p>
-    </div>
-  );
+    );
+  }
 
-  return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          margin: '0 -20px',
-        }}>
-        <div className='left' style={{ flexBasis: '50%', padding: '0 20px' }}>
-          {introduction}
-          {assignedToMe}
-        </div>
-        {activityStream}
+  render() {
+    return (
+      <div>
+        <Typography.Title>Home</Typography.Title>
+        <Row gutter={[24, 0]} className={styles.home}>
+          <Col sm={12}>
+            {this.getIntroduction()}
+            {this.getAssignedToMe()}
+          </Col>
+          <Col sm={12}>{this.getActivityStream()}</Col>
+        </Row>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export const Home = withLoader(_Home);

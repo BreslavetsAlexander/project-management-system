@@ -17,4 +17,7 @@ export const API = {
     LIST: () => `${BASE_URL}/projects`,
     DETAIL: (id: number | string) => `${API.PROJECTS.LIST()}/${id}`,
   },
+  ACTIVITY: {
+    LIST: () => `${BASE_URL}/activity`,
+  },
 };

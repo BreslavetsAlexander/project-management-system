@@ -1,25 +1,10 @@
 .wrapper {
-  min-height: 100%;
-
-  &[class*='ant-spin-nested-loading'] {
-    .spin {
-      min-height: 100%;
-    }
-
-    .loader[class*='ant-spin-dot'] {
-      transform: translate(-50%, -50%);
-      margin: 0;
-    }
-  }
-}
-
-.errorWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 
-  .error {
+  .notFound {
     &[class*='ant-result'] {
       margin: 0;
       padding: 0;

@@ -1,5 +1,6 @@
 export interface IState {
   loading: boolean;
+  error: boolean;
 }
 
 export interface IWithLoaderProps {

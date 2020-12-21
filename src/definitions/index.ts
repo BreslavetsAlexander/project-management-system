@@ -28,3 +28,15 @@ export interface IProject {
   title: string;
   description: string;
 }
+
+export interface IActivity {
+  id: number;
+  text: string;
+  date: string;
+  employee: Pick<IEmployee, 'name' | 'id'>;
+  type: 'issue' | 'project';
+  entity: {
+    id: number;
+    name: string;
+  };
+}

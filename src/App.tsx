@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { Layout } from 'antd';
 import { Menu } from './components/Menu';
 import { LayoutContent } from './components/LayoutContent';
@@ -9,17 +9,21 @@ import { Home } from './pages/Home';
 import { Issue } from './pages/Issue';
 import { Projects } from './pages/Projects';
 import { Profile } from './pages/Profile';
+import { NotFound } from './pages/NotFound';
 
 export const App: React.FC = () => {
   return (
     <Layout className='app'>
       <Menu />
       <LayoutContent>
-        <Route exact path={ROUTES.HOME} component={Home} />
-        <Route exact path={ROUTES.PROJECTS.LIST} component={Projects} />
-        <Route exact path={ROUTES.PROFILE} component={Profile} />
-        <Route exact path={ROUTES.PROJECTS.DETAIL.TEMPLATE} component={Board} />
-        <Route exact path={ROUTES.ISSUES.DETAIL.TEMPLATE} component={Issue} />
+        <Switch>
+          <Route exact path={ROUTES.HOME} component={Home} />
+          <Route exact path={ROUTES.PROJECTS.LIST} component={Projects} />
+          <Route exact path={ROUTES.PROFILE} component={Profile} />
+          <Route exact path={ROUTES.PROJECTS.DETAIL.TEMPLATE} component={Board} />
+          <Route exact path={ROUTES.ISSUES.DETAIL.TEMPLATE} component={Issue} />
+          <Route path={ROUTES.NOT_FOUND} component={NotFound} />
+        </Switch>
       </LayoutContent>
     </Layout>
   );

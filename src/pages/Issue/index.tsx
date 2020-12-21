@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 import { Typography, Button, Form } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { withLoader } from './../../components/hoc';
@@ -9,11 +10,14 @@ import { Tabs } from './../../components/Issue/Tabs';
 import { IssueModal } from './../../components/IssueModal';
 import { LogWorkModal } from './../../components/Issue/LogWorkModal';
 import { ISSUES } from './../../constants/issues';
+import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
+import { ROUTES } from './../../constants/routes';
 import {
   IssuesRepository,
   EmployeesRepository,
   WorkLogsRepository,
+  ActivityRepository,
 } from './../../services/repositories';
 import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
 import { IProps, IState, IFormEditValues, IFormLogWorkValues } from './types';
@@ -36,14 +40,37 @@ class _Issue extends React.Component<IProps, IState> {
         ]),
       )
       .then(([issue, employees]) => {
+        const isIssueNotFound = JSON.stringify(issue) === '{}';
+
+        if (isIssueNotFound) {
+          this.props.history.push(ROUTES.NOT_FOUND);
+          return;
+        }
+
         this.setState({ issue, employees });
       });
   }
 
   updateStatus(status: string) {
+    const issuePromise = IssuesRepository.update(this.state.issue?.id!, { status });
+
+    const activityPromise = ActivityRepository.create({
+      type: 'issue',
+      text: ACTIVITY.ISSUES.CHANGED_STATUS,
+      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
+      entity: {
+        id: this.state.issue?.id!,
+        name: this.state.issue?.title!,
+      },
+      employee: {
+        id: 1,
+        name: 'Vang Moss',
+      },
+    });
+
     this.props
-      .fetching(IssuesRepository.update(this.state.issue?.id!, { status }))
-      .then((issue) => this.setState({ issue }));
+      .fetching(Promise.all([issuePromise, activityPromise]))
+      .then(([issue, _]) => this.setState({ issue }));
   }
 
   onChange = () => {
@@ -106,11 +133,27 @@ class _Issue extends React.Component<IProps, IState> {
   setLogWorkVisible = (logWorkVisible: boolean) => this.setState({ logWorkVisible });
 
   onEdit = (values: IFormEditValues) => {
-    IssuesRepository.update(this.state.issue?.id!, {
+    const issuePromise = IssuesRepository.update(this.state.issue?.id!, {
       title: values.title,
       description: values.description,
       priority: values.priority,
-    }).then((issue) => {
+    });
+
+    const activityPromise = ActivityRepository.create({
+      type: 'issue',
+      text: ACTIVITY.ISSUES.UPDATED,
+      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
+      entity: {
+        id: this.state.issue?.id!,
+        name: values.title,
+      },
+      employee: {
+        id: 1,
+        name: 'Vang Moss',
+      },
+    });
+
+    Promise.all([issuePromise, activityPromise]).then(([issue, _]) => {
       this.setState({ issue });
       this.setEditVisible(false);
     });

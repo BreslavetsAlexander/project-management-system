@@ -1,0 +1,63 @@
+@import '../../assets/variables.scss';
+
+.home {
+  .sectionTitle {
+    font-size: 20px;
+    color: $white;
+    background-color: $darkBlue;
+    padding: 10px;
+  }
+
+  .introduction {
+    border: 1px solid $darkBlue;
+
+    .result {
+      padding: 0;
+      margin: 20px 0 5px;
+
+      div[class*='ant-result-icon'] {
+        margin: 0;
+      }
+
+      span[class*='anticon'] {
+        color: $darkBlue;
+      }
+    }
+
+    .text {
+      font-size: 18px;
+      margin: 0 10px 10px;
+    }
+  }
+
+  .assignedToMe {
+    margin-top: 30px;
+
+    .listItem {
+      &[class*='ant-list-item'] {
+        padding: 10px;
+        border-color: $darkBlue;
+      }
+    }
+  }
+
+  .activityStream {
+    .list {
+      .listItem {
+        &[class*='ant-list-item'] {
+          padding: 10px;
+          border-color: $darkBlue;
+        }
+
+        .userIcon {
+          font-size: 60px;
+          color: $darkBlue;
+        }
+
+        div[class*='ant-list-item-meta-description'] {
+          color: $black;
+        }
+      }
+    }
+  }
+}
