@@ -8,3 +8,5 @@ export const listItem: string;
 export const activityStream: string;
 export const list: string;
 export const userIcon: string;
+export const login: string;
+export const button: string;

@@ -27,7 +27,7 @@ export class AccordionContent extends React.Component<IProps> {
               <h3 className={styles.issueName}>
                 <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
               </h3>
-              <h4 className={styles.projectName}>{item.description}</h4>
+              <h4 className={styles.description}>{item.description}</h4>
             </div>
           </div>
         );

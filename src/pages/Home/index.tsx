@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Result, Typography, List } from 'antd';
+import { Row, Col, Result, Typography, List, Button } from 'antd';
 import { HeatMapOutlined, UserOutlined } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
 import { IssuesRepository, ActivityRepository } from './../../services/repositories';
@@ -39,10 +39,22 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
     );
   }
 
+  getNotAuthorizedBlock() {
+    return (
+      <div className={styles.login}>
+        <p>Sorry, you are not authorized to access this information</p>
+        <Button type='primary' className={styles.button}>
+          <Link to={ROUTES.LOG_IN}>Log in</Link>
+        </Button>
+      </div>
+    );
+  }
+
   getAssignedToMe() {
     return (
       <div className={styles.assignedToMe}>
         <div className={styles.sectionTitle}>Assigned to Me</div>
+        {/* {this.getNotAuthorizedBlock()} */}
         <List
           size='large'
           dataSource={this.state.issues}
@@ -61,6 +73,7 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
     return (
       <div className={styles.activityStream}>
         <div className={styles.sectionTitle}>Activity Stream</div>
+        {/* {this.getNotAuthorizedBlock()} */}
         <List
           className={styles.list}
           itemLayout='horizontal'

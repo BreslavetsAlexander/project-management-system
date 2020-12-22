@@ -1,5 +1,7 @@
 export interface IProps {
-  label: string;
   name: string;
   message?: string;
+  label?: string;
+  placeholder?: string;
+  type?: string;
 }

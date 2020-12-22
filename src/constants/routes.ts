@@ -19,5 +19,7 @@ export const ROUTES = {
     },
   },
   PROFILE: '/profile',
+  LOG_IN: '/login',
+  REGISTRATION: '/registration',
   NOT_FOUND: '/*',
 };

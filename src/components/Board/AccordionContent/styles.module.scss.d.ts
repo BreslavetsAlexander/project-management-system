@@ -5,5 +5,5 @@ export const count: string;
 export const issues: string;
 export const issue: string;
 export const icon: string;
-export const projectName: string;
 export const issueName: string;
+export const description: string;

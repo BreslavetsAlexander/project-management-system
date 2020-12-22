@@ -1,0 +1,20 @@
+.registration {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .formWrapper {
+    margin-top: 12%;
+    width: 30%;
+    text-align: center;
+
+    form {
+      width: 100%;
+    }
+
+    div[class*='ant-form-item-explain'] {
+      text-align: left;
+    }
+  }
+}

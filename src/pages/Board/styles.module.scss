@@ -1,3 +1,5 @@
+@import '../../assets/variables.scss';
+
 .board {
   .buttons {
     button {
@@ -14,20 +16,18 @@
     margin-top: 20px;
 
     .panel {
-      background-color: #fafafa;
       margin-bottom: 20px;
-      border: none;
+      border: 1px solid rgba($black, 0.2);
 
       .header {
         .name {
-          font-size: 16px;
+          font-size: 18px;
           font-weight: 500;
           margin-right: 5px;
         }
 
         .count {
-          font-size: 13px;
-          color: #686868;
+          font-size: 15px;
         }
       }
 
