@@ -13,11 +13,13 @@ import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
 import { ROUTES } from './../../constants/routes';
+import { IComment } from './../../definitions';
 import {
   IssuesRepository,
   EmployeesRepository,
   WorkLogsRepository,
   ActivityRepository,
+  CommentsRepository,
 } from './../../services/repositories';
 import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
 import { IProps, IState, IFormEditValues, IFormLogWorkValues } from './types';
@@ -26,6 +28,7 @@ import styles from './styles.module.scss';
 class _Issue extends React.Component<IProps, IState> {
   state: IState = {
     issue: null,
+    comments: [],
     employees: null,
     editVisible: false,
     logWorkVisible: false,
@@ -37,9 +40,10 @@ class _Issue extends React.Component<IProps, IState> {
         Promise.all([
           IssuesRepository.getById(this.props.match.params.id),
           EmployeesRepository.getAll(),
+          CommentsRepository.getAll(),
         ]),
       )
-      .then(([issue, employees]) => {
+      .then(([issue, employees, comments]) => {
         const isIssueNotFound = JSON.stringify(issue) === '{}';
 
         if (isIssueNotFound) {
@@ -47,7 +51,7 @@ class _Issue extends React.Component<IProps, IState> {
           return;
         }
 
-        this.setState({ issue, employees });
+        this.setState({ issue, employees, comments });
       });
   }
 
@@ -169,6 +173,109 @@ class _Issue extends React.Component<IProps, IState> {
     });
   };
 
+  addComment = (text: IComment['text']) => {
+    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+
+    this.props
+      .fetching(
+        Promise.all([
+          CommentsRepository.create({
+            text,
+            date,
+            author: {
+              id: 1,
+              name: 'Vang Moss',
+            },
+          }),
+          ActivityRepository.create({
+            type: 'issue',
+            text: ACTIVITY.ISSUES.ADDED_COMMENT,
+            date,
+            entity: {
+              id: this.state.issue?.id!,
+              name: this.state.issue?.title!,
+            },
+            employee: {
+              id: 1,
+              name: 'Vang Moss',
+            },
+          }),
+        ]),
+      )
+      .then(([comment]) => {
+        const comments = [...this.state.comments];
+        comments.push(comment);
+        this.setState({ comments });
+      });
+  };
+
+  editComment = (id: IComment['id'], text: IComment['text']) => {
+    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+
+    this.props
+      .fetching(
+        Promise.all([
+          CommentsRepository.update(id, {
+            text,
+            date,
+          }),
+          ActivityRepository.create({
+            type: 'issue',
+            text: ACTIVITY.ISSUES.UPDATED_COMMENT,
+            date,
+            entity: {
+              id: this.state.issue?.id!,
+              name: this.state.issue?.title!,
+            },
+            employee: {
+              id: 1,
+              name: 'Vang Moss',
+            },
+          }),
+        ]),
+      )
+      .then(([comment]) => {
+        const comments = this.state.comments.map((item) => {
+          if (item.id === id) {
+            return comment;
+          }
+
+          return item;
+        });
+
+        this.setState({ comments });
+      });
+  };
+
+  deleteComment = (id: IComment['id']) => {
+    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+
+    this.props
+      .fetching(
+        Promise.all([
+          CommentsRepository.delete(id),
+          ActivityRepository.create({
+            type: 'issue',
+            text: ACTIVITY.ISSUES.DELETE_COMMENT,
+            date,
+            entity: {
+              id: this.state.issue?.id!,
+              name: this.state.issue?.title!,
+            },
+            employee: {
+              id: 1,
+              name: 'Vang Moss',
+            },
+          }),
+        ]),
+      )
+      .then(([_]) => {
+        const comments = this.state.comments.filter((item) => item.id !== id);
+
+        this.setState({ comments });
+      });
+  };
+
   render() {
     if (!this.state.issue) {
       return null;
@@ -195,6 +302,10 @@ class _Issue extends React.Component<IProps, IState> {
           className={styles.tabs}
           priority={this.state.issue.priority}
           description={this.state.issue.description}
+          addComment={this.addComment}
+          editComment={this.editComment}
+          deleteComment={this.deleteComment}
+          comments={this.state.comments}
         />
         <IssueModal
           title='Edit issue'

@@ -1,4 +1,14 @@
+import { IComment } from '../../../../definitions';
+
 export interface IProps {
-  author: string;
-  content: string;
+  comments: IComment[];
+  addComment: (text: IComment['text']) => void;
+  editComment: (id: IComment['id'], text: IComment['text']) => void;
+  deleteComment: (id: IComment['id']) => void;
 }
+
+export interface IState {
+  editedCommentId: number | null;
+}
+
+export type IFormValues = Pick<IComment, 'text'>;

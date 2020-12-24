@@ -1,39 +1,87 @@
 import React from 'react';
 import { Comment, Form, Button } from 'antd';
+import { FormInstance } from 'antd/lib/form';
 import { UserOutlined } from '@ant-design/icons';
 import { FormTextArea } from '../../../FormTextArea';
-import { IProps } from './types';
+import { INPUT_NAMES } from './constants';
+import { IProps, IState, IFormValues } from './types';
 import styles from './styles.module.scss';
 
-export const CommentsTab: React.FC<IProps> = (props) => {
-  return (
-    <div>
+export class CommentsTab extends React.Component<IProps, IState> {
+  state: IState = {
+    editedCommentId: null,
+  };
+
+  formRef = React.createRef<FormInstance<IFormValues>>();
+
+  getComments() {
+    if (!this.props.comments.length) {
+      return <div>No comments yet</div>;
+    }
+
+    return (
       <div>
-        {[1, 2, 3].map((item) => (
-          <Comment
-            key={item}
-            className={styles.comment}
-            avatar={<UserOutlined className={styles.avatar} />}
-            author={<a className={styles.author}>{props.author}</a>}
-            datetime={<p className={styles.datetime}>05.12.2020 16:17</p>}
-            content={
-              <p className={styles.content}>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Culpa exercitationem
-                dolores est! Velit adipisci hic consectetur perspiciatis sit accusamus ipsum
-                recusandae impedit odit autem! Exercitationem!
-              </p>
-            }
-          />
-        ))}
+        {this.props.comments.map((item) => {
+          const actions = [
+            <span onClick={() => this.onEdit(item.id)}>Edit</span>,
+            <span onClick={() => this.props.deleteComment(item.id)}>Delete</span>,
+          ];
+
+          return (
+            <Comment
+              key={item.id}
+              className={styles.comment}
+              avatar={<UserOutlined className={styles.avatar} />}
+              author={<a className={styles.author}>{item.author.name}</a>}
+              datetime={<p className={styles.datetime}>{item.date}</p>}
+              content={<p className={styles.content}>{item.text}</p>}
+              actions={actions}
+            />
+          );
+        })}
       </div>
-      <Form className={styles.form}>
-        <FormTextArea label={null} name='comment' />
-        <Form.Item>
-          <Button htmlType='submit' type='primary'>
-            Add Comment
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-};
+    );
+  }
+
+  onEdit = (editedCommentId: number) => {
+    const comment = this.props.comments.find((item) => item.id === editedCommentId);
+
+    this.formRef.current?.setFieldsValue({
+      text: comment?.text,
+    });
+
+    this.setState({ editedCommentId });
+  };
+
+  onSubmit = (values: IFormValues) => {
+    if (!this.state.editedCommentId) {
+      this.props.addComment(values.text);
+    } else {
+      this.props.editComment(this.state.editedCommentId, values.text);
+
+      this.setState({
+        editedCommentId: null,
+      });
+    }
+
+    this.formRef.current?.setFieldsValue({
+      text: '',
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        {this.getComments()}
+        <Form<IFormValues> ref={this.formRef} className={styles.form} onFinish={this.onSubmit}>
+          <FormTextArea label={null} name={INPUT_NAMES.text} />
+          <Form.Item>
+            <Button htmlType='submit' type='primary'>
+              {this.state.editedCommentId ? 'Edit Comment' : 'Add Comment'}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  }
+}

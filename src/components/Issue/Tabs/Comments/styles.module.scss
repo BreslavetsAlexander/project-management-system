@@ -1,6 +1,18 @@
+@import '../../../../assets/variables.scss';
+
 .comment {
   div[class*='ant-comment-inner'] {
     padding: 0;
+  }
+
+  ul[class*='ant-comment-actions'] {
+    margin: 0;
+
+    li {
+      &:last-child span {
+        color: red;
+      }
+    }
   }
 
   &:not(:first-child) {
@@ -9,22 +21,25 @@
 
   .avatar {
     font-size: 70px;
-    color: #003a8c;
+    color: $darkBlue;
   }
 
   .author,
   .datetime,
   .content {
-    color: #000000;
+    color: $black;
   }
 
-  .author,
+  .author {
+    font-size: 18px;
+  }
+
   .datetime {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .content {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 

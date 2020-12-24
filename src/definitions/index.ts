@@ -40,3 +40,10 @@ export interface IActivity {
     name: string;
   };
 }
+
+export interface IComment {
+  id: number;
+  text: string;
+  author: Pick<IEmployee, 'name' | 'id'>;
+  date: string;
+}

@@ -1,7 +1,7 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { Moment } from 'moment';
 import { IWithLoaderProps } from '../../components/hoc';
-import { IIssue, IEmployee } from '../../definitions/index';
+import { IIssue, IEmployee, IComment } from '../../definitions/index';
 
 interface IParams {
   id: string;
@@ -9,6 +9,7 @@ interface IParams {
 
 export interface IState {
   issue: IIssue | null;
+  comments: IComment[];
   employees: IEmployee[] | null;
   editVisible: boolean;
   logWorkVisible: boolean;

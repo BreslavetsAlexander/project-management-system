@@ -17,6 +17,10 @@ export const API = {
     LIST: () => `${BASE_URL}/projects`,
     DETAIL: (id: number | string) => `${API.PROJECTS.LIST()}/${id}`,
   },
+  COMMENTS: {
+    LIST: () => `${BASE_URL}/comments`,
+    DETAIL: (id: number | string) => `${API.COMMENTS.LIST()}/${id}`,
+  },
   ACTIVITY: {
     LIST: () => `${BASE_URL}/activity`,
   },

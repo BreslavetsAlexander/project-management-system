@@ -4,7 +4,9 @@ export const ACTIVITY = {
     DELETED: 'deleted',
     CHANGED_STATUS: 'changed status on',
     LOGGED_TIME: 'logged time on',
-    COMMENTED: 'commented on',
+    ADDED_COMMENT: 'added comment on',
+    UPDATED_COMMENT: 'updated comment on',
+    DELETE_COMMENT: 'deleted comment on',
   },
   PROJECTS: {
     CREATED: 'created',
