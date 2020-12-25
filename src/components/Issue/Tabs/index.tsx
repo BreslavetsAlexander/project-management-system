@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs as TabsAntd } from 'antd';
 import { DetailsTab } from './Details';
 import { CommentsTab } from './Comments';
-import { HistoryTab } from './History';
+import { Worklogs } from './Worklogs';
 import { IProps } from './types';
 
 export const Tabs: React.FC<IProps> = (props) => {
@@ -19,8 +19,8 @@ export const Tabs: React.FC<IProps> = (props) => {
           deleteComment={props.deleteComment}
         />
       </TabsAntd.TabPane>
-      <TabsAntd.TabPane tab='History' key='History'>
-        <HistoryTab history={[1, 2, 3]} />
+      <TabsAntd.TabPane tab={`Worklogs (${props.worklogs.length})`} key='Worklogs'>
+        <Worklogs worklogs={props.worklogs} deleteWorkLog={props.deleteWorkLog} />
       </TabsAntd.TabPane>
     </TabsAntd>
   );

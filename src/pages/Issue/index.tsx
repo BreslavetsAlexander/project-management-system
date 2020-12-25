@@ -1,8 +1,8 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { Typography, Button, Form } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { withLoader } from './../../components/hoc';
 import { FormSelect } from './../../components/FormSelect';
 import { IssueStatus } from './../../components/Issue/Status';
@@ -13,7 +13,7 @@ import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
 import { ROUTES } from './../../constants/routes';
-import { IComment } from './../../definitions';
+import { IComment, IWorkLog } from './../../definitions';
 import {
   IssuesRepository,
   EmployeesRepository,
@@ -29,6 +29,7 @@ class _Issue extends React.Component<IProps, IState> {
   state: IState = {
     issue: null,
     comments: [],
+    worklogs: [],
     employees: null,
     editVisible: false,
     logWorkVisible: false,
@@ -41,9 +42,10 @@ class _Issue extends React.Component<IProps, IState> {
           IssuesRepository.getById(this.props.match.params.id),
           EmployeesRepository.getAll(),
           CommentsRepository.getAll(),
+          WorkLogsRepository.getByIssueId(this.props.match.params.id),
         ]),
       )
-      .then(([issue, employees, comments]) => {
+      .then(([issue, employees, comments, worklogs]) => {
         const isIssueNotFound = JSON.stringify(issue) === '{}';
 
         if (isIssueNotFound) {
@@ -51,7 +53,7 @@ class _Issue extends React.Component<IProps, IState> {
           return;
         }
 
-        this.setState({ issue, employees, comments });
+        this.setState({ issue, employees, comments, worklogs });
       });
   }
 
@@ -166,9 +168,35 @@ class _Issue extends React.Component<IProps, IState> {
   onLogWork = (values: IFormLogWorkValues) => {
     const date = values.date.format(DATES_FORMATS.DAY_MONTH_YEAR);
     const time = values.time.format(DATES_FORMATS.HOURS_MINUTES);
-    const issueId = this.state.issue?.id;
-    WorkLogsRepository.create({ date, time, issueId }).then((res) => {
-      console.log(res);
+
+    const activityPromise = ActivityRepository.create({
+      type: 'issue',
+      text: ACTIVITY.ISSUES.LOGGED_TIME,
+      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
+      entity: {
+        id: this.state.issue?.id!,
+        name: this.state.issue?.title!,
+      },
+      employee: {
+        id: 1,
+        name: 'Vang Moss',
+      },
+    });
+
+    const workLogPromise = WorkLogsRepository.create({
+      date,
+      time,
+      issueId: this.state.issue?.id,
+      employee: {
+        id: 1,
+        name: 'Vang Moss',
+      },
+    });
+
+    Promise.all([workLogPromise, activityPromise]).then(([worklog, _]) => {
+      const worklogs = [...this.state.worklogs];
+      worklogs.push(worklog);
+      this.setState({ worklogs });
       this.setLogWorkVisible(false);
     });
   };
@@ -276,6 +304,14 @@ class _Issue extends React.Component<IProps, IState> {
       });
   };
 
+  deleteWorkLog = (id: IWorkLog['id']) => {
+    this.props.fetching(WorkLogsRepository.delete(id)).then(() => {
+      const worklogs = this.state.worklogs.filter((item) => item.id !== id);
+
+      this.setState({ worklogs });
+    });
+  };
+
   render() {
     if (!this.state.issue) {
       return null;
@@ -283,7 +319,12 @@ class _Issue extends React.Component<IProps, IState> {
 
     return (
       <div className={styles.layoutContent}>
-        <h4 className={styles.projectName}>Project name</h4>
+        <div className={styles.projectName}>
+          <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(this.state.issue.currentProjectId)}>
+            <ArrowLeftOutlined className={styles.icon} />
+            <span>Project name</span>
+          </Link>
+        </div>
         <Typography.Title>
           {`[Project name - ${this.state.issue.id}]`} {this.state.issue.title}
         </Typography.Title>
@@ -302,10 +343,12 @@ class _Issue extends React.Component<IProps, IState> {
           className={styles.tabs}
           priority={this.state.issue.priority}
           description={this.state.issue.description}
+          comments={this.state.comments}
           addComment={this.addComment}
           editComment={this.editComment}
           deleteComment={this.deleteComment}
-          comments={this.state.comments}
+          worklogs={this.state.worklogs}
+          deleteWorkLog={this.deleteWorkLog}
         />
         <IssueModal
           title='Edit issue'

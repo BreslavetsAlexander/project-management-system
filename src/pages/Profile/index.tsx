@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Timeline, Form, Button, Collapse } from 'antd';
+import { Tabs, Form, Button, Collapse } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AccordionContent } from './../../components/Board/AccordionContent';
 import { FormInput } from './../../components/FormInput';
@@ -37,13 +37,6 @@ export class Profile extends React.Component<{}, {}> {
                 <AccordionContent issues={[]} />
               </Collapse.Panel>
             </Collapse>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab='Activity' key='3'>
-            <Timeline>
-              {[1, 2, 3, 4, 5].map((item) => (
-                <Timeline.Item key={item}>item {item} 2015-09-01</Timeline.Item>
-              ))}
-            </Timeline>
           </Tabs.TabPane>
         </Tabs>
       </div>

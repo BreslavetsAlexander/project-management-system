@@ -1,0 +1,30 @@
+@import '../../../../assets/variables.scss';
+
+.list {
+  div[class*='ant-list-footer'] {
+    margin: 10px 0 0;
+    padding: 0;
+    font-size: 18px;
+    text-align: right;
+  }
+}
+
+.listItem {
+  &[class*='ant-list-item'] {
+    padding: 10px 0;
+
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  ul[class*='ant-list-item-action'] {
+    margin: 0 0 0 30px;
+
+    li {
+      &:last-child {
+        padding: 0;
+      }
+    }
+  }
+}

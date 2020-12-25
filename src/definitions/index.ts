@@ -10,6 +10,7 @@ export interface IWorkLog {
   date: string;
   time: string;
   issueId: number;
+  employee: Pick<IEmployee, 'name' | 'id'>;
 }
 
 export interface IIssue {

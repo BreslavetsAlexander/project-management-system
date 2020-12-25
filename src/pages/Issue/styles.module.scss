@@ -1,6 +1,17 @@
+@import '../../assets/variables.scss';
+
 .layoutContent {
   .projectName {
+    color: $black;
     margin-bottom: 10px;
+
+    a {
+      color: inherit;
+    }
+
+    .icon {
+      margin-right: 10px;
+    }
   }
 
   .buttons {
