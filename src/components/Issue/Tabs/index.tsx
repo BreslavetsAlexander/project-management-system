@@ -9,7 +9,11 @@ export const Tabs: React.FC<IProps> = (props) => {
   return (
     <TabsAntd className={props.className} defaultActiveKey='Details'>
       <TabsAntd.TabPane tab='Details' key='Details'>
-        <DetailsTab priority={props.priority} description={props.description} />
+        <DetailsTab
+          priority={props.issue.priority}
+          description={props.issue.description}
+          originalEstimate={props.issue.originalEstimate}
+        />
       </TabsAntd.TabPane>
       <TabsAntd.TabPane tab={`Comments (${props.comments.length})`} key='Comments'>
         <CommentsTab

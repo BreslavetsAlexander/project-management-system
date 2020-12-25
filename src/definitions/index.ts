@@ -19,9 +19,14 @@ export interface IIssue {
   description: string;
   status: string;
   priority: string;
-  currentEmployeeId: number;
   currentProjectId: number;
-  authorId: number;
+  author: Pick<IEmployee, 'name' | 'id'>;
+  assignee: Pick<IEmployee, 'name' | 'id'>;
+  originalEstimate: {
+    d: number;
+    h: number;
+    m: number;
+  };
 }
 
 export interface IProject {

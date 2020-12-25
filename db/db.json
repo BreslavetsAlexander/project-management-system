@@ -7,18 +7,7 @@
       "currentProjectId": 1
     }
   ],
-  "issues": [
-    {
-      "id": 1,
-      "title": "Issue-123",
-      "description": "Dolor dolor magna",
-      "currentEmployeeId": 1,
-      "currentProjectId": 1,
-      "authorId": 1,
-      "status": "In Progress",
-      "priority": "Low"
-    }
-  ],
+  "issues": [],
   "projects": [
     {
       "title": "Sint amet 1",

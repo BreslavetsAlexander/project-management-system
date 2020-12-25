@@ -7,9 +7,9 @@ import { withLoader } from '../../components/hoc';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IssueModal } from '../../components/IssueModal';
 import { IProps as IValues } from '../../components/ProjectModal/types';
-import { IProps as IIssueProps } from '../../components/IssueModal/types';
 import { ROUTES } from '../../constants/routes';
 import { ISSUES } from '../../constants/issues';
+import { IIssue } from '../../definitions';
 import {
   ProjectsRepository,
   IssuesRepository,
@@ -39,7 +39,7 @@ class _Board extends React.Component<IProps, IState> {
         const projectEmployees = employees.map((employee) => {
           return {
             ...employee,
-            issues: issuesList.filter((issue) => issue.currentEmployeeId === employee.id),
+            issues: issuesList.filter((issue) => issue.assignee.id === employee.id),
           };
         });
 
@@ -80,15 +80,19 @@ class _Board extends React.Component<IProps, IState> {
     });
   };
 
-  onCreate = (values: IIssueProps['values']) => {
+  onCreate = (values: Pick<IIssue, 'title' | 'description' | 'priority' | 'originalEstimate'>) => {
     IssuesRepository.create({
-      title: values.title,
-      description: values.description,
-      currentEmployeeId: 1,
+      ...values,
       currentProjectId: this.state.project?.id,
-      authorId: 1,
       status: ISSUES.STATUSES.TO_DO,
-      priority: values.priority,
+      assignee: {
+        id: 1,
+        name: 'Vang Moss',
+      },
+      author: {
+        id: 1,
+        name: 'Vang Moss',
+      },
     }).then((issue) => {
       this.setIssueModalVisible(false);
       this.props.history.push(ROUTES.ISSUES.DETAIL.ROUTE(issue.id));
@@ -157,6 +161,11 @@ class _Board extends React.Component<IProps, IState> {
             title: '',
             description: '',
             priority: ISSUES.PRIORITIES.LOW.name,
+            originalEstimate: {
+              d: 0,
+              h: 0,
+              m: 10,
+            },
           }}
           onSubmit={this.onCreate}
         />

@@ -2,8 +2,7 @@ import { IIssue, IComment, IWorkLog } from '../../../definitions';
 
 export interface IProps {
   className: string;
-  priority: IIssue['priority'];
-  description: IIssue['description'];
+  issue: IIssue;
   comments: IComment[];
   addComment: (text: IComment['text']) => void;
   editComment: (id: IComment['id'], text: IComment['text']) => void;

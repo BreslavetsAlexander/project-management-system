@@ -1,4 +1,4 @@
-export const INPUTS = {
+export const INPUT_NAMES = {
   TITLE: {
     label: 'Title',
     name: 'title',
@@ -10,5 +10,19 @@ export const INPUTS = {
   PRIORITY: {
     label: 'Priority',
     name: 'priority',
+  },
+  ORIGINAL_ESTIMATE: {
+    DAYS: {
+      label: 'Days',
+      name: 'd',
+    },
+    HOURS: {
+      label: 'Hours',
+      name: 'h',
+    },
+    MINUTES: {
+      label: 'Minutes',
+      name: 'm',
+    },
   },
 };

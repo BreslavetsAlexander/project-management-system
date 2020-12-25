@@ -6,7 +6,7 @@
   }
 
   .buttons {
-    margin: 0;
+    margin: 20px 0 0;
 
     div[class*='ant-form-item-control'] {
       flex-direction: row;
@@ -15,6 +15,31 @@
 
     .cancel {
       margin-right: 15px;
+    }
+  }
+}
+
+form.form {
+  .originalEstimate .selects {
+    display: flex;
+    justify-content: space-between;
+
+    div[class*='ant-form-item'] {
+      width: 95%;
+      margin: 0;
+    }
+
+    div[class*='ant-form-item-label'] label {
+      font-size: 12px;
+    }
+  }
+
+  div[class*='ant-form-item-label'] {
+    label[class*='ant-form-item-required'] {
+      &::before {
+        content: '';
+        margin: 0;
+      }
     }
   }
 }

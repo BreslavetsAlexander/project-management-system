@@ -1,19 +1,16 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
-import { Typography, Button, Form } from 'antd';
+import { Typography, Button } from 'antd';
 import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { withLoader } from './../../components/hoc';
-import { FormSelect } from './../../components/FormSelect';
-import { IssueStatus } from './../../components/Issue/Status';
-import { Tabs } from './../../components/Issue/Tabs';
+import { IssueStatus, IssuePeople, Tabs, LogWorkModal } from './../../components/Issue';
 import { IssueModal } from './../../components/IssueModal';
-import { LogWorkModal } from './../../components/Issue/LogWorkModal';
 import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
 import { ROUTES } from './../../constants/routes';
-import { IComment, IWorkLog } from './../../definitions';
+import { IIssue, IEmployee, IComment, IWorkLog } from './../../definitions';
 import {
   IssuesRepository,
   EmployeesRepository,
@@ -22,7 +19,7 @@ import {
   CommentsRepository,
 } from './../../services/repositories';
 import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
-import { IProps, IState, IFormEditValues, IFormLogWorkValues } from './types';
+import { IProps, IState, IFormLogWorkValues } from './types';
 import styles from './styles.module.scss';
 
 class _Issue extends React.Component<IProps, IState> {
@@ -30,7 +27,7 @@ class _Issue extends React.Component<IProps, IState> {
     issue: null,
     comments: [],
     worklogs: [],
-    employees: null,
+    employees: [],
     editVisible: false,
     logWorkVisible: false,
   };
@@ -87,63 +84,22 @@ class _Issue extends React.Component<IProps, IState> {
     this.updateStatus(TRANSFORM_STATUS[this.state.issue.status]);
   };
 
-  onSelect = (changedValues: { currentEmployeeId: number }) => {
-    IssuesRepository.update(this.state.issue?.id!, {
-      currentEmployeeId: changedValues.currentEmployeeId,
-    }).then((res) => console.log(res));
+  onChangeStep = (current: number) => this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
+
+  onChangeAssignee = (assignee: Pick<IEmployee, 'id' | 'name'>) => {
+    if (!this.state.issue) {
+      return;
+    }
+
+    this.props.fetching(IssuesRepository.update(this.state.issue.id, { assignee }));
   };
-
-  onChangeStep = (current: number) => {
-    this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
-  };
-
-  renderSelect() {
-    const selectOptions = this.state.employees?.map((item) => {
-      return {
-        title: item.name,
-        value: item.id,
-      };
-    });
-
-    const assignee = this.state.employees?.find(
-      (item) => item.id === this.state.issue?.currentEmployeeId,
-    );
-
-    return (
-      <Form
-        className={styles.form}
-        initialValues={{ currentEmployeeId: assignee?.id }}
-        onValuesChange={this.onSelect}>
-        <FormSelect name='currentEmployeeId' options={selectOptions || []} />
-      </Form>
-    );
-  }
-
-  renderPeople() {
-    const author = this.state.employees?.find((item) => item.id === this.state.issue?.authorId);
-
-    return (
-      <div className={styles.people}>
-        <Typography.Title level={3}>People</Typography.Title>
-        <div className={styles.assignee}>
-          <span>Assignee:</span>
-          {this.renderSelect()}
-        </div>
-        <div className={styles.author}>Author: {author?.name}</div>
-      </div>
-    );
-  }
 
   setEditVisible = (editVisible: boolean) => this.setState({ editVisible });
 
   setLogWorkVisible = (logWorkVisible: boolean) => this.setState({ logWorkVisible });
 
-  onEdit = (values: IFormEditValues) => {
-    const issuePromise = IssuesRepository.update(this.state.issue?.id!, {
-      title: values.title,
-      description: values.description,
-      priority: values.priority,
-    });
+  onEdit = (values: Pick<IIssue, 'title' | 'description' | 'priority' | 'originalEstimate'>) => {
+    const issuePromise = IssuesRepository.update(this.state.issue?.id!, values);
 
     const activityPromise = ActivityRepository.create({
       type: 'issue',
@@ -338,11 +294,15 @@ class _Issue extends React.Component<IProps, IState> {
           <Button onClick={() => this.setLogWorkVisible(true)}>Log Work</Button>
         </div>
         <IssueStatus issueStatus={this.state.issue.status} onChange={this.onChangeStep} />
-        {this.renderPeople()}
+        <IssuePeople
+          assignee={this.state.issue.assignee}
+          author={this.state.issue.author}
+          employees={this.state.employees}
+          onChangeAssignee={this.onChangeAssignee}
+        />
         <Tabs
           className={styles.tabs}
-          priority={this.state.issue.priority}
-          description={this.state.issue.description}
+          issue={this.state.issue}
           comments={this.state.comments}
           addComment={this.addComment}
           editComment={this.editComment}
@@ -359,6 +319,7 @@ class _Issue extends React.Component<IProps, IState> {
             title: this.state.issue.title,
             description: this.state.issue.description,
             priority: this.state.issue.priority,
+            originalEstimate: this.state.issue.originalEstimate,
           }}
           onSubmit={this.onEdit}
         />

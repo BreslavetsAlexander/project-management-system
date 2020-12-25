@@ -20,29 +20,6 @@
     }
   }
 
-  .people {
-    margin-top: 20px;
-    font-size: 16px;
-
-    .assignee {
-      display: flex;
-      align-items: center;
-
-      .form {
-        width: 200px;
-        margin-left: 15px;
-
-        div[class*='ant-form-item'] {
-          margin: 0;
-        }
-      }
-    }
-
-    .author {
-      margin-top: 10px;
-    }
-  }
-
   .tabs {
     margin-top: 20px;
   }
