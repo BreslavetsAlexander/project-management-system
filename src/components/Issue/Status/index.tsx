@@ -11,7 +11,7 @@ export const IssueStatus: React.FC<IProps> = (props) => {
   return (
     <div className={styles.status}>
       <Typography.Title level={3}>Status</Typography.Title>
-      <Steps current={current} className={styles.steps} onChange={props.onChange}>
+      <Steps current={current} onChange={props.onChange}>
         {statuses.map((status) => (
           <Steps.Step key={status} title={status} />
         ))}

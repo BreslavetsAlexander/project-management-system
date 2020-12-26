@@ -1,11 +1,16 @@
 @import '../../../../assets/variables.scss';
 
+.remainingEstimateProgress {
+  div[class*='ant-progress-bg'] {
+    margin-left: auto;
+  }
+}
+
 .list {
-  div[class*='ant-list-footer'] {
-    margin: 10px 0 0;
+  div[class*='ant-list-header'] {
+    margin: 0;
     padding: 0;
-    font-size: 18px;
-    text-align: right;
+    border: 0;
   }
 }
 

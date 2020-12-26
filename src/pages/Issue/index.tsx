@@ -19,7 +19,7 @@ import {
   CommentsRepository,
 } from './../../services/repositories';
 import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
-import { IProps, IState, IFormLogWorkValues } from './types';
+import { IProps, IState } from './types';
 import styles from './styles.module.scss';
 
 class _Issue extends React.Component<IProps, IState> {
@@ -121,14 +121,11 @@ class _Issue extends React.Component<IProps, IState> {
     });
   };
 
-  onLogWork = (values: IFormLogWorkValues) => {
-    const date = values.date.format(DATES_FORMATS.DAY_MONTH_YEAR);
-    const time = values.time.format(DATES_FORMATS.HOURS_MINUTES);
-
+  onLogWork = (values: Pick<IWorkLog, 'date' | 'time'>) => {
     const activityPromise = ActivityRepository.create({
       type: 'issue',
       text: ACTIVITY.ISSUES.LOGGED_TIME,
-      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
+      date: moment().format(DATES_FORMATS.FULL_FORMAT),
       entity: {
         id: this.state.issue?.id!,
         name: this.state.issue?.title!,
@@ -140,8 +137,7 @@ class _Issue extends React.Component<IProps, IState> {
     });
 
     const workLogPromise = WorkLogsRepository.create({
-      date,
-      time,
+      ...values,
       issueId: this.state.issue?.id,
       employee: {
         id: 1,

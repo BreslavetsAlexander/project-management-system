@@ -1,3 +1,3 @@
 import { IIssue } from '../../../../definitions';
 
-export type IProps = Pick<IIssue, 'priority' | 'description' | 'originalEstimate'>;
+export type IProps = Pick<IIssue, 'priority' | 'description'>;

@@ -3,8 +3,9 @@ import moment from 'moment';
 import { Form, Modal, Button } from 'antd';
 import { FormDatePicker } from '../../FormDatePicker';
 import { FormTimePicker } from '../../FormTimePicker';
+import { DATES_FORMATS } from '../../../constants/datesFormats';
 import { INPUTS } from './constants';
-import { IProps } from './types';
+import { IProps, IFormValues } from './types';
 import styles from './styles.module.scss';
 
 export class LogWorkModal extends React.Component<IProps> {
@@ -17,9 +18,23 @@ export class LogWorkModal extends React.Component<IProps> {
     };
   }
 
+  onSubmit = (values: IFormValues) => {
+    this.props.onSubmit({
+      date: values.date.format(DATES_FORMATS.DAY_MONTH_YEAR),
+      time: {
+        d: 0,
+        h: values.time.get('hours'),
+        m: values.time.get('minutes'),
+      },
+    });
+  };
+
   getForm() {
     return (
-      <Form layout='inline' initialValues={this.getInitialValues()} onFinish={this.props.onSubmit}>
+      <Form<IFormValues>
+        layout='inline'
+        initialValues={this.getInitialValues()}
+        onFinish={this.onSubmit}>
         <div className={styles.pickersWrap}>
           <FormDatePicker
             className={styles.formDatePicker}

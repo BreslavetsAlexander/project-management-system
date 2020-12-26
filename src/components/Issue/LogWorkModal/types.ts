@@ -1,7 +1,13 @@
-import { IFormLogWorkValues } from '../../../pages/Issue/types';
+import { Moment } from 'moment';
+import { IWorkLog } from '../../../definitions';
 
 export interface IProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  onSubmit: (values: IFormLogWorkValues) => void;
+  onSubmit: (values: Pick<IWorkLog, 'date' | 'time'>) => void;
+}
+
+export interface IFormValues {
+  date: Moment;
+  time: Moment;
 }

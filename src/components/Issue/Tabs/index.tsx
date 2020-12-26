@@ -9,11 +9,7 @@ export const Tabs: React.FC<IProps> = (props) => {
   return (
     <TabsAntd className={props.className} defaultActiveKey='Details'>
       <TabsAntd.TabPane tab='Details' key='Details'>
-        <DetailsTab
-          priority={props.issue.priority}
-          description={props.issue.description}
-          originalEstimate={props.issue.originalEstimate}
-        />
+        <DetailsTab priority={props.issue.priority} description={props.issue.description} />
       </TabsAntd.TabPane>
       <TabsAntd.TabPane tab={`Comments (${props.comments.length})`} key='Comments'>
         <CommentsTab
@@ -24,7 +20,11 @@ export const Tabs: React.FC<IProps> = (props) => {
         />
       </TabsAntd.TabPane>
       <TabsAntd.TabPane tab={`Worklogs (${props.worklogs.length})`} key='Worklogs'>
-        <Worklogs worklogs={props.worklogs} deleteWorkLog={props.deleteWorkLog} />
+        <Worklogs
+          worklogs={props.worklogs}
+          deleteWorkLog={props.deleteWorkLog}
+          originalEstimate={props.issue.originalEstimate}
+        />
       </TabsAntd.TabPane>
     </TabsAntd>
   );

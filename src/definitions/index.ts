@@ -8,7 +8,7 @@ export interface IEmployee {
 export interface IWorkLog {
   id: number;
   date: string;
-  time: string;
+  time: IIssue['originalEstimate'];
   issueId: number;
   employee: Pick<IEmployee, 'name' | 'id'>;
 }
