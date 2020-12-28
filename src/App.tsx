@@ -11,10 +11,11 @@ import { Profile } from './pages/Profile';
 import { Login } from './pages/Login';
 import { Registration } from './pages/Registration';
 import { NotFound } from './pages/NotFound';
+import { EmployeeContextProvider } from './context';
 
 export const App: React.FC = () => {
   return (
-    <>
+    <EmployeeContextProvider>
       <Menu />
       <LayoutContent>
         <Switch>
@@ -28,6 +29,6 @@ export const App: React.FC = () => {
           <Route path={ROUTES.NOT_FOUND} component={NotFound} />
         </Switch>
       </LayoutContent>
-    </>
+    </EmployeeContextProvider>
   );
 };

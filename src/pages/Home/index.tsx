@@ -5,16 +5,24 @@ import { HeatMapOutlined, UserOutlined } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
 import { IssuesRepository, ActivityRepository } from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
+import { EmployeeContext } from './../../context';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
 class _Home extends React.Component<IWithLoaderProps, IState> {
+  static contextType = EmployeeContext;
+  context!: React.ContextType<typeof EmployeeContext>;
+
   state: IState = {
     issues: [],
     activity: [],
   };
 
   componentDidMount() {
+    if (!this.context.employee) {
+      return;
+    }
+
     const issuesPromise = IssuesRepository.getAll();
     const activityPromise = ActivityRepository.getAll();
     this.props
@@ -33,7 +41,7 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
         />
         <p className={styles.text}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati nemo corporis, animi
-          sit architecto molestiae.
+          sit architecto molestiae
         </p>
       </div>
     );
@@ -51,56 +59,66 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
   }
 
   getAssignedToMe() {
+    const list = (
+      <List
+        size='large'
+        dataSource={this.state.issues}
+        renderItem={(item) => (
+          <List.Item className={styles.listItem}>
+            <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
+            <div>{item.status}</div>
+          </List.Item>
+        )}
+      />
+    );
+
+    const content = this.context.employee ? list : this.getNotAuthorizedBlock();
+
     return (
       <div className={styles.assignedToMe}>
         <div className={styles.sectionTitle}>Assigned to Me</div>
-        {/* {this.getNotAuthorizedBlock()} */}
-        <List
-          size='large'
-          dataSource={this.state.issues}
-          renderItem={(item) => (
-            <List.Item className={styles.listItem}>
-              <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
-              <div>{item.status}</div>
-            </List.Item>
-          )}
-        />
+        {content}
       </div>
     );
   }
 
   getActivityStream() {
+    const list = (
+      <List
+        className={styles.list}
+        itemLayout='horizontal'
+        dataSource={this.state.activity.reverse()}
+        renderItem={(item) => {
+          const issueRoute = ROUTES.ISSUES.DETAIL.ROUTE(item.entity.id);
+          const projectRoute = ROUTES.PROJECTS.DETAIL.ROUTE(item.entity.id);
+          const to = item.type === 'issue' ? issueRoute : projectRoute;
+          const link = <Link to={to}>{item.entity.name}</Link>;
+          const title = (
+            <p>
+              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.type} `}
+              {link}
+            </p>
+          );
+
+          return (
+            <List.Item className={styles.listItem}>
+              <List.Item.Meta
+                avatar={<UserOutlined className={styles.userIcon} />}
+                title={title}
+                description={item.date}
+              />
+            </List.Item>
+          );
+        }}
+      />
+    );
+
+    const content = this.context.employee ? list : this.getNotAuthorizedBlock();
+
     return (
       <div className={styles.activityStream}>
         <div className={styles.sectionTitle}>Activity Stream</div>
-        {/* {this.getNotAuthorizedBlock()} */}
-        <List
-          className={styles.list}
-          itemLayout='horizontal'
-          dataSource={this.state.activity.reverse()}
-          renderItem={(item) => {
-            const issueRoute = ROUTES.ISSUES.DETAIL.ROUTE(item.entity.id);
-            const projectRoute = ROUTES.PROJECTS.DETAIL.ROUTE(item.entity.id);
-            const to = item.type === 'issue' ? issueRoute : projectRoute;
-            const link = <Link to={to}>{item.entity.name}</Link>;
-            const title = (
-              <p>
-                {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.type} `}
-                {link}
-              </p>
-            );
-
-            return (
-              <List.Item className={styles.listItem}>
-                <List.Item.Meta
-                  avatar={<UserOutlined className={styles.userIcon} />}
-                  title={title}
-                  description={item.date}
-                />
-              </List.Item>
-            );
-          }}
-        />
+        {content}
       </div>
     );
   }

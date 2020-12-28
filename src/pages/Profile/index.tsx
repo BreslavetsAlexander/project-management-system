@@ -3,9 +3,10 @@ import { Tabs, Collapse } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AccordionContent } from './../../components/Board/AccordionContent';
 import { ProfileForm } from './../../components/ProfileForm';
+import { withAuthorization } from './../../components/hoc';
 import styles from './styles.module.scss';
 
-export class Profile extends React.Component<{}, {}> {
+class _Profile extends React.Component {
   render() {
     return (
       <div className={styles.profile}>
@@ -47,3 +48,5 @@ export class Profile extends React.Component<{}, {}> {
     );
   }
 }
+
+export const Profile = withAuthorization(_Profile);
