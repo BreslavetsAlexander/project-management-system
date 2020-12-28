@@ -2,18 +2,18 @@
 
 .home {
   .sectionTitle {
-    font-size: 20px;
-    color: $white;
-    background-color: $darkBlue;
     padding: 10px;
+    background-color: $darkBlue;
+    color: $white;
+    font-size: 20px;
   }
 
   .introduction {
     border: 1px solid $darkBlue;
 
     .result {
+      margin: 20px 0 0;
       padding: 0;
-      margin: 20px 0 5px;
 
       div[class*='ant-result-icon'] {
         margin: 0;
@@ -25,8 +25,8 @@
     }
 
     .text {
-      font-size: 18px;
       margin: 0 10px 10px;
+      font-size: 18px;
     }
   }
 
@@ -35,9 +35,9 @@
 
     .listItem {
       &[class*='ant-list-item'] {
-        font-size: 16px;
-        padding: 10px;
         border-color: $darkBlue;
+        padding: 10px;
+        font-size: 16px;
       }
     }
   }
@@ -46,13 +46,13 @@
     .list {
       .listItem {
         &[class*='ant-list-item'] {
-          padding: 10px;
           border-color: $darkBlue;
+          padding: 10px;
         }
 
         .userIcon {
-          font-size: 60px;
           color: $darkBlue;
+          font-size: 60px;
         }
 
         div[class*='ant-list-item-meta-description'] {

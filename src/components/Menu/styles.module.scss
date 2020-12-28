@@ -12,8 +12,8 @@
     text-align: center;
 
     .logo {
-      font-size: 65px;
       color: $white;
+      font-size: 65px;
     }
   }
 
@@ -25,10 +25,10 @@
 
   .menu {
     li.menuItem {
-      font-size: 16px;
-      color: $white;
       margin: 0;
       padding-right: 0;
+      color: $white;
+      font-size: 16px;
 
       a {
         color: inherit;

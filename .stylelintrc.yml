@@ -1,0 +1,304 @@
+extends: stylelint-config-recommended-scss
+plugins:
+  - stylelint-scss
+  - stylelint-order
+rules:
+  shorthand-property-no-redundant-values: true
+  declaration-block-no-redundant-longhand-properties: true
+  selector-pseudo-class-no-unknown:
+    - true
+    - ignorePseudoClasses:
+        - global
+
+  # code styles
+
+  # everything is lower case
+  function-name-case: lower
+  property-case: lower
+  selector-pseudo-class-case: lower
+  selector-pseudo-element-case: lower
+  selector-type-case: lower
+  media-feature-name-case: lower
+  at-rule-name-case: lower
+  no-eol-whitespace: true
+  no-missing-end-of-source-newline: true
+  font-family-name-quotes: always-where-recommended
+  declaration-block-single-line-max-declarations: 3
+  function-parentheses-space-inside: never-single-line
+  function-comma-space-before: never
+  function-comma-space-after: always-single-line
+  function-comma-newline-before: never-multi-line
+  function-comma-newline-after: always-multi-line
+  function-whitespace-after: always
+  function-url-quotes: always
+  number-leading-zero: always
+  string-quotes: single
+  indentation: 2
+  max-empty-lines: 2
+  length-zero-no-unit:
+    - true
+    - ignore:
+        - custom-properties
+  declaration-colon-space-after: always
+  declaration-colon-space-before: never
+  declaration-bang-space-before: always
+  declaration-block-semicolon-space-before: never
+  declaration-block-semicolon-space-after: always-single-line
+  declaration-block-trailing-semicolon: always
+  # require spaces around blocks
+  block-opening-brace-space-before: always
+  block-opening-brace-space-after: always-single-line
+  block-closing-brace-space-before: always-single-line
+  block-closing-brace-space-after: null
+  # allow single line blocks, require newlines for multiline
+  block-opening-brace-newline-after: always-multi-line
+  block-closing-brace-newline-before: always-multi-line
+  # line break after every block
+  block-closing-brace-newline-after:
+    always
+    # - ignoreAtRules: [ if, else ]
+  # selectors should look like this :not([target="_blank"])
+  selector-attribute-brackets-space-inside: never
+  selector-attribute-operator-space-before: never
+  selector-attribute-operator-space-after: never
+  selector-attribute-quotes: always
+  selector-combinator-space-before: always
+  selector-combinator-space-after: always
+  selector-descendant-combinator-no-non-space: true
+  selector-pseudo-class-parentheses-space-inside: never
+  selector-pseudo-element-colon-notation: single
+  # Line breaks only after commas, allow single line blocks
+  selector-list-comma-newline-before: never-multi-line
+  selector-list-comma-newline-after: always-multi-line
+  selector-list-comma-space-before: never
+  selector-list-comma-space-after: always-single-line
+  rule-empty-line-before:
+    - always-multi-line
+    - except: [first-nested]
+      ignore: [after-comment]
+  media-feature-colon-space-before: never
+  media-feature-colon-space-after: always
+  media-feature-parentheses-space-inside: never
+  # note: inconsistent with selector-attribute-operator-space-*, consider changing to never
+  media-feature-range-operator-space-before: always
+  media-feature-range-operator-space-after: always
+  media-query-list-comma-newline-before: never-multi-line
+  media-query-list-comma-space-before: never
+  media-query-list-comma-space-after: always
+  at-rule-empty-line-before:
+    - always
+    - except:
+        - first-nested
+        - blockless-after-same-name-blockless
+  at-rule-name-space-after: always
+  at-rule-semicolon-newline-after: always
+  at-rule-semicolon-space-before: never
+  comment-whitespace-inside: always
+  no-descending-specificity: null
+
+  order/properties-order:
+    # Basically, this. https://github.com/necolas/idiomatic-css#declaration-order
+    # but slightly different. This rule doesn't allow wildcards because ambiguity,
+    # so this will be a long list, please keep a last thing in file
+
+    - content
+
+    # Positioning
+    - position
+    - order: flexible
+      properties:
+        - top
+        - right
+        - bottom
+        - left
+        - z-index
+    - float
+    - clear
+
+    # Display & Box Model
+    - display
+    - flex
+    - flex-grow
+    - flex-shrink
+    - flex-basis
+    - order: flexible
+      properties:
+        - flex-direction
+        - flex-flow
+    - flex-wrap
+    - order: flexible
+      properties:
+        - align-content
+        - align-items
+        - align-self
+        - justify-content
+    - overflow
+    - overflow-x
+    - overflow-y
+    - box-sizing
+    - width
+    - min-width
+    - max-width
+    - height
+    - min-height
+    - max-height
+    - border
+    - order: flexible
+      properties:
+        - border-bottom
+        - border-bottom-color
+        - border-bottom-styles
+        - border-bottom-width
+        - border-collapse
+        - border-color
+        - border-image
+        - border-image-outset
+        - border-image-repeat
+        - border-image-slice
+        - border-image-source
+        - border-image-width
+        - border-left
+        - border-left-color
+        - border-left-width
+        - border-right
+        - border-right-color
+        - border-styles
+        - border-top-styles
+        - border-left-styles
+        - border-right-styles
+        - border-right-width
+        - border-spacing
+        - border-top
+        - border-top-color
+        - border-top-width
+        - border-width
+    - border-radius
+    - order: flexible
+      properties:
+        - border-top-right-radius
+        - border-bottom-right-radius
+        - border-bottom-left-radius
+        - border-top-left-radius
+    - margin
+    - order: flexible
+      properties:
+        - margin-top
+        - margin-right
+        - margin-bottom
+        - margin-left
+    - padding
+    - order: flexible
+      properties:
+        - padding-top
+        - padding-right
+        - padding-left
+        - padding-bottom
+
+    # Other
+    - background
+    - background-attachment
+    - background-origin
+    - background-clip
+    - background-color
+    - background-image
+    - background-position
+    - background-repeat
+    - background-size
+    - background-blend-mode
+    - color
+    - font
+    - font-size
+    - font-family
+    - font-styles
+    - order: flexible
+      properties:
+        - font-size-adjust
+        - font-feature-settings
+        - font-language-override
+        - font-variant
+        - font-synthesis
+        - font-kerning
+        - font-stretch
+    - font-weight
+    - line-height
+    - letter-spacing
+    - order: flexible
+      properties:
+        - text-align
+        - text-align-last
+        - text-combine-upright
+        - text-decoration
+        - text-decoration-color
+        - text-decoration-line
+        - text-decoration-styles
+        - text-emphasis
+        - text-emphasis-color
+        - text-emphasis-position
+        - text-emphasis-styles
+        - text-indent
+        - text-justify
+        - text-orientation
+        - text-overflow
+        - text-rendering
+        - text-shadow
+        - text-transform
+        - text-underline-position
+    - order: flexible
+      properties:
+        - white-space
+        - word-wrap
+        - word-break
+        - word-spacing
+    - line-break
+    - outline
+    - outline-color
+    - outline-styles
+    - outline-width
+    - outline-offset
+
+    # Decoration. Changes appearance, doesn't change position
+    - border-radius
+    - order: flexible
+      properties:
+        - border-top-right-radius
+        - border-bottom-right-radius
+        - border-bottom-left-radius
+        - border-top-left-radius
+    - order: flexible
+      properties:
+        - filter
+        - opacity
+        - box-shadow
+        - text-shadow
+    - cursor
+    - pointer-events
+    - order: flexible
+      properties:
+        - clip
+        - clip-path
+
+    # Fancy CSS3 stuff. Things that change geometry or have something to do with 3D
+    - transform
+    - order: flexible
+      properties:
+        - transform-box
+        - transform-origin
+        - transform-styles
+    - perspective
+    - perspective-origin
+    - backface-visibility
+    - transition
+    - transition-property
+    - transition-duration
+    - transition-timing-function
+    - transition-delay
+    - animation
+    - animation-name
+    - animation-duration
+    - animation-timing-function
+    - animation-delay
+    - animation-iteration-count
+    - animation-direction
+    - animation-fill-mode
+    - animation-play-state
+    # Note: Left out properties could be placed anywhere

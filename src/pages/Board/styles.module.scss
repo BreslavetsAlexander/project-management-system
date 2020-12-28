@@ -12,18 +12,18 @@
   }
 
   .collapse {
-    background-color: transparent;
     margin-top: 20px;
+    background-color: transparent;
 
     .panel {
-      margin-bottom: 20px;
       border: 1px solid rgba($black, 0.2);
+      margin-bottom: 20px;
 
       .header {
         .name {
+          margin-right: 5px;
           font-size: 18px;
           font-weight: 500;
-          margin-right: 5px;
         }
 
         .count {

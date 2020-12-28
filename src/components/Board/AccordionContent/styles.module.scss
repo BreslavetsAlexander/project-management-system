@@ -5,18 +5,18 @@
   justify-content: space-between;
 
   .section {
-    background-color: rgba($black, 0.1);
     flex-basis: 24%;
     padding: 5px;
+    background-color: rgba($black, 0.1);
 
     .title {
-      font-size: 20px;
       margin-bottom: 20px;
+      font-size: 20px;
 
       .count {
         margin-left: 5px;
-        font-size: 15px;
         color: #686868;
+        font-size: 15px;
       }
     }
 
@@ -24,12 +24,12 @@
       .issue {
         display: flex;
         align-items: center;
-        margin-top: 15px;
-        background: #ffffff;
-        font-size: 14px;
-        padding: 3px;
         border-left-width: 5px;
         border-left-style: solid;
+        margin-top: 15px;
+        padding: 3px;
+        background-color: $white;
+        font-size: 14px;
 
         .icon {
           margin-right: 15px;

@@ -1,7 +1,7 @@
 .formItem {
   div[class*='ant-form-item-label'] {
     label[class*='ant-form-item-required'] {
-      &::before {
+      &:before {
         content: '';
         margin: 0;
       }

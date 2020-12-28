@@ -1,12 +1,5 @@
 {
-  "employees": [
-    {
-      "id": 1,
-      "name": "Vang Moss",
-      "email": "vangmoss@cosmetex.com",
-      "currentProjectId": 1
-    }
-  ],
+  "employees": [],
   "issues": [],
   "projects": [
     {
