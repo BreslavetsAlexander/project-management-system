@@ -52,6 +52,8 @@ module.exports = {
             options: {
               modules: true,
               namedExport: true,
+              camelCase: true,
+              localIdentName: 'styles_[local]_[hash:base64]',
             },
           },
           'sass-loader',

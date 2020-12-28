@@ -1,8 +1,8 @@
 import React from 'react';
-import { Tabs, Form, Button, Collapse } from 'antd';
+import { Tabs, Collapse } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AccordionContent } from './../../components/Board/AccordionContent';
-import { FormInput } from './../../components/FormInput';
+import { ProfileForm } from './../../components/ProfileForm';
 import styles from './styles.module.scss';
 
 export class Profile extends React.Component<{}, {}> {
@@ -16,24 +16,28 @@ export class Profile extends React.Component<{}, {}> {
             <div className={styles.username}>@username</div>
           </div>
         </div>
-        <Tabs defaultActiveKey='1'>
-          <Tabs.TabPane tab='Information' key='1'>
-            <Form layout='vertical' style={{ width: '30%' }}>
-              <FormInput label='First name' name='name' />
-              <FormInput label='Last name' name='name' />
-              <FormInput label='username' name='name' />
-              <FormInput label='email' name='name' />
-              <FormInput label='password' name='name' />
-              <Form.Item>
-                <Button type='primary' htmlType='submit'>
-                  Save
-                </Button>
-              </Form.Item>
-            </Form>
+        <Tabs defaultActiveKey='Information'>
+          <Tabs.TabPane tab='Information' key='Information'>
+            <ProfileForm
+              employee={{
+                firstName: 'Vang',
+                lastName: 'Moss',
+                email: 'vangmoss@cosmetex.com',
+                id: 1,
+                password: '1234',
+                username: 'vangmoss',
+                currentProjectId: 1,
+              }}
+            />
           </Tabs.TabPane>
-          <Tabs.TabPane tab='My issues' key='2'>
+          <Tabs.TabPane tab='Issues' key='Issues'>
             <Collapse defaultActiveKey={1}>
-              <Collapse.Panel key={1} header='Project name' showArrow={false} disabled>
+              <Collapse.Panel
+                className={styles.collapsePanel}
+                key={1}
+                header='Project name'
+                showArrow={false}
+                disabled>
                 <AccordionContent issues={[]} />
               </Collapse.Panel>
             </Collapse>

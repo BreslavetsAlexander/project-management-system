@@ -32,7 +32,11 @@ export class CommentsTab extends React.Component<IProps, IState> {
               key={item.id}
               className={styles.comment}
               avatar={<UserOutlined className={styles.avatar} />}
-              author={<a className={styles.author}>{item.author.name}</a>}
+              author={
+                <a className={styles.author}>
+                  {`${item.author.firstName} ${item.author.lastName}`}
+                </a>
+              }
               datetime={<p className={styles.datetime}>{item.date}</p>}
               content={<p className={styles.content}>{item.text}</p>}
               actions={actions}

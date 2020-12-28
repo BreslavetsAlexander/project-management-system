@@ -75,7 +75,10 @@ export class Worklogs extends React.Component<IProps> {
 
               return (
                 <List.Item className={styles.listItem} actions={actions}>
-                  <List.Item.Meta title={item.employee.name} description={item.date} />
+                  <List.Item.Meta
+                    title={`${item.employee.firstName} ${item.employee.lastName}`}
+                    description={item.date}
+                  />
                   <div>{getTimeAsString(item.time)}</div>
                 </List.Item>
               );

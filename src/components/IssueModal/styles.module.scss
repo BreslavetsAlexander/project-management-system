@@ -33,13 +33,4 @@ form.form {
       font-size: 12px;
     }
   }
-
-  div[class*='ant-form-item-label'] {
-    label[class*='ant-form-item-required'] {
-      &::before {
-        content: '';
-        margin: 0;
-      }
-    }
-  }
 }

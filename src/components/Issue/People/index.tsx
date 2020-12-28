@@ -11,14 +11,15 @@ export class IssuePeople extends React.Component<IProps> {
 
     this.props.onChangeAssignee({
       id: assignee?.id!,
-      name: assignee?.name!,
+      firstName: assignee?.firstName!,
+      lastName: assignee?.lastName!,
     });
   };
 
   getSelect() {
     const selectOptions = this.props.employees.map((item) => {
       return {
-        title: item.name,
+        title: `${item.firstName} ${item.lastName}`,
         value: item.id,
       };
     });
@@ -41,7 +42,9 @@ export class IssuePeople extends React.Component<IProps> {
           <span>Assignee:</span>
           {this.getSelect()}
         </div>
-        <div className={styles.author}>Author: {this.props.author.name}</div>
+        <div className={styles.author}>
+          Author: {`${this.props.author.firstName} ${this.props.author.lastName}`}
+        </div>
       </div>
     );
   }

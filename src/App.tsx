@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Layout } from 'antd';
 import { Menu } from './components/Menu';
 import { LayoutContent } from './components/LayoutContent';
 import { ROUTES } from './constants/routes';
@@ -15,7 +14,7 @@ import { NotFound } from './pages/NotFound';
 
 export const App: React.FC = () => {
   return (
-    <Layout className='app'>
+    <>
       <Menu />
       <LayoutContent>
         <Switch>
@@ -29,6 +28,6 @@ export const App: React.FC = () => {
           <Route path={ROUTES.NOT_FOUND} component={NotFound} />
         </Switch>
       </LayoutContent>
-    </Layout>
+    </>
   );
 };

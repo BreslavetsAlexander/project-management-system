@@ -85,7 +85,7 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
             const link = <Link to={to}>{item.entity.name}</Link>;
             const title = (
               <p>
-                {`${item.employee.name} ${item.text} ${item.type} `}
+                {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.type} `}
                 {link}
               </p>
             );

@@ -87,11 +87,13 @@ class _Board extends React.Component<IProps, IState> {
       status: ISSUES.STATUSES.TO_DO,
       assignee: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
       author: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
     }).then((issue) => {
       this.setIssueModalVisible(false);
@@ -107,7 +109,7 @@ class _Board extends React.Component<IProps, IState> {
     const collapsePanels = this.state.projectEmployees.map((item) => {
       const header = (
         <div className={styles.header}>
-          <span className={styles.name}>{item.name}</span>
+          <span className={styles.name}>{`${item.firstName} ${item.lastName}`}</span>
           <span className={styles.count}>{item.issues.length} issues</span>
         </div>
       );

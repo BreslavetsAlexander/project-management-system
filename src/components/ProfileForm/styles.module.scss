@@ -1,0 +1,13 @@
+@import '../../assets/variables.scss';
+
+.form {
+  width: 30%;
+
+  .buttons {
+    display: flex;
+
+    & > button {
+      margin-right: 16px;
+    }
+  }
+}

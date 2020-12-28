@@ -10,7 +10,7 @@ import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
 import { ROUTES } from './../../constants/routes';
-import { IIssue, IEmployee, IComment, IWorkLog } from './../../definitions';
+import { IIssue, IComment, IWorkLog } from './../../definitions';
 import {
   IssuesRepository,
   EmployeesRepository,
@@ -67,7 +67,8 @@ class _Issue extends React.Component<IProps, IState> {
       },
       employee: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
     });
 
@@ -86,7 +87,7 @@ class _Issue extends React.Component<IProps, IState> {
 
   onChangeStep = (current: number) => this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
 
-  onChangeAssignee = (assignee: Pick<IEmployee, 'id' | 'name'>) => {
+  onChangeAssignee = (assignee: IIssue['assignee']) => {
     if (!this.state.issue) {
       return;
     }
@@ -111,7 +112,8 @@ class _Issue extends React.Component<IProps, IState> {
       },
       employee: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
     });
 
@@ -132,7 +134,8 @@ class _Issue extends React.Component<IProps, IState> {
       },
       employee: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
     });
 
@@ -141,7 +144,8 @@ class _Issue extends React.Component<IProps, IState> {
       issueId: this.state.issue?.id,
       employee: {
         id: 1,
-        name: 'Vang Moss',
+        firstName: 'Vang',
+        lastName: 'Moss',
       },
     });
 
@@ -164,7 +168,8 @@ class _Issue extends React.Component<IProps, IState> {
             date,
             author: {
               id: 1,
-              name: 'Vang Moss',
+              firstName: 'Vang',
+              lastName: 'Moss',
             },
           }),
           ActivityRepository.create({
@@ -177,7 +182,8 @@ class _Issue extends React.Component<IProps, IState> {
             },
             employee: {
               id: 1,
-              name: 'Vang Moss',
+              firstName: 'Vang',
+              lastName: 'Moss',
             },
           }),
         ]),
@@ -209,7 +215,8 @@ class _Issue extends React.Component<IProps, IState> {
             },
             employee: {
               id: 1,
-              name: 'Vang Moss',
+              firstName: 'Vang',
+              lastName: 'Moss',
             },
           }),
         ]),
@@ -244,7 +251,8 @@ class _Issue extends React.Component<IProps, IState> {
             },
             employee: {
               id: 1,
-              name: 'Vang Moss',
+              firstName: 'Vang',
+              lastName: 'Moss',
             },
           }),
         ]),

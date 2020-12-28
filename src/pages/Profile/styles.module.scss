@@ -1,3 +1,5 @@
+@import '../../assets/variables.scss';
+
 .profile {
   .header {
     display: flex;
@@ -6,7 +8,7 @@
 
     .icon {
       font-size: 100px;
-      color: #003a8c;
+      color: $darkBlue;
     }
 
     .info {
@@ -19,6 +21,14 @@
           font-size: 15px;
         }
       }
+    }
+  }
+
+  .collapsePanel {
+    div[class*='ant-collapse-header'] {
+      font-size: 15px;
+      color: $black;
+      cursor: default;
     }
   }
 }

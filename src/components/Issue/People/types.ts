@@ -4,7 +4,7 @@ export interface IProps {
   employees: IEmployee[];
   author: IIssue['author'];
   assignee: IIssue['assignee'];
-  onChangeAssignee: (assignee: Pick<IEmployee, 'id' | 'name'>) => void;
+  onChangeAssignee: (assignee: IIssue['assignee']) => void;
 }
 
 export interface IFormValues {

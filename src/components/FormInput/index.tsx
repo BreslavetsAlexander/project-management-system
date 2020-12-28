@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input } from 'antd';
 import { IProps } from './types';
+import styles from './styles.module.scss';
 
 export const FormInput: React.FC<IProps> = (props) => {
   const rules = [{ required: true, message: props.message || 'Field is required' }];
@@ -9,7 +10,7 @@ export const FormInput: React.FC<IProps> = (props) => {
   const input = props.type === 'password' ? passwordInput : simpleInput;
 
   return (
-    <Form.Item label={props.label} name={props.name} rules={rules}>
+    <Form.Item className={styles.formItem} label={props.label} name={props.name} rules={rules}>
       {input}
     </Form.Item>
   );

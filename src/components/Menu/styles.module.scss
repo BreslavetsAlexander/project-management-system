@@ -1,6 +1,11 @@
 @import '../../assets/variables.scss';
 
 .sider {
+  &[class*='ant-layout-sider-has-trigger'] {
+    margin: 0;
+    padding: 0;
+  }
+
   .logoLink {
     display: block;
     margin: 20px 0;

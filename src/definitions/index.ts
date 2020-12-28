@@ -1,6 +1,9 @@
 export interface IEmployee {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
   email: string;
   currentProjectId: number;
 }
@@ -10,7 +13,7 @@ export interface IWorkLog {
   date: string;
   time: IIssue['originalEstimate'];
   issueId: number;
-  employee: Pick<IEmployee, 'name' | 'id'>;
+  employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
 }
 
 export interface IIssue {
@@ -20,8 +23,8 @@ export interface IIssue {
   status: string;
   priority: string;
   currentProjectId: number;
-  author: Pick<IEmployee, 'name' | 'id'>;
-  assignee: Pick<IEmployee, 'name' | 'id'>;
+  author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
+  assignee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   originalEstimate: {
     d: number;
     h: number;
@@ -39,7 +42,7 @@ export interface IActivity {
   id: number;
   text: string;
   date: string;
-  employee: Pick<IEmployee, 'name' | 'id'>;
+  employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   type: 'issue' | 'project';
   entity: {
     id: number;
@@ -50,6 +53,6 @@ export interface IActivity {
 export interface IComment {
   id: number;
   text: string;
-  author: Pick<IEmployee, 'name' | 'id'>;
+  author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   date: string;
 }
