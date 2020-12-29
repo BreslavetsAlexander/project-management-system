@@ -1,36 +1,8 @@
-export interface IParams {
-  [key: string]: string | number;
-}
-
-const prepareUrl = (url: string, params?: IParams) => {
-  if (!params) {
-    return url;
-  }
-
-  const questionIndex = url.indexOf('?');
-  let paramsStr = '';
-
-  if (questionIndex === -1) {
-    paramsStr += '?';
-  }
-
-  paramsStr += Object.keys(params)
-    .map((key) => {
-      if (params[key]) {
-        return `${key}=${encodeURIComponent(params[key])}`;
-      }
-
-      return null;
-    })
-    .filter((item) => item)
-    .join('&');
-
-  return url + paramsStr;
-};
+import { getUrlWithParams, IParams } from '../utils';
 
 class _HttpProvider {
   get<T>(url: string, params?: IParams): Promise<T> {
-    const newUrl = prepareUrl(url, params);
+    const newUrl = getUrlWithParams(url, params);
     return this.send(newUrl, 'GET');
   }
 

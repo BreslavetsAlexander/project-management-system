@@ -1,6 +1,7 @@
 import { API } from './../../constants/api';
 import { IComment } from './../../definitions';
-import { HttpProvider, IParams } from '../httpProvider';
+import { IParams } from './../../utils';
+import { HttpProvider } from '../httpProvider';
 
 class _CommentsRepository {
   getAll(params?: IParams) {

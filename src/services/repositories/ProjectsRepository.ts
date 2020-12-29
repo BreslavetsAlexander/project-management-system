@@ -1,6 +1,7 @@
 import { API } from './../../constants/api';
 import { IProject } from './../../definitions';
-import { HttpProvider, IParams } from '../httpProvider';
+import { IParams } from './../../utils';
+import { HttpProvider } from '../httpProvider';
 
 class _ProjectsRepository {
   getAll(params?: IParams) {

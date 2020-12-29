@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { List, Button, Card, Typography } from 'antd';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IProps as IProjectModalProps } from '../../components/ProjectModal/types';
-import { IWithLoaderProps, withLoader } from '../../components/hoc';
+import { IWithLoaderProps, withLoader, withAuthorization } from '../../components/hoc';
 import { ProjectsRepository, IssuesRepository } from '../../services/repositories';
 import { ROUTES } from '../../constants/routes';
 import { IState } from './types';
@@ -92,4 +92,4 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
   }
 }
 
-export const Projects = withLoader(_Projects);
+export const Projects = withAuthorization(withLoader(_Projects));

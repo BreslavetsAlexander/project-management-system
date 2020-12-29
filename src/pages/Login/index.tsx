@@ -1,13 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { Form, Button, Typography } from 'antd';
 import { FormInput } from '../../components/FormInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
 import { ROUTES } from '../../constants/routes';
+import { EmployeeContext } from '../../context';
 import styles from './styles.module.scss';
 
 class _Login extends React.Component<IWithLoaderProps> {
+  static contextType = EmployeeContext;
+  context!: React.ContextType<typeof EmployeeContext>;
+
   render() {
+    if (this.context.employee) {
+      return <Redirect to={ROUTES.HOME} />;
+    }
+
     return (
       <div className={styles.login}>
         <div className={styles.formWrapper}>

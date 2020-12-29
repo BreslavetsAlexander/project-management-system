@@ -1,6 +1,7 @@
 import { API } from './../../constants/api';
 import { IIssue } from './../../definitions';
-import { HttpProvider, IParams } from '../httpProvider';
+import { IParams } from './../../utils';
+import { HttpProvider } from '../httpProvider';
 
 class _IssuesRepository {
   getAll(params?: IParams) {

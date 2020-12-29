@@ -1,6 +1,7 @@
 import { API } from './../../constants/api';
 import { IActivity } from './../../definitions';
-import { HttpProvider, IParams } from '../httpProvider';
+import { IParams } from './../../utils';
+import { HttpProvider } from '../httpProvider';
 
 class _ActivityRepository {
   getAll(params?: IParams) {
