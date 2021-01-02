@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { withRouter, Redirect, Link, RouteComponentProps } from 'react-router-dom';
 import { Form, Button, Typography } from 'antd';
 import { FormInput } from '../../components/FormInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
@@ -7,17 +7,39 @@ import { INPUT_NAMES } from '../../components/ProfileForm/constants';
 import { IFormValues } from '../../components/ProfileForm/types';
 import { ROUTES } from '../../constants/routes';
 import { EmployeeContext } from '../../context';
+import { AuthService } from '../../services/Auth';
+import { EmployeesRepository } from '../../services/repositories';
 import styles from './styles.module.scss';
 
-class _Registration extends React.Component<IWithLoaderProps> {
+class _Registration extends React.Component<IWithLoaderProps & RouteComponentProps> {
   static contextType = EmployeeContext;
   context!: React.ContextType<typeof EmployeeContext>;
 
+  getEmployee = async (values: IFormValues) => {
+    const authRes = await AuthService.register({
+      email: values.email,
+      password: values.password,
+    });
+    const employee = await EmployeesRepository.update(authRes.localId, {
+      email: values.email,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      username: values.username,
+      idToken: authRes.idToken,
+    });
+
+    return {
+      ...employee,
+      id: authRes.localId,
+      currentProjectId: null,
+    };
+  };
+
   onSubmit = (values: IFormValues) => {
-    this.context.setEmployee({
-      ...values,
-      id: 123,
-      currentProjectId: 123,
+    this.props.fetching(this.getEmployee(values)).then((res) => {
+      this.context.setEmployee(res);
+      this.props.history.push(ROUTES.HOME);
     });
   };
 
@@ -61,4 +83,4 @@ class _Registration extends React.Component<IWithLoaderProps> {
   }
 }
 
-export const Registration = withLoader(_Registration);
+export const Registration = withRouter(withLoader(_Registration));

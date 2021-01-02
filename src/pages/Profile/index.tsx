@@ -1,15 +1,22 @@
 import React from 'react';
-import { Tabs, Collapse } from 'antd';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Tabs, Collapse, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AccordionContent } from './../../components/Board/AccordionContent';
 import { ProfileForm } from './../../components/ProfileForm';
 import { withAuthorization } from './../../components/hoc';
+import { ROUTES } from './../../constants/routes';
 import { EmployeeContext } from '../../context';
 import styles from './styles.module.scss';
 
-class _Profile extends React.Component {
+class _Profile extends React.Component<RouteComponentProps> {
   static contextType = EmployeeContext;
   context!: React.ContextType<typeof EmployeeContext>;
+
+  onLogOut = () => {
+    this.context.setEmployee(null);
+    this.props.history.push(ROUTES.HOME);
+  };
 
   render() {
     const employeeName = `${this.context.employee?.firstName} ${this.context.employee?.lastName}`;
@@ -40,9 +47,12 @@ class _Profile extends React.Component {
             </Collapse>
           </Tabs.TabPane>
         </Tabs>
+        <Button type='primary' danger onClick={this.onLogOut}>
+          Log Out
+        </Button>
       </div>
     );
   }
 }
 
-export const Profile = withAuthorization(_Profile);
+export const Profile = withAuthorization(withRouter(_Profile));

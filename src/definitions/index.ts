@@ -1,11 +1,12 @@
 export interface IEmployee {
-  id: number;
+  id: number | string;
+  idToken: string;
   firstName: string;
   lastName: string;
   username: string;
   password: string;
   email: string;
-  currentProjectId: number;
+  currentProjectId: number | string | null;
 }
 
 export interface IWorkLog {

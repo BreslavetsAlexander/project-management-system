@@ -6,7 +6,7 @@ class _HttpProvider {
     return this.send(newUrl, 'GET');
   }
 
-  post<T>(url: string, data: Partial<T>): Promise<T> {
+  post<TData, TRes = TData>(url: string, data: Partial<TData>): Promise<TRes> {
     return this.send(url, 'POST', data);
   }
 

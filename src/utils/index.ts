@@ -27,3 +27,5 @@ export const getUrlWithParams = (url: string, params?: IParams) => {
 
   return url + paramsStr;
 };
+
+export const getUrlWithJsonExtension = (url: string): string => `${url}.json`;
