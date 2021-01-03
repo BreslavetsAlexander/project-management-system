@@ -1,10 +1,6 @@
-import { IProject, IIssue } from '../../definitions';
-
-interface IProjectWithIssue extends IProject {
-  issues: IIssue[];
-}
+import { IProject } from '../../definitions';
 
 export interface IState {
-  projects: IProjectWithIssue[] | [];
+  projects: IProject[];
   visible: boolean;
 }

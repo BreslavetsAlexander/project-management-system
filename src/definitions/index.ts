@@ -10,20 +10,20 @@ export interface IEmployee {
 }
 
 export interface IWorkLog {
-  id: number;
+  id: number | string;
   date: string;
   time: IIssue['originalEstimate'];
-  issueId: number;
+  issueId: number | string;
   employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
 }
 
 export interface IIssue {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   status: string;
   priority: string;
-  currentProjectId: number;
+  currentProjectId: number | string;
   author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   assignee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   originalEstimate: {
@@ -34,25 +34,26 @@ export interface IIssue {
 }
 
 export interface IProject {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
+  issues: IIssue[];
 }
 
 export interface IActivity {
-  id: number;
+  id: number | string;
   text: string;
   date: string;
   employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   type: 'issue' | 'project';
   entity: {
-    id: number;
+    id: number | string;
     name: string;
   };
 }
 
 export interface IComment {
-  id: number;
+  id: number | string;
   text: string;
   author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   date: string;

@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { List, Button, Card, Typography } from 'antd';
 import { ProjectModal } from '../../components/ProjectModal';
-import { IProps as IProjectModalProps } from '../../components/ProjectModal/types';
 import { IWithLoaderProps, withLoader, withAuthorization } from '../../components/hoc';
-import { ProjectsRepository, IssuesRepository } from '../../services/repositories';
+import { ProjectsRepository } from '../../services/repositories';
 import { ROUTES } from '../../constants/routes';
+import { IProject } from '../../definitions';
+import { prepareData } from '../../utils';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
@@ -16,33 +17,30 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
   };
 
   componentDidMount() {
-    const projectsPromise = ProjectsRepository.getAll();
-    const issuesPromise = IssuesRepository.getAll();
-
-    this.props
-      .fetching(Promise.all([projectsPromise, issuesPromise]))
-      .then(([projectsList, ussuesList]) => {
-        const projects = projectsList.map((item) => {
-          return {
-            ...item,
-            issues: ussuesList.filter((issue) => issue.currentProjectId === item.id),
-          };
-        });
-
-        this.setState({ projects });
+    this.props.fetching(ProjectsRepository.getAll()).then((res) => {
+      const projects = prepareData(res).map((item) => {
+        return {
+          ...item,
+          issues: prepareData(item.issues),
+        };
       });
+
+      this.setState({ projects });
+    });
   }
 
   setVisible = (visible: boolean) => this.setState({ visible });
 
-  onSubmit = (values: IProjectModalProps['values']) => {
-    ProjectsRepository.create({
+  onSubmit = (values: Pick<IProject, 'title' | 'description'>) => {
+    const project = {
       title: values.title,
       description: values.description,
-    }).then((project) => {
+    };
+    ProjectsRepository.create(project).then((res) => {
       const projects = [...this.state.projects];
       projects.push({
         ...project,
+        id: res.name,
         issues: [],
       });
       this.setState({ projects });

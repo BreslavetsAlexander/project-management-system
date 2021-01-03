@@ -29,3 +29,16 @@ export const getUrlWithParams = (url: string, params?: IParams) => {
 };
 
 export const getUrlWithJsonExtension = (url: string): string => `${url}.json`;
+
+export const prepareData = <T>(data: T) => {
+  if (!data) {
+    return [];
+  }
+
+  return (Object.keys(data) as Array<keyof typeof data>).map((key) => {
+    return {
+      ...data[key],
+      id: key,
+    };
+  });
+};

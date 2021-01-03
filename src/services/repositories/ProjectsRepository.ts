@@ -1,27 +1,49 @@
-import { API } from './../../constants/api';
-import { IProject } from './../../definitions';
-import { IParams } from './../../utils';
+import { NEW_API } from './../../constants/api';
+import { IProject, IIssue } from './../../definitions';
+import { IParams, getUrlWithJsonExtension } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
+interface ICreateProjectResponce {
+  name: string;
+}
+
+interface IProjectsResponce {
+  [id: string]: Pick<IProject, 'title' | 'description'> & {
+    issues: {
+      [id: string]: Omit<IIssue, 'id'>;
+    };
+  };
+}
+
 class _ProjectsRepository {
-  getAll(params?: IParams) {
-    return HttpProvider.get<IProject[]>(API.PROJECTS.LIST(), params);
+  getAll() {
+    const url = getUrlWithJsonExtension(NEW_API.PROJECTS.LIST());
+
+    return HttpProvider.get<IProjectsResponce>(url);
   }
 
   getById(id: number | string, params?: IParams) {
-    return HttpProvider.get<IProject>(API.PROJECTS.DETAIL(id), params);
+    const url = getUrlWithJsonExtension(NEW_API.PROJECTS.DETAIL(id));
+
+    return HttpProvider.get<Omit<IProject, 'id'>>(url, params);
   }
 
   create(data: Partial<IProject>) {
-    return HttpProvider.post<IProject>(API.PROJECTS.LIST(), data);
+    const url = getUrlWithJsonExtension(NEW_API.PROJECTS.LIST());
+
+    return HttpProvider.post<IProject, ICreateProjectResponce>(url, data);
   }
 
   update(id: number | string, data: Partial<IProject>) {
-    return HttpProvider.patch<IProject>(API.PROJECTS.DETAIL(id), data);
+    const url = getUrlWithJsonExtension(NEW_API.PROJECTS.DETAIL(id));
+
+    return HttpProvider.patch<Omit<IProject, 'id'>>(url, data);
   }
 
   delete(id: number | string) {
-    return HttpProvider.delete(API.PROJECTS.DETAIL(id));
+    const url = getUrlWithJsonExtension(NEW_API.PROJECTS.DETAIL(id));
+
+    return HttpProvider.delete(url);
   }
 }
 

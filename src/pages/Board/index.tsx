@@ -6,15 +6,10 @@ import { AccordionContent } from '../../components/Board/AccordionContent';
 import { withLoader } from '../../components/hoc';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IssueModal } from '../../components/IssueModal';
-import { IProps as IValues } from '../../components/ProjectModal/types';
 import { ROUTES } from '../../constants/routes';
 import { ISSUES } from '../../constants/issues';
-import { IIssue } from '../../definitions';
-import {
-  ProjectsRepository,
-  IssuesRepository,
-  EmployeesRepository,
-} from '../../services/repositories';
+import { IProject, IIssue } from '../../definitions';
+import { ProjectsRepository, IssuesRepository } from '../../services/repositories';
 import { IProps, IState } from './types';
 import styles from './styles.module.scss';
 
@@ -27,39 +22,42 @@ class _Board extends React.Component<IProps, IState> {
   };
 
   componentDidMount() {
-    const projectPromise = ProjectsRepository.getById(this.props.match.params.id);
-    const issuesPromise = IssuesRepository.getAll({ currentProjectId: this.props.match.params.id });
-    const employeesPromise = EmployeesRepository.getAll({
-      currentProjectId: this.props.match.params.id,
-    });
+    const { id } = this.props.match.params;
 
-    this.props
-      .fetching(Promise.all([projectPromise, issuesPromise, employeesPromise]))
-      .then(([project, issuesList, employees]) => {
-        const projectEmployees = employees.map((employee) => {
-          return {
-            ...employee,
-            issues: issuesList.filter((issue) => issue.assignee.id === employee.id),
-          };
-        });
-
-        this.setState({
-          project,
-          projectEmployees,
-        });
+    const projectPromise = ProjectsRepository.getById(id);
+    this.props.fetching(Promise.all([projectPromise])).then(([project]) => {
+      this.setState({
+        project: {
+          ...project,
+          id,
+        },
       });
+    });
   }
 
   setProjectModalVisible = (projectModalVisible: boolean) => this.setState({ projectModalVisible });
 
   setIssueModalVisible = (issueModalVisible: boolean) => this.setState({ issueModalVisible });
 
-  onEdit = (values: IValues['values']) => {
-    ProjectsRepository.update(this.state.project?.id!, {
+  onEdit = (values: Pick<IProject, 'title' | 'description'>) => {
+    if (!this.state.project) {
+      return null;
+    }
+
+    const { id, issues } = this.state.project;
+    const updatedProject = {
       title: values.title,
       description: values.description,
-    }).then((project) => {
-      this.setState({ project });
+    };
+
+    ProjectsRepository.update(id, updatedProject).then(() => {
+      this.setState({
+        project: {
+          ...updatedProject,
+          issues,
+          id,
+        },
+      });
       this.setProjectModalVisible(false);
     });
   };

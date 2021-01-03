@@ -14,10 +14,10 @@ class _EmployeesRepository {
     return HttpProvider.get<IEmployee>(url);
   }
 
-  create(data: any) {
+  create(data: Partial<IEmployee>) {
     const url = getUrlWithJsonExtension(NEW_API.EMPLOYEES.LIST());
 
-    return HttpProvider.post<any>(url, data);
+    return HttpProvider.post<IEmployee>(url, data);
   }
 
   update(id: number | string, data: Partial<Omit<IEmployee, 'id'>>) {

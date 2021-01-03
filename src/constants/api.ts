@@ -37,4 +37,8 @@ export const NEW_API = {
     LIST: () => `${NEW_BASE_URL}/employees`,
     DETAIL: (id: number | string) => `${NEW_API.EMPLOYEES.LIST()}/${id}`,
   },
+  PROJECTS: {
+    LIST: () => `${NEW_BASE_URL}/projects`,
+    DETAIL: (id: number | string) => `${NEW_API.PROJECTS.LIST()}/${id}`,
+  },
 };

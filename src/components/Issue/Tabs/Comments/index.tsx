@@ -47,7 +47,7 @@ export class CommentsTab extends React.Component<IProps, IState> {
     );
   }
 
-  onEdit = (editedCommentId: number) => {
+  onEdit = (editedCommentId: number | string) => {
     const comment = this.props.comments.find((item) => item.id === editedCommentId);
 
     this.formRef.current?.setFieldsValue({

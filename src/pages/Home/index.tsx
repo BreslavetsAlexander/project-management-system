@@ -19,10 +19,6 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
   };
 
   componentDidMount() {
-    if (!this.context.employee) {
-      return;
-    }
-
     const issuesPromise = IssuesRepository.getAll();
     const activityPromise = ActivityRepository.getAll();
     this.props
