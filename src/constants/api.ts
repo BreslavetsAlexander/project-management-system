@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = process.env.API_URL || '';
 
 export const API_KEY = process.env.API_KEY || '';
 
@@ -9,36 +9,41 @@ export const API = {
     LIST: () => `${BASE_URL}/employees`,
     DETAIL: (id: number | string) => `${API.EMPLOYEES.LIST()}/${id}`,
   },
-  ISSUES: {
-    LIST: () => `${BASE_URL}/issues`,
-    DETAIL: (id: number | string) => `${API.ISSUES.LIST()}/${id}`,
-  },
-  WORKLOGS: {
-    LIST: () => `${BASE_URL}/worklogs`,
-    DETAIL: (id: number | string) => `${API.WORKLOGS.LIST()}/${id}`,
-  },
   PROJECTS: {
     LIST: () => `${BASE_URL}/projects`,
     DETAIL: (id: number | string) => `${API.PROJECTS.LIST()}/${id}`,
-  },
-  COMMENTS: {
-    LIST: () => `${BASE_URL}/comments`,
-    DETAIL: (id: number | string) => `${API.COMMENTS.LIST()}/${id}`,
+    ISSUES: {
+      LIST: (projectId: number | string) => `${API.PROJECTS.DETAIL(projectId)}/issues`,
+      DETAIL: (projectId: number | string, issueId: number | string) => {
+        return `${API.PROJECTS.ISSUES.LIST(projectId)}/${issueId}`;
+      },
+      COMMENTS: {
+        LIST: (projectId: number | string, issueId: number | string) => {
+          return `${API.PROJECTS.ISSUES.DETAIL(projectId, issueId)}/comments`;
+        },
+        DETAIL: (
+          projectId: number | string,
+          issueId: number | string,
+          commentId: number | string,
+        ) => {
+          return `${API.PROJECTS.ISSUES.COMMENTS.LIST(projectId, issueId)}/${commentId}`;
+        },
+      },
+      WORKLOGS: {
+        LIST: (projectId: number | string, issueId: number | string) => {
+          return `${API.PROJECTS.ISSUES.DETAIL(projectId, issueId)}/worklogs`;
+        },
+        DETAIL: (
+          projectId: number | string,
+          issueId: number | string,
+          worklogId: number | string,
+        ) => {
+          return `${API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId)}/${worklogId}`;
+        },
+      },
+    },
   },
   ACTIVITY: {
     LIST: () => `${BASE_URL}/activity`,
-  },
-};
-
-const NEW_BASE_URL = process.env.API_URL || '';
-
-export const NEW_API = {
-  EMPLOYEES: {
-    LIST: () => `${NEW_BASE_URL}/employees`,
-    DETAIL: (id: number | string) => `${NEW_API.EMPLOYEES.LIST()}/${id}`,
-  },
-  PROJECTS: {
-    LIST: () => `${NEW_BASE_URL}/projects`,
-    DETAIL: (id: number | string) => `${NEW_API.PROJECTS.LIST()}/${id}`,
   },
 };

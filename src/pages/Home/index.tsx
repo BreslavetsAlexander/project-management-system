@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Result, Typography, List, Button } from 'antd';
-import { HeatMapOutlined, UserOutlined } from '@ant-design/icons';
+import { HeatMapOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
-import { IssuesRepository, ActivityRepository } from './../../services/repositories';
+import { ProjectsRepository, ActivityRepository } from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
 import { EmployeeContext } from './../../context';
+import { prepareData } from './../../utils';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
@@ -14,16 +15,37 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
   context!: React.ContextType<typeof EmployeeContext>;
 
   state: IState = {
-    issues: [],
+    project: null,
     activity: [],
   };
 
   componentDidMount() {
-    const issuesPromise = IssuesRepository.getAll();
+    if (!this.context.employee) {
+      return;
+    }
+
+    const { projectId } = this.context.employee;
+    const projectPromise = projectId
+      ? ProjectsRepository.getById(projectId)
+      : Promise.resolve(null);
     const activityPromise = ActivityRepository.getAll();
     this.props
-      .fetching(Promise.all([issuesPromise, activityPromise]))
-      .then(([issues, activity]) => this.setState({ issues, activity }));
+      .fetching(Promise.all([projectPromise, activityPromise]))
+      .then(([res, activityRes]) => {
+        const activity = prepareData(activityRes);
+
+        if (!res || !projectId) {
+          this.setState({ activity });
+          return;
+        }
+
+        const project = {
+          ...res,
+          id: projectId,
+          issues: prepareData(res.issues),
+        };
+        this.setState({ activity, project });
+      });
   }
 
   getIntroduction() {
@@ -58,10 +80,13 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
     const list = (
       <List
         size='large'
-        dataSource={this.state.issues}
+        dataSource={this.state.project?.issues}
+        locale={{ emptyText: 'No assigned issues' }}
         renderItem={(item) => (
           <List.Item className={styles.listItem}>
-            <Link to={ROUTES.ISSUES.DETAIL.ROUTE(item.id)}>{item.title}</Link>
+            <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.project.id, item.id)}>
+              {`[${item.project.title}] - ${item.title}`}
+            </Link>
             <div>{item.status}</div>
           </List.Item>
         )}
@@ -84,15 +109,22 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
         className={styles.list}
         itemLayout='horizontal'
         dataSource={this.state.activity.reverse()}
+        locale={{ emptyText: 'Empty activity stream' }}
         renderItem={(item) => {
-          const issueRoute = ROUTES.ISSUES.DETAIL.ROUTE(item.entity.id);
+          const issueRoute = '/';
           const projectRoute = ROUTES.PROJECTS.DETAIL.ROUTE(item.entity.id);
           const to = item.type === 'issue' ? issueRoute : projectRoute;
           const link = <Link to={to}>{item.entity.name}</Link>;
           const title = (
             <p>
-              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.type} `}
+              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} `}
               {link}
+            </p>
+          );
+          const description = (
+            <p>
+              <ClockCircleOutlined />
+              {item.date}
             </p>
           );
 
@@ -101,7 +133,7 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
               <List.Item.Meta
                 avatar={<UserOutlined className={styles.userIcon} />}
                 title={title}
-                description={item.date}
+                description={description}
               />
             </List.Item>
           );

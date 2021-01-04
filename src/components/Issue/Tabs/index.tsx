@@ -13,6 +13,7 @@ export const Tabs: React.FC<IProps> = (props) => {
       </TabsAntd.TabPane>
       <TabsAntd.TabPane tab={`Comments (${props.comments.length})`} key='Comments'>
         <CommentsTab
+          employee={props.employee}
           comments={props.comments}
           addComment={props.addComment}
           editComment={props.editComment}
@@ -21,6 +22,7 @@ export const Tabs: React.FC<IProps> = (props) => {
       </TabsAntd.TabPane>
       <TabsAntd.TabPane tab={`Worklogs (${props.worklogs.length})`} key='Worklogs'>
         <Worklogs
+          employee={props.employee}
           worklogs={props.worklogs}
           deleteWorkLog={props.deleteWorkLog}
           originalEstimate={props.issue.originalEstimate}

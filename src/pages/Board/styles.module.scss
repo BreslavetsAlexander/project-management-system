@@ -2,17 +2,19 @@
 
 .board {
   .buttons {
+    display: flex;
+
     button {
       margin-right: 16px;
+    }
 
-      &:last-child {
-        margin-right: 0;
-      }
+    div[class*='ant-form-item'] {
+      margin: 0;
     }
   }
 
   .collapse {
-    margin-top: 20px;
+    margin-top: 25px;
     background-color: transparent;
 
     .panel {

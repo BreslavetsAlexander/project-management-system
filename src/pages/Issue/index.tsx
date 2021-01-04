@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { Typography, Button } from 'antd';
-import { EditOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { EditOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { withLoader } from './../../components/hoc';
 import { IssueStatus, IssuePeople, Tabs, LogWorkModal } from './../../components/Issue';
 import { IssueModal } from './../../components/IssueModal';
@@ -11,6 +11,7 @@ import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
 import { ROUTES } from './../../constants/routes';
 import { IIssue, IComment, IWorkLog } from './../../definitions';
+import { EmployeeContext } from './../../context';
 import {
   IssuesRepository,
   EmployeesRepository,
@@ -21,60 +22,68 @@ import {
 import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
 import { IProps, IState } from './types';
 import styles from './styles.module.scss';
+import { prepareData } from '../../utils';
 
 class _Issue extends React.Component<IProps, IState> {
+  static contextType = EmployeeContext;
+  context!: React.ContextType<typeof EmployeeContext>;
+
   state: IState = {
     issue: null,
-    comments: [],
-    worklogs: [],
     employees: [],
     editVisible: false,
     logWorkVisible: false,
   };
 
+  getEmployee() {
+    return {
+      id: this.context.employee?.id!,
+      firstName: this.context.employee?.firstName!,
+      lastName: this.context.employee?.lastName!,
+    };
+  }
+
   componentDidMount() {
-    this.props
-      .fetching(
-        Promise.all([
-          IssuesRepository.getById(this.props.match.params.id),
-          EmployeesRepository.getAll(),
-          CommentsRepository.getAll(),
-          WorkLogsRepository.getByIssueId(this.props.match.params.id),
-        ]),
-      )
-      .then(([issue, employees, comments, worklogs]) => {
-        const isIssueNotFound = JSON.stringify(issue) === '{}';
+    const { projectId, issueId } = this.props.match.params;
 
-        if (isIssueNotFound) {
-          this.props.history.push(ROUTES.NOT_FOUND);
-          return;
-        }
-
-        this.setState({ issue, employees, comments, worklogs });
+    const issuePromise = IssuesRepository.getById(projectId, issueId);
+    const employeePromise = EmployeesRepository.getAll();
+    this.props.fetching(Promise.all([issuePromise, employeePromise])).then(([issue, employees]) => {
+      this.setState({
+        issue: {
+          ...issue,
+          id: issueId,
+          comments: prepareData(issue.comments),
+          worklogs: prepareData(issue.worklogs),
+        },
+        employees: prepareData(employees),
       });
+    });
   }
 
   updateStatus(status: string) {
-    const issuePromise = IssuesRepository.update(this.state.issue?.id!, { status });
+    const { projectId, issueId } = this.props.match.params;
+    const issuePromise = IssuesRepository.update(projectId, issueId, { status });
 
     const activityPromise = ActivityRepository.create({
-      type: 'issue',
-      text: ACTIVITY.ISSUES.CHANGED_STATUS,
-      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
+      employee: this.getEmployee(),
+      date: moment().format(DATES_FORMATS.FULL_FORMAT),
       entity: {
         id: this.state.issue?.id!,
         name: this.state.issue?.title!,
       },
-      employee: {
-        id: 1,
-        firstName: 'Vang',
-        lastName: 'Moss',
-      },
+      text: ACTIVITY.ISSUES.CHANGED_STATUS,
+      type: 'issue',
     });
 
-    this.props
-      .fetching(Promise.all([issuePromise, activityPromise]))
-      .then(([issue, _]) => this.setState({ issue }));
+    this.props.fetching(Promise.all([issuePromise, activityPromise])).then(() =>
+      this.setState({
+        issue: {
+          ...this.state.issue,
+          status,
+        } as IIssue,
+      }),
+    );
   }
 
   onChange = () => {
@@ -88,11 +97,20 @@ class _Issue extends React.Component<IProps, IState> {
   onChangeStep = (current: number) => this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
 
   onChangeAssignee = (assignee: IIssue['assignee']) => {
-    if (!this.state.issue) {
-      return;
-    }
-
-    this.props.fetching(IssuesRepository.update(this.state.issue.id, { assignee }));
+    const { projectId, issueId } = this.props.match.params;
+    const activityPromise = ActivityRepository.create({
+      employee: this.getEmployee(),
+      date: moment().format(DATES_FORMATS.FULL_FORMAT),
+      entity: {
+        id: this.state.issue?.id!,
+        name: this.state.issue?.title!,
+      },
+      text: ACTIVITY.ISSUES.CHANGED_ASSIGNEE,
+      type: 'issue',
+    });
+    this.props.fetching(
+      Promise.all([IssuesRepository.update(projectId, issueId, { assignee }), activityPromise]),
+    );
   };
 
   setEditVisible = (editVisible: boolean) => this.setState({ editVisible });
@@ -100,175 +118,196 @@ class _Issue extends React.Component<IProps, IState> {
   setLogWorkVisible = (logWorkVisible: boolean) => this.setState({ logWorkVisible });
 
   onEdit = (values: Pick<IIssue, 'title' | 'description' | 'priority' | 'originalEstimate'>) => {
-    const issuePromise = IssuesRepository.update(this.state.issue?.id!, values);
+    const { projectId, issueId } = this.props.match.params;
+    const issuePromise = IssuesRepository.update(projectId, issueId, values);
 
     const activityPromise = ActivityRepository.create({
-      type: 'issue',
-      text: ACTIVITY.ISSUES.UPDATED,
-      date: moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`),
-      entity: {
-        id: this.state.issue?.id!,
-        name: values.title,
-      },
-      employee: {
-        id: 1,
-        firstName: 'Vang',
-        lastName: 'Moss',
-      },
-    });
-
-    Promise.all([issuePromise, activityPromise]).then(([issue, _]) => {
-      this.setState({ issue });
-      this.setEditVisible(false);
-    });
-  };
-
-  onLogWork = (values: Pick<IWorkLog, 'date' | 'time'>) => {
-    const activityPromise = ActivityRepository.create({
-      type: 'issue',
-      text: ACTIVITY.ISSUES.LOGGED_TIME,
+      employee: this.getEmployee(),
       date: moment().format(DATES_FORMATS.FULL_FORMAT),
       entity: {
         id: this.state.issue?.id!,
         name: this.state.issue?.title!,
       },
-      employee: {
-        id: 1,
-        firstName: 'Vang',
-        lastName: 'Moss',
-      },
+      text: ACTIVITY.ISSUES.UPDATED,
+      type: 'issue',
     });
 
-    const workLogPromise = WorkLogsRepository.create({
+    Promise.all([issuePromise, activityPromise]).then(() => {
+      this.setState({
+        issue: {
+          ...(this.state.issue as IIssue),
+          ...values,
+        },
+      });
+      this.setEditVisible(false);
+    });
+  };
+
+  onLogWork = (values: Pick<IWorkLog, 'date' | 'time'>) => {
+    const employee = this.getEmployee();
+    const { projectId, issueId } = this.props.match.params;
+    const activityPromise = ActivityRepository.create({
+      employee: this.getEmployee(),
+      date: moment().format(DATES_FORMATS.FULL_FORMAT),
+      entity: {
+        id: this.state.issue?.id!,
+        name: this.state.issue?.title!,
+      },
+      text: ACTIVITY.ISSUES.LOGGED_TIME,
+      type: 'issue',
+    });
+
+    const worklog = {
       ...values,
-      issueId: this.state.issue?.id,
-      employee: {
-        id: 1,
-        firstName: 'Vang',
-        lastName: 'Moss',
-      },
-    });
+      employee,
+    };
+    const workLogPromise = WorkLogsRepository.create(projectId, issueId, worklog);
 
-    Promise.all([workLogPromise, activityPromise]).then(([worklog, _]) => {
-      const worklogs = [...this.state.worklogs];
-      worklogs.push(worklog);
-      this.setState({ worklogs });
+    Promise.all([workLogPromise, activityPromise]).then(([res, _]) => {
+      const worklogs = [...this.state.issue?.worklogs!];
+      worklogs.push({
+        ...worklog,
+        id: res.name,
+      });
+      this.setState({
+        issue: {
+          ...(this.state.issue as IIssue),
+          worklogs,
+        },
+      });
       this.setLogWorkVisible(false);
     });
   };
 
   addComment = (text: IComment['text']) => {
-    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+    const { projectId, issueId } = this.props.match.params;
+    const date = moment().format(DATES_FORMATS.FULL_FORMAT);
+    const employee = this.getEmployee();
+    const comment = {
+      text,
+      date,
+      author: employee,
+    };
 
     this.props
       .fetching(
         Promise.all([
-          CommentsRepository.create({
-            text,
-            date,
-            author: {
-              id: 1,
-              firstName: 'Vang',
-              lastName: 'Moss',
-            },
-          }),
+          CommentsRepository.create(projectId, issueId, comment),
           ActivityRepository.create({
-            type: 'issue',
-            text: ACTIVITY.ISSUES.ADDED_COMMENT,
-            date,
+            employee: this.getEmployee(),
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
             entity: {
               id: this.state.issue?.id!,
               name: this.state.issue?.title!,
             },
-            employee: {
-              id: 1,
-              firstName: 'Vang',
-              lastName: 'Moss',
-            },
+            text: ACTIVITY.ISSUES.ADDED_COMMENT,
+            type: 'issue',
           }),
         ]),
       )
-      .then(([comment]) => {
-        const comments = [...this.state.comments];
-        comments.push(comment);
-        this.setState({ comments });
+      .then(([res]) => {
+        const comments = [...this.state.issue?.comments!];
+        comments.push({
+          ...comment,
+          id: res.name,
+        });
+        this.setState({
+          issue: {
+            ...this.state.issue,
+            comments,
+          } as IIssue,
+        });
       });
   };
 
   editComment = (id: IComment['id'], text: IComment['text']) => {
-    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+    const { projectId, issueId } = this.props.match.params;
+    const date = moment().format(DATES_FORMATS.FULL_FORMAT);
 
     this.props
       .fetching(
         Promise.all([
-          CommentsRepository.update(id, {
+          CommentsRepository.update(projectId, issueId, id, {
             text,
             date,
           }),
           ActivityRepository.create({
-            type: 'issue',
-            text: ACTIVITY.ISSUES.UPDATED_COMMENT,
-            date,
+            employee: this.getEmployee(),
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
             entity: {
               id: this.state.issue?.id!,
               name: this.state.issue?.title!,
             },
-            employee: {
-              id: 1,
-              firstName: 'Vang',
-              lastName: 'Moss',
-            },
+            text: ACTIVITY.ISSUES.UPDATED_COMMENT,
+            type: 'issue',
           }),
         ]),
       )
-      .then(([comment]) => {
-        const comments = this.state.comments.map((item) => {
+      .then(([]) => {
+        const comment = this.state.issue?.comments.find((item) => item.id === id)!;
+        const comments = this.state.issue?.comments.map((item) => {
           if (item.id === id) {
-            return comment;
+            return {
+              ...comment,
+              text,
+              date,
+            };
           }
 
           return item;
-        });
+        })!;
 
-        this.setState({ comments });
+        this.setState({
+          issue: {
+            ...this.state.issue,
+            comments,
+          } as IIssue,
+        });
       });
   };
 
   deleteComment = (id: IComment['id']) => {
-    const date = moment().format(`${DATES_FORMATS.DAY_MONTH_YEAR} ${DATES_FORMATS.HOURS_MINUTES}`);
+    const { projectId, issueId } = this.props.match.params;
 
     this.props
       .fetching(
         Promise.all([
-          CommentsRepository.delete(id),
+          CommentsRepository.delete(projectId, issueId, id),
           ActivityRepository.create({
-            type: 'issue',
-            text: ACTIVITY.ISSUES.DELETE_COMMENT,
-            date,
+            employee: this.getEmployee(),
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
             entity: {
               id: this.state.issue?.id!,
               name: this.state.issue?.title!,
             },
-            employee: {
-              id: 1,
-              firstName: 'Vang',
-              lastName: 'Moss',
-            },
+            text: ACTIVITY.ISSUES.DELETED_COMMENT,
+            type: 'issue',
           }),
         ]),
       )
       .then(([_]) => {
-        const comments = this.state.comments.filter((item) => item.id !== id);
+        const comments = this.state.issue?.comments.filter((item) => item.id !== id)!;
 
-        this.setState({ comments });
+        this.setState({
+          issue: {
+            ...this.state.issue,
+            comments,
+          } as IIssue,
+        });
       });
   };
 
   deleteWorkLog = (id: IWorkLog['id']) => {
-    this.props.fetching(WorkLogsRepository.delete(id)).then(() => {
-      const worklogs = this.state.worklogs.filter((item) => item.id !== id);
+    const { projectId, issueId } = this.props.match.params;
+    this.props.fetching(WorkLogsRepository.delete(projectId, issueId, id)).then(() => {
+      const worklogs = this.state.issue?.worklogs.filter((item) => item.id !== id)!;
 
-      this.setState({ worklogs });
+      this.setState({
+        issue: {
+          ...this.state.issue,
+          worklogs,
+        } as IIssue,
+      });
     });
   };
 
@@ -280,14 +319,12 @@ class _Issue extends React.Component<IProps, IState> {
     return (
       <div className={styles.layoutContent}>
         <div className={styles.projectName}>
-          <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(this.state.issue.currentProjectId)}>
+          <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.projectId)}>
             <ArrowLeftOutlined className={styles.icon} />
-            <span>Project name</span>
+            <span>{this.state.issue.project.title}</span>
           </Link>
         </div>
-        <Typography.Title>
-          {`[Project name - ${this.state.issue.id}]`} {this.state.issue.title}
-        </Typography.Title>
+        <Typography.Title>{`[${this.state.issue.project.title}] - ${this.state.issue.title}`}</Typography.Title>
         <div className={styles.buttons}>
           <Button icon={<EditOutlined />} onClick={() => this.setEditVisible(true)}>
             Edit
@@ -295,7 +332,9 @@ class _Issue extends React.Component<IProps, IState> {
           <Button className={styles.changeIssueStatus} onClick={this.onChange}>
             {BUTTON_STATUS_TEXT[this.state.issue.status]}
           </Button>
-          <Button onClick={() => this.setLogWorkVisible(true)}>Log Work</Button>
+          <Button icon={<ClockCircleOutlined />} onClick={() => this.setLogWorkVisible(true)}>
+            Log Work
+          </Button>
         </div>
         <IssueStatus issueStatus={this.state.issue.status} onChange={this.onChangeStep} />
         <IssuePeople
@@ -306,12 +345,13 @@ class _Issue extends React.Component<IProps, IState> {
         />
         <Tabs
           className={styles.tabs}
+          employee={this.context.employee}
           issue={this.state.issue}
-          comments={this.state.comments}
+          comments={this.state.issue.comments}
           addComment={this.addComment}
           editComment={this.editComment}
           deleteComment={this.deleteComment}
-          worklogs={this.state.worklogs}
+          worklogs={this.state.issue.worklogs}
           deleteWorkLog={this.deleteWorkLog}
         />
         <IssueModal

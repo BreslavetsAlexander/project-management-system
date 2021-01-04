@@ -8,5 +8,5 @@ export interface IProps {
 }
 
 export interface IFormValues {
-  assigneeId: number;
+  assigneeId: IIssue['assignee']['id'];
 }

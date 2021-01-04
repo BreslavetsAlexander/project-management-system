@@ -10,12 +10,11 @@ export const ROUTES = {
       TEMPLATE: '/projects/:id',
       ROUTE: (id: number | string) => buildRoute(ROUTES.PROJECTS.DETAIL.TEMPLATE, `${id}`),
     },
-  },
-  ISSUES: {
-    LIST: '/issues',
-    DETAIL: {
-      TEMPLATE: '/issues/:id',
-      ROUTE: (id: number | string) => buildRoute(ROUTES.ISSUES.DETAIL.TEMPLATE, `${id}`),
+    ISSUE: {
+      TEMPLATE: '/projects/:projectId/:issueId',
+      ROUTE: (projectId: number | string, issueId: number | string) => {
+        return `${ROUTES.PROJECTS.DETAIL.ROUTE(projectId)}/${issueId}`;
+      },
     },
   },
   PROFILE: '/profile',

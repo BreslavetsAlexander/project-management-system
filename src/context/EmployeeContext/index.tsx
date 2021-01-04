@@ -11,13 +11,9 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
   };
 
   componentDidMount() {
-    const employee = localStorage.getItem(EMPLOYEE_LOCAL_STORAGE_KEY);
-
-    if (employee) {
-      this.setState({
-        employee: JSON.parse(employee),
-      });
-    }
+    this.setState({
+      employee: this.getEmployee(),
+    });
   }
 
   setEmployee = (employee: IState['employee']) => {
@@ -25,9 +21,19 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
     localStorage.setItem(EMPLOYEE_LOCAL_STORAGE_KEY, JSON.stringify(employee));
   };
 
+  getEmployee(): IState['employee'] {
+    const employee = localStorage.getItem(EMPLOYEE_LOCAL_STORAGE_KEY);
+
+    if (!employee) {
+      return null;
+    }
+
+    return JSON.parse(employee);
+  }
+
   getValues(): IEmployeeContext {
     return {
-      employee: this.state.employee,
+      employee: this.getEmployee(),
       setEmployee: this.setEmployee,
     };
   }

@@ -1,13 +1,7 @@
 {
   "employees": [],
   "issues": [],
-  "projects": [
-    {
-      "title": "Sint amet 1",
-      "description": "zc",
-      "id": 1
-    }
-  ],
+  "projects": [],
   "workLogs": [],
   "activity": [],
   "comments": []

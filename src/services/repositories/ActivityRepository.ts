@@ -1,15 +1,27 @@
 import { API } from './../../constants/api';
 import { IActivity } from './../../definitions';
-import { IParams } from './../../utils';
+import { getUrlWithJsonExtension } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
+interface IActivityResponce {
+  [id: string]: Omit<IActivity, 'id'>;
+}
+
+interface ICreateActivityResponce {
+  name: string;
+}
+
 class _ActivityRepository {
-  getAll(params?: IParams) {
-    return HttpProvider.get<IActivity[]>(API.ACTIVITY.LIST(), params);
+  getAll() {
+    const url = getUrlWithJsonExtension(API.ACTIVITY.LIST());
+
+    return HttpProvider.get<IActivityResponce>(url);
   }
 
   create(data: Partial<IActivity>) {
-    return HttpProvider.post<IActivity>(API.ACTIVITY.LIST(), data);
+    const url = getUrlWithJsonExtension(API.ACTIVITY.LIST());
+
+    return HttpProvider.post<IActivity, ICreateActivityResponce>(url, data);
   }
 }
 

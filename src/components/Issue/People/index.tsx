@@ -27,7 +27,9 @@ export class IssuePeople extends React.Component<IProps> {
     return (
       <Form<IFormValues>
         className={styles.form}
-        initialValues={{ [INPUT_NAMES.assigneeId]: this.props.assignee.id }}
+        initialValues={{
+          [INPUT_NAMES.assigneeId]: `${this.props.assignee.firstName} ${this.props.assignee.lastName}`,
+        }}
         onValuesChange={this.onValuesChange}>
         <FormSelect name={INPUT_NAMES.assigneeId} options={selectOptions} />
       </Form>

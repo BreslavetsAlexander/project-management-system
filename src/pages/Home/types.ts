@@ -1,6 +1,6 @@
-import { IIssue, IActivity } from '../../definitions';
+import { IProject, IActivity } from '../../definitions';
 
 export interface IState {
-  issues: IIssue[];
+  project: IProject | null;
   activity: IActivity[];
 }

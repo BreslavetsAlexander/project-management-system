@@ -1,23 +1,38 @@
 import { API } from './../../constants/api';
 import { IComment } from './../../definitions';
-import { IParams } from './../../utils';
+import { getUrlWithJsonExtension } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
+interface ICreateCommentResponce {
+  name: string;
+}
+
 class _CommentsRepository {
-  getAll(params?: IParams) {
-    return HttpProvider.get<IComment[]>(API.COMMENTS.LIST(), params);
+  create(projectId: string | number, issueId: string | number, data: Partial<IComment>) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.COMMENTS.LIST(projectId, issueId));
+
+    return HttpProvider.post<IComment, ICreateCommentResponce>(url, data);
   }
 
-  create(data: Partial<IComment>) {
-    return HttpProvider.post<IComment>(API.COMMENTS.LIST(), data);
+  update(
+    projectId: string | number,
+    issueId: string | number,
+    id: number | string,
+    data: Partial<IComment>,
+  ) {
+    const url = getUrlWithJsonExtension(
+      API.PROJECTS.ISSUES.COMMENTS.DETAIL(projectId, issueId, id),
+    );
+
+    return HttpProvider.patch<Omit<IComment, 'id'>>(url, data);
   }
 
-  update(id: number | string, data: Partial<IComment>) {
-    return HttpProvider.patch<IComment>(API.COMMENTS.DETAIL(id), data);
-  }
+  delete(projectId: string | number, issueId: string | number, id: number | string) {
+    const url = getUrlWithJsonExtension(
+      API.PROJECTS.ISSUES.COMMENTS.DETAIL(projectId, issueId, id),
+    );
 
-  delete(id: number | string) {
-    return HttpProvider.delete(API.COMMENTS.DETAIL(id));
+    return HttpProvider.delete(url);
   }
 }
 

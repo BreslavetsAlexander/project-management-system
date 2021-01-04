@@ -32,7 +32,7 @@ class _Registration extends React.Component<IWithLoaderProps & RouteComponentPro
     return {
       ...employee,
       id: authRes.localId,
-      currentProjectId: null,
+      projectId: null,
     };
   };
 

@@ -1,27 +1,45 @@
 import { API } from './../../constants/api';
-import { IIssue } from './../../definitions';
-import { IParams } from './../../utils';
+import { IIssue, IComment, IWorkLog } from './../../definitions';
+import { IParams, getUrlWithJsonExtension } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
+interface ICreateIssueResponce {
+  name: string;
+}
+
+type IssueResponce = Omit<IIssue, 'id' | 'comments' | 'worklogs'> & {
+  comments: {
+    [id: string]: Omit<IComment, 'id'>;
+  };
+
+  worklogs: {
+    [id: string]: Omit<IWorkLog, 'id'>;
+  };
+};
+
 class _IssuesRepository {
-  getAll(params?: IParams) {
-    return HttpProvider.get<IIssue[]>(API.ISSUES.LIST(), params);
+  getById(projectId: number | string, issueId: number | string, params?: IParams) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
+
+    return HttpProvider.get<IssueResponce>(url, params);
   }
 
-  getById(id: number | string, params?: IParams) {
-    return HttpProvider.get<IIssue>(API.ISSUES.DETAIL(id), params);
+  create(projectId: number | string, data: Partial<IIssue>) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.LIST(projectId));
+
+    return HttpProvider.post<IIssue, ICreateIssueResponce>(url, data);
   }
 
-  create(data: Partial<IIssue>) {
-    return HttpProvider.post<IIssue>(API.ISSUES.LIST(), data);
+  update(projectId: number | string, issueId: number | string, data: Partial<IIssue>) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
+
+    return HttpProvider.patch<Omit<IIssue, 'id'>>(url, data);
   }
 
-  update(id: number | string, data: Partial<IIssue>) {
-    return HttpProvider.patch<IIssue>(API.ISSUES.DETAIL(id), data);
-  }
+  delete(projectId: number | string, issueId: number | string) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
 
-  delete(id: number | string) {
-    return HttpProvider.delete(API.ISSUES.DETAIL(id));
+    return HttpProvider.delete(url);
   }
 }
 

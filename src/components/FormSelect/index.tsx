@@ -7,7 +7,7 @@ export const FormSelect: React.FC<IProps> = (props) => {
 
   return (
     <Form.Item label={props.label} name={props.name} rules={rules}>
-      <Select placeholder='Select option'>
+      <Select placeholder={props.message || 'Select option'}>
         {props.options.map((option) => (
           <Select.Option key={option.value} value={option.value}>
             {option.title}

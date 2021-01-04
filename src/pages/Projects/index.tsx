@@ -1,16 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { List, Button, Card, Typography } from 'antd';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IWithLoaderProps, withLoader, withAuthorization } from '../../components/hoc';
-import { ProjectsRepository } from '../../services/repositories';
+import { ProjectsRepository, ActivityRepository } from '../../services/repositories';
+import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ROUTES } from '../../constants/routes';
+import { ACTIVITY } from '../../constants/activity';
 import { IProject } from '../../definitions';
 import { prepareData } from '../../utils';
+import { EmployeeContext } from './../../context';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
 class _Projects extends React.Component<IWithLoaderProps, IState> {
+  static contextType = EmployeeContext;
+  context!: React.ContextType<typeof EmployeeContext>;
+
   state: IState = {
     projects: [],
     visible: false,
@@ -36,7 +43,24 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
       title: values.title,
       description: values.description,
     };
-    ProjectsRepository.create(project).then((res) => {
+
+    Promise.all([
+      ProjectsRepository.create(project),
+      ActivityRepository.create({
+        employee: {
+          id: this.context.employee?.id!,
+          firstName: this.context.employee?.firstName!,
+          lastName: this.context.employee?.lastName!,
+        },
+        date: moment().format(DATES_FORMATS.FULL_FORMAT),
+        entity: {
+          id: 1,
+          name: values.title,
+        },
+        text: ACTIVITY.PROJECTS.CREATED,
+        type: 'issue',
+      }),
+    ]).then(([res]) => {
       const projects = [...this.state.projects];
       projects.push({
         ...project,

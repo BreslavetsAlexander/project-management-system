@@ -1,18 +1,25 @@
 import { API } from './../../constants/api';
 import { IWorkLog } from './../../definitions';
 import { HttpProvider } from '../httpProvider';
+import { getUrlWithJsonExtension } from '../../utils';
+
+interface ICreateWorkLogResponce {
+  name: string;
+}
 
 class _WorkLogsRepository {
-  getByIssueId(issueId: number | string) {
-    return HttpProvider.get<IWorkLog[]>(API.WORKLOGS.LIST(), { issueId });
+  create(projectId: string | number, issueId: string | number, data: Partial<IWorkLog>) {
+    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId));
+
+    return HttpProvider.post<IWorkLog, ICreateWorkLogResponce>(url, data);
   }
 
-  create(data: Partial<IWorkLog>) {
-    return HttpProvider.post<IWorkLog>(API.WORKLOGS.LIST(), data);
-  }
+  delete(projectId: string | number, issueId: string | number, id: number | string) {
+    const url = getUrlWithJsonExtension(
+      API.PROJECTS.ISSUES.WORKLOGS.DETAIL(projectId, issueId, id),
+    );
 
-  delete(id: number | string) {
-    return HttpProvider.delete(API.WORKLOGS.DETAIL(id));
+    return HttpProvider.delete(url);
   }
 }
 

@@ -23,7 +23,7 @@ export const App: React.FC = () => {
           <Route exact path={ROUTES.PROJECTS.LIST} component={Projects} />
           <Route exact path={ROUTES.PROFILE} component={Profile} />
           <Route exact path={ROUTES.PROJECTS.DETAIL.TEMPLATE} component={Board} />
-          <Route exact path={ROUTES.ISSUES.DETAIL.TEMPLATE} component={Issue} />
+          <Route exact path={ROUTES.PROJECTS.ISSUE.TEMPLATE} component={Issue} />
           <Route exact path={ROUTES.LOG_IN} component={Login} />
           <Route exact path={ROUTES.REGISTRATION} component={Registration} />
           <Route path={ROUTES.NOT_FOUND} component={NotFound} />

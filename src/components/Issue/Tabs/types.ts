@@ -1,7 +1,8 @@
-import { IIssue, IComment, IWorkLog } from '../../../definitions';
+import { IEmployee, IIssue, IComment, IWorkLog } from '../../../definitions';
 
 export interface IProps {
   className: string;
+  employee: IEmployee | null;
   issue: IIssue;
   comments: IComment[];
   addComment: (text: IComment['text']) => void;

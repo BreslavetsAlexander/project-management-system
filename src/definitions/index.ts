@@ -6,14 +6,13 @@ export interface IEmployee {
   username: string;
   password: string;
   email: string;
-  currentProjectId: number | string | null;
+  projectId: number | string | null;
 }
 
 export interface IWorkLog {
   id: number | string;
   date: string;
   time: IIssue['originalEstimate'];
-  issueId: number | string;
   employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
 }
 
@@ -23,7 +22,7 @@ export interface IIssue {
   description: string;
   status: string;
   priority: string;
-  currentProjectId: number | string;
+  project: Pick<IProject, 'id' | 'title'>;
   author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   assignee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
   originalEstimate: {
@@ -31,6 +30,8 @@ export interface IIssue {
     h: number;
     m: number;
   };
+  comments: IComment[];
+  worklogs: IWorkLog[];
 }
 
 export interface IProject {
