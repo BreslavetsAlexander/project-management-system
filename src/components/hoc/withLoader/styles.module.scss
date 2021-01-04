@@ -3,12 +3,15 @@
 
   &[class*='ant-spin-nested-loading'] {
     .spin {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       min-height: 100%;
     }
 
     .loader[class*='ant-spin-dot'] {
+      position: static;
       margin: 0;
-      transform: translate(-50%, -50%);
     }
   }
 }

@@ -5,6 +5,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
   entry: path.resolve(__dirname, './src/index.tsx'),
@@ -66,6 +68,9 @@ module.exports = {
     new ErrorOverlayPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/index.html'),
+      minify: {
+        collapseWhitespace: true,
+      },
     }),
     new BaseHrefWebpackPlugin({
       baseHref: '/',
@@ -82,11 +87,28 @@ module.exports = {
     new Dotenv({
       path: path.resolve(__dirname, '.env'),
     }),
+    new MomentLocalesPlugin(),
   ],
   stats: {
     children: false,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.css', '.scss', '.sass'],
+  },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: true,
+          mangle: true,
+          cache: true,
+          parallel: true,
+          output: {
+            comments: false,
+          },
+        },
+        sourceMap: false,
+      }),
+    ],
   },
 };
