@@ -1,27 +1,13 @@
 import React from 'react';
-import { Form, Button } from 'antd';
+import { Form } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { FormInput } from '../FormInput';
 import { INPUT_NAMES } from './constants';
-import { IProps, IState, IFormValues } from './types';
+import { IProps, IFormValues } from './types';
 import styles from './styles.module.scss';
 
-export class ProfileForm extends React.Component<IProps, IState> {
-  state: IState = {
-    isButtonDisabled: true,
-  };
-
-  getFormRef = () => React.createRef<FormInstance<IFormValues>>();
-
-  formRef = this.getFormRef();
-
-  componentDidMount() {
-    this.formRef = this.getFormRef();
-  }
-
-  setIsButtonDisabled = (isButtonDisabled: boolean) => {
-    this.setState({ isButtonDisabled });
-  };
+export class ProfileForm extends React.Component<IProps> {
+  formRef = React.createRef<FormInstance<IFormValues>>();
 
   getInitialValues() {
     return {
@@ -33,22 +19,18 @@ export class ProfileForm extends React.Component<IProps, IState> {
     };
   }
 
-  onSubmit = (values: IFormValues) => {
-    console.log(values);
-    this.setIsButtonDisabled(true);
-  };
+  onValuesChange = (name: keyof IFormValues) => {
+    const values = this.formRef.current?.getFieldsValue();
 
-  onValuesChange = () => {
-    const currentValues = JSON.stringify(this.formRef.current?.getFieldsValue());
-    const initialValues = JSON.stringify(this.getInitialValues());
+    if (!values) {
+      return;
+    }
 
-    this.setIsButtonDisabled(currentValues === initialValues);
-  };
+    if (values[name] === this.props.employee[name]) {
+      return;
+    }
 
-  onReset = () => {
-    this.formRef.current?.resetFields();
-
-    this.setIsButtonDisabled(true);
+    this.props.saveInfo(name, values[name]);
   };
 
   render() {
@@ -57,26 +39,11 @@ export class ProfileForm extends React.Component<IProps, IState> {
         ref={this.formRef}
         className={styles.form}
         layout='vertical'
-        onFinish={this.onSubmit}
-        onValuesChange={this.onValuesChange}
+        onBlur={(e) => this.onValuesChange(e.target.id as keyof IFormValues)}
         initialValues={this.getInitialValues()}>
         {Object.values(INPUT_NAMES).map((item) => (
           <FormInput key={item.name} label={item.label} name={item.name} />
         ))}
-        <div className={styles.buttons}>
-          <Button
-            type='primary'
-            danger
-            disabled={this.state.isButtonDisabled}
-            onClick={this.onReset}>
-            Reset
-          </Button>
-          <Form.Item>
-            <Button type='primary' htmlType='submit' disabled={this.state.isButtonDisabled}>
-              Save
-            </Button>
-          </Form.Item>
-        </div>
       </Form>
     );
   }

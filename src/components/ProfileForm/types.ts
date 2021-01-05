@@ -2,13 +2,7 @@ import { IEmployee } from '../../definitions';
 
 export interface IProps {
   employee: IEmployee;
+  saveInfo: (field: string, value: string) => void;
 }
 
-export interface IState {
-  isButtonDisabled: boolean;
-}
-
-export type IFormValues = Pick<
-  IEmployee,
-  'firstName' | 'lastName' | 'email' | 'password' | 'username'
->;
+export type IFormValues = Omit<IEmployee, 'id' | 'idToken' | 'projectId'>;

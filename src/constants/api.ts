@@ -5,6 +5,7 @@ export const API_KEY = process.env.API_KEY || '';
 export const API = {
   REGISTER: 'https://identitytoolkit.googleapis.com/v1/accounts:signUp',
   LOG_IN: 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword',
+  UPDATE_EMAIL_OR_PASSWORD: 'https://identitytoolkit.googleapis.com/v1/accounts:update',
   EMPLOYEES: {
     LIST: () => `${BASE_URL}/employees`,
     DETAIL: (id: number | string) => `${API.EMPLOYEES.LIST()}/${id}`,

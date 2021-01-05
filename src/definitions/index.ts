@@ -1,6 +1,6 @@
 export interface IEmployee {
   id: number | string;
-  idToken: string;
+  idToken: number | string;
   firstName: string;
   lastName: string;
   username: string;
