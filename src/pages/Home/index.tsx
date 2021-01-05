@@ -1,7 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Result, Typography, List, Button } from 'antd';
-import { HeatMapOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import {
+  HeatMapOutlined,
+  UserOutlined,
+  ClockCircleOutlined,
+  ReadOutlined,
+  GithubOutlined,
+  UnorderedListOutlined,
+  HistoryOutlined,
+} from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
 import { ProjectsRepository, ActivityRepository } from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
@@ -51,15 +59,24 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
   getIntroduction() {
     return (
       <div className={styles.introduction}>
-        <div className={styles.sectionTitle}>Introduction</div>
+        <div className={styles.sectionTitle}>
+          <ReadOutlined /> Introduction
+        </div>
         <Result
           className={styles.result}
           icon={<HeatMapOutlined />}
           title='Welcome to JIRA Clone'
         />
         <p className={styles.text}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati nemo corporis, animi
-          sit architecto molestiae
+          Welcome to JIRA Clone! Using this app you can create projects, work in issues, discuss
+          them
+          <br />
+          Source code here:{' '}
+          <span>
+            <a href='https://github.com/BreslavetsAlexander/project-management-system'>
+              <GithubOutlined /> project-management-system
+            </a>
+          </span>
         </p>
       </div>
     );
@@ -97,7 +114,9 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
 
     return (
       <div className={styles.assignedToMe}>
-        <div className={styles.sectionTitle}>Assigned to Me</div>
+        <div className={styles.sectionTitle}>
+          <UnorderedListOutlined /> Assigned to Me
+        </div>
         {content}
       </div>
     );
@@ -111,14 +130,9 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
         dataSource={this.state.activity.reverse()}
         locale={{ emptyText: 'Empty activity stream' }}
         renderItem={(item) => {
-          const issueRoute = '/';
-          const projectRoute = ROUTES.PROJECTS.DETAIL.ROUTE(item.entity.id);
-          const to = item.type === 'issue' ? issueRoute : projectRoute;
-          const link = <Link to={to}>{item.entity.name}</Link>;
           const title = (
             <p>
-              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} `}
-              {link}
+              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.entity.name}`}
             </p>
           );
           const description = (
@@ -145,7 +159,9 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
 
     return (
       <div className={styles.activityStream}>
-        <div className={styles.sectionTitle}>Activity Stream</div>
+        <div className={styles.sectionTitle}>
+          <HistoryOutlined /> Activity Stream
+        </div>
         {content}
       </div>
     );

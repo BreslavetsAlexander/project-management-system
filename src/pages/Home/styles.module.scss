@@ -27,6 +27,10 @@
     .text {
       margin: 0 10px 10px;
       font-size: 18px;
+
+      a {
+        color: $darkBlue;
+      }
     }
   }
 

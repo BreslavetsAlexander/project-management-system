@@ -1,8 +1,8 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
 import { Collapse, Typography, Button, Modal, Form } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import { AccordionContent } from '../../components/Board/AccordionContent';
 import { FormSelect } from '../../components/FormSelect';
@@ -159,8 +159,8 @@ class _Board extends React.Component<IProps, IState> {
       employee: this.getEmployee(),
       date: moment().format(DATES_FORMATS.FULL_FORMAT),
       entity: {
-        id: 1,
-        name: values.title,
+        id: projectId,
+        name: this.state.project.title,
       },
       text: ACTIVITY.PROJECTS.ADDED_ISSUE,
       type: 'issue',
@@ -244,7 +244,7 @@ class _Board extends React.Component<IProps, IState> {
             key={employee.id}
             header={header}
             className={styles.panel}
-            disabled={issues.length === 0}
+            collapsible={issues.length === 0 ? 'disabled' : 'header'}
             showArrow={issues.length > 0}>
             <AccordionContent issues={issues} />
           </Collapse.Panel>
@@ -253,6 +253,10 @@ class _Board extends React.Component<IProps, IState> {
 
     return (
       <div className={styles.board}>
+        <Link to={ROUTES.PROJECTS.LIST}>
+          <ArrowLeftOutlined className={styles.icon} />
+          <span>Projects list</span>
+        </Link>
         <Typography.Title>{this.state.project?.title}</Typography.Title>
         <div className={styles.buttons}>
           <Button icon={<EditOutlined />} onClick={() => this.setProjectModalVisible(true)}>
