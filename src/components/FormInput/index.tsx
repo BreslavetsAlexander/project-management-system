@@ -4,7 +4,8 @@ import { IProps } from './types';
 import styles from './styles.module.scss';
 
 export const FormInput: React.FC<IProps> = (props) => {
-  const rules = [{ required: true, message: props.message || 'Field is required' }];
+  const propsRules = props.rules ? props.rules : [];
+  const rules = [{ required: true, message: props.message || 'Field is required' }, ...propsRules];
   const passwordInput = <Input.Password placeholder={props.placeholder} />;
   const simpleInput = <Input placeholder={props.placeholder} />;
   const input = props.type === 'password' ? passwordInput : simpleInput;

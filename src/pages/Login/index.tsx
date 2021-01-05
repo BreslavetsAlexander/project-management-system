@@ -1,14 +1,16 @@
 import React from 'react';
 import { withRouter, Redirect, Link, RouteComponentProps } from 'react-router-dom';
-import { Form, Button, Typography } from 'antd';
-import { FormInput } from '../../components/FormInput';
+import { Form, Button, Typography, message } from 'antd';
+import { EmailInput } from '../../components/EmailInput';
+import { PasswordInput } from '../../components/PasswordInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
 import { ROUTES } from '../../constants/routes';
+import { MESSAGES } from '../../constants/messages';
 import { IFormValues } from '../../components/ProfileForm/types';
 import { INPUT_NAMES } from '../../components/ProfileForm/constants';
 import { EmployeeContext } from '../../context';
 import { EmployeesRepository } from '../../services/repositories';
-import { AuthService } from '../../services/Auth';
+import { AuthService, IResponse, IError } from '../../services/Auth';
 import styles from './styles.module.scss';
 
 class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
@@ -20,16 +22,32 @@ class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
       email,
       password,
     });
-    const employee = await EmployeesRepository.getById(authRes.localId);
+
+    if (
+      [MESSAGES.AUTH.EMAIL_NOT_FOUND, MESSAGES.AUTH.INVALID_PASSWORD].includes(
+        (authRes as IError).error?.message,
+      )
+    ) {
+      message.error(MESSAGES.CHECK_DATA);
+      return null;
+    }
+
+    const { localId } = authRes as IResponse;
+
+    const employee = await EmployeesRepository.getById(localId);
 
     return {
       ...employee,
-      id: authRes.localId,
+      id: localId,
     };
   };
 
   onSubmit = (values: IFormValues) => {
     this.props.fetching(this.getEmployee(values.email, values.password)).then((res) => {
+      if (!res) {
+        return;
+      }
+
       this.context.setEmployee(res);
       this.props.history.push(ROUTES.HOME);
     });
@@ -45,11 +63,10 @@ class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
         <div className={styles.formWrapper}>
           <Typography.Title>Log In</Typography.Title>
           <Form<IFormValues> onFinish={this.onSubmit}>
-            <FormInput placeholder={INPUT_NAMES.EMAIL.label} name={INPUT_NAMES.EMAIL.name} />
-            <FormInput
+            <EmailInput placeholder={INPUT_NAMES.EMAIL.label} name={INPUT_NAMES.EMAIL.name} />
+            <PasswordInput
               placeholder={INPUT_NAMES.PASSWORD.label}
               name={INPUT_NAMES.PASSWORD.name}
-              type='password'
             />
             <Form.Item>
               <Button type='primary' htmlType='submit' block>

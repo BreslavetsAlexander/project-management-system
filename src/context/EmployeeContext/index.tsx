@@ -7,14 +7,8 @@ export const EmployeeContext = React.createContext<IEmployeeContext>({} as IEmpl
 
 export class EmployeeContextProvider extends React.Component<{}, IState> {
   state: IState = {
-    employee: null,
+    employee: this.getEmployee(),
   };
-
-  componentDidMount() {
-    this.setState({
-      employee: this.getEmployee(),
-    });
-  }
 
   setEmployee = (employee: IState['employee']) => {
     this.setState({ employee });
@@ -33,7 +27,7 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
 
   getValues(): IEmployeeContext {
     return {
-      employee: this.getEmployee(),
+      employee: this.state.employee,
       setEmployee: this.setEmployee,
     };
   }

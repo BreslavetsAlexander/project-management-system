@@ -9,7 +9,19 @@ interface IPayload {
   returnSecureToken: boolean;
 }
 
-interface IResponse {
+export interface IError {
+  error: {
+    code: number;
+    message: string;
+    errors: {
+      domain: string;
+      message: string;
+      reason: string;
+    }[];
+  };
+}
+
+export interface IResponse {
   idToken: string;
   email: string;
   refreshToken: string;
@@ -23,7 +35,7 @@ class _AuthService {
   register(payload: Pick<IPayload, 'email' | 'password'>) {
     const url = getUrlWithParams(API.REGISTER, { key: API_KEY });
 
-    return HttpProvider.post<IPayload, IResponse>(url, {
+    return HttpProvider.post<IPayload, IResponse | IError>(url, {
       returnSecureToken: true,
       ...payload,
     });
@@ -32,7 +44,7 @@ class _AuthService {
   logIn(payload: Pick<IPayload, 'email' | 'password'>) {
     const url = getUrlWithParams(API.LOG_IN, { key: API_KEY });
 
-    return HttpProvider.post<IPayload, IResponse>(url, {
+    return HttpProvider.post<IPayload, IResponse | IError>(url, {
       returnSecureToken: true,
       ...payload,
     });

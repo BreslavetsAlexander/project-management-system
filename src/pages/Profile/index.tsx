@@ -41,24 +41,33 @@ class _Profile extends React.Component<Props, IState> {
   }
 
   saveInfo = (field: string, value: string) => {
+    const { employee } = this.context;
     const obj = {
       [field]: value,
     };
 
-    const employeePromise = EmployeesRepository.update(this.context.employee?.id!, obj);
     const isEmailOrPassword = ['email', 'password'].includes(field);
+    const prevIdToken = employee?.idToken;
+    // AuthService.updateEmailOrPassword({
+    //   ...obj,
+    //   idToken: employee?.idToken
+    // }).then(res => this.context.setEmployee({
+    //   ...employee,
+    //   idToken: res.idToken
+    // } as IEmployee));
+    const employeePromise = EmployeesRepository.update(this.context.employee?.id!, obj);
     const authPromise = isEmailOrPassword
       ? AuthService.updateEmailOrPassword({
-          [field]: value,
-          idToken: this.context.employee?.idToken,
+          ...obj,
+          idToken: prevIdToken,
         })
       : Promise.resolve(null);
 
     this.props.fetching(Promise.all([employeePromise, authPromise])).then(([_, authRes]) => {
-      const idToken = authRes ? authRes.idToken : this.context.employee?.idToken;
+      const idToken = authRes ? authRes.idToken : prevIdToken;
 
       this.context.setEmployee({
-        ...this.context.employee,
+        ...employee,
         ...obj,
         idToken,
       } as IEmployee);
@@ -98,7 +107,7 @@ class _Profile extends React.Component<Props, IState> {
           <UserOutlined className={styles.icon} />
           <div className={styles.info}>
             <div className={styles.name}>{employeeName}</div>
-            <div className={styles.username}>@username</div>
+            <div className={styles.username}>@{this.context.employee?.username}</div>
           </div>
         </div>
         <Tabs defaultActiveKey='Information'>
