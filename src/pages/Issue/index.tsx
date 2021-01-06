@@ -316,6 +316,10 @@ class _Issue extends React.Component<IProps, IState> {
       return null;
     }
 
+    const projectEmployees = this.state.employees.filter((item) => {
+      return item.projectId === this.props.match.params.projectId;
+    });
+
     return (
       <div className={styles.layoutContent}>
         <div className={styles.projectName}>
@@ -340,7 +344,7 @@ class _Issue extends React.Component<IProps, IState> {
         <IssuePeople
           assignee={this.state.issue.assignee}
           author={this.state.issue.author}
-          employees={this.state.employees}
+          employees={projectEmployees}
           onChangeAssignee={this.onChangeAssignee}
         />
         <Tabs
