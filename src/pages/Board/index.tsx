@@ -79,28 +79,32 @@ class _Board extends React.Component<IProps, IState> {
       description: values.description,
     };
 
-    Promise.all([
-      ProjectsRepository.update(id, updatedProject),
-      ActivityRepository.create({
-        employee: this.getEmployee(),
-        date: moment().format(DATES_FORMATS.FULL_FORMAT),
-        entity: {
-          id: this.state.project.id!,
-          name: this.state.project?.title!,
-        },
-        text: ACTIVITY.PROJECTS.UPDATED,
-        type: 'issue',
-      }),
-    ]).then(() => {
-      this.setState({
-        project: {
-          ...updatedProject,
-          issues,
-          id,
-        },
+    this.props
+      .fetching(
+        Promise.all([
+          ProjectsRepository.update(id, updatedProject),
+          ActivityRepository.create({
+            employee: this.getEmployee(),
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
+            entity: {
+              id: this.state.project.id!,
+              name: this.state.project?.title!,
+            },
+            text: ACTIVITY.PROJECTS.UPDATED,
+            type: 'issue',
+          }),
+        ]),
+      )
+      .then(() => {
+        this.setState({
+          project: {
+            ...updatedProject,
+            issues,
+            id,
+          },
+        });
+        this.setProjectModalVisible(false);
       });
-      this.setProjectModalVisible(false);
-    });
   };
 
   onDelete = () => {
@@ -166,7 +170,7 @@ class _Board extends React.Component<IProps, IState> {
       type: 'issue',
     });
 
-    Promise.all([issuePromise, activityPromise]).then(([issue]) => {
+    this.props.fetching(Promise.all([issuePromise, activityPromise])).then(([issue]) => {
       this.setIssueModalVisible(false);
       this.props.history.push(ROUTES.PROJECTS.ISSUE.ROUTE(projectId, issue.name));
     });
@@ -286,6 +290,7 @@ class _Board extends React.Component<IProps, IState> {
             description: this.state.project?.description!,
           }}
           onSubmit={this.onEdit}
+          loading={this.props.loading}
         />
         <IssueModal
           title='Create issue'
@@ -303,6 +308,7 @@ class _Board extends React.Component<IProps, IState> {
             },
           }}
           onSubmit={this.onCreate}
+          loading={this.props.loading}
         />
       </div>
     );

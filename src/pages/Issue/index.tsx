@@ -132,7 +132,7 @@ class _Issue extends React.Component<IProps, IState> {
       type: 'issue',
     });
 
-    Promise.all([issuePromise, activityPromise]).then(() => {
+    this.props.fetching(Promise.all([issuePromise, activityPromise])).then(() => {
       this.setState({
         issue: {
           ...(this.state.issue as IIssue),
@@ -366,6 +366,7 @@ class _Issue extends React.Component<IProps, IState> {
             originalEstimate: this.state.issue.originalEstimate,
           }}
           onSubmit={this.onEdit}
+          loading={this.props.loading}
         />
         <LogWorkModal
           visible={this.state.logWorkVisible}

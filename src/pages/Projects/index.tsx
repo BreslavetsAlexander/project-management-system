@@ -44,32 +44,36 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
       description: values.description,
     };
 
-    Promise.all([
-      ProjectsRepository.create(project),
-      ActivityRepository.create({
-        employee: {
-          id: this.context.employee?.id!,
-          firstName: this.context.employee?.firstName!,
-          lastName: this.context.employee?.lastName!,
-        },
-        date: moment().format(DATES_FORMATS.FULL_FORMAT),
-        entity: {
-          id: 1,
-          name: values.title,
-        },
-        text: ACTIVITY.PROJECTS.CREATED,
-        type: 'issue',
-      }),
-    ]).then(([res]) => {
-      const projects = [...this.state.projects];
-      projects.push({
-        ...project,
-        id: res.name,
-        issues: [],
+    this.props
+      .fetching(
+        Promise.all([
+          ProjectsRepository.create(project),
+          ActivityRepository.create({
+            employee: {
+              id: this.context.employee?.id!,
+              firstName: this.context.employee?.firstName!,
+              lastName: this.context.employee?.lastName!,
+            },
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
+            entity: {
+              id: 1,
+              name: values.title,
+            },
+            text: ACTIVITY.PROJECTS.CREATED,
+            type: 'issue',
+          }),
+        ]),
+      )
+      .then(([res]) => {
+        const projects = [...this.state.projects];
+        projects.push({
+          ...project,
+          id: res.name,
+          issues: [],
+        });
+        this.setState({ projects });
+        this.setVisible(false);
       });
-      this.setState({ projects });
-      this.setVisible(false);
-    });
   };
 
   render() {
@@ -108,6 +112,7 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
             description: '',
           }}
           onSubmit={this.onSubmit}
+          loading={this.props.loading}
         />
       </div>
     );

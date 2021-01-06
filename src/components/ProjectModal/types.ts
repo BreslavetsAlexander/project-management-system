@@ -7,4 +7,5 @@ export interface IProps {
   onSubmit: (values: IProps['values']) => void;
   title: string;
   buttonText: string;
+  loading: boolean;
 }
