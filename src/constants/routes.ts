@@ -1,6 +1,4 @@
-const buildRoute = (template: string, value: string): string => {
-  return template.replace(/:[A-Za-z]+/gi, value);
-};
+const buildRoute = (template: string, value: string) => template.replace(/:[A-Za-z]+/gi, value);
 
 export const ROUTES = {
   HOME: '/',
