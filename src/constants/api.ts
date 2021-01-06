@@ -38,9 +38,7 @@ export const API = {
           projectId: number | string,
           issueId: number | string,
           worklogId: number | string,
-        ) => {
-          return `${API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId)}/${worklogId}`;
-        },
+        ) => `${API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId)}/${worklogId}`,
       },
     },
   },
