@@ -86,6 +86,7 @@ module.exports = {
     }),
     new Dotenv({
       path: path.resolve(__dirname, '.env'),
+      systemvars: true,
     }),
     new MomentLocalesPlugin(),
   ],
