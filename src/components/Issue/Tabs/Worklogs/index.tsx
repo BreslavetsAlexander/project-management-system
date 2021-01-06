@@ -32,7 +32,10 @@ export class Worklogs extends React.Component<IProps> {
   render() {
     const originalEstimate = getTimeAsString(this.props.originalEstimate);
     const logged = getTimeAsString(this.getLoggedTime());
-    const remainingEstimate = getTimeAsString(this.getRemainingEstimate());
+    const isTimeOver = Object.values(this.getRemainingEstimate()).some((item) => item < 0);
+    const remainingEstimate = isTimeOver
+      ? 'Time is over'
+      : getTimeAsString(this.getRemainingEstimate());
 
     return (
       <Row gutter={[24, 0]}>

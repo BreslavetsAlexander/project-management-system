@@ -89,7 +89,7 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
           dataSource={this.state.projects}
           loading={false}
           loadMore={false}
-          locale={{ emptyText: null }}
+          locale={{ emptyText: 'Projects list is empty' }}
           renderItem={(item) => (
             <List.Item>
               <Card title={item.title} className={styles.card}>

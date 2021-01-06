@@ -54,7 +54,7 @@ export class IssueModal extends React.Component<IProps> {
         title: item,
       };
     });
-    const minutes = values.map((item) => {
+    const minutes = values.slice(1, values.length).map((item) => {
       return {
         value: item,
         title: item,

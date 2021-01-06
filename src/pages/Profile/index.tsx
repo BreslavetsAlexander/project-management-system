@@ -48,13 +48,6 @@ class _Profile extends React.Component<Props, IState> {
 
     const isEmailOrPassword = ['email', 'password'].includes(field);
     const prevIdToken = employee?.idToken;
-    // AuthService.updateEmailOrPassword({
-    //   ...obj,
-    //   idToken: employee?.idToken
-    // }).then(res => this.context.setEmployee({
-    //   ...employee,
-    //   idToken: res.idToken
-    // } as IEmployee));
     const employeePromise = EmployeesRepository.update(this.context.employee?.id!, obj);
     const authPromise = isEmailOrPassword
       ? AuthService.updateEmailOrPassword({

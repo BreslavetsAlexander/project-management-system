@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, Redirect, Link, RouteComponentProps } from 'react-router-dom';
 import { Form, Button, Typography, message } from 'antd';
+import { LoginOutlined } from '@ant-design/icons';
 import { EmailInput } from '../../components/EmailInput';
 import { PasswordInput } from '../../components/PasswordInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
@@ -61,7 +62,9 @@ class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
     return (
       <div className={styles.login}>
         <div className={styles.formWrapper}>
-          <Typography.Title>Log In</Typography.Title>
+          <Typography.Title>
+            <LoginOutlined /> Log In
+          </Typography.Title>
           <Form<IFormValues> onFinish={this.onSubmit}>
             <EmailInput placeholder={INPUT_NAMES.EMAIL.label} name={INPUT_NAMES.EMAIL.name} />
             <PasswordInput

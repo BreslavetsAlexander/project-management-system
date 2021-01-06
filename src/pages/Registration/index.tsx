@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, Redirect, Link, RouteComponentProps } from 'react-router-dom';
 import { Form, Button, Typography, message } from 'antd';
+import { UserAddOutlined } from '@ant-design/icons';
 import { FormInput } from '../../components/FormInput';
 import { EmailInput } from '../../components/EmailInput';
 import { PasswordInput } from '../../components/PasswordInput';
@@ -66,7 +67,9 @@ class _Registration extends React.Component<IWithLoaderProps & RouteComponentPro
     return (
       <div className={styles.registration}>
         <div className={styles.formWrapper}>
-          <Typography.Title>Registration</Typography.Title>
+          <Typography.Title>
+            <UserAddOutlined /> Registration
+          </Typography.Title>
           <Form<IFormValues> onFinish={this.onSubmit}>
             <FormInput
               placeholder={INPUT_NAMES.FIRST_NAME.label}
