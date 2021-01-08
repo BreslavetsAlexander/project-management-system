@@ -11,6 +11,7 @@ export type IProps = RouteComponentProps<IParams> & IWithLoaderProps;
 export interface IState {
   project: IProject | null;
   employees: IEmployee[];
+  projectEmployees: IEmployee[];
   projectModalVisible: boolean;
   issueModalVisible: boolean;
 }

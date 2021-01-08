@@ -8,4 +8,5 @@ export interface IProps {
   name: string;
   options: IOption[];
   message?: string;
+  empty?: string;
 }

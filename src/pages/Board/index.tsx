@@ -1,19 +1,19 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import { Collapse, Typography, Button, Modal, Form } from 'antd';
+import { Typography, Button, Modal, Form } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
-import { AccordionContent } from '../../components/Board/AccordionContent';
 import { FormSelect } from '../../components/FormSelect';
 import { withLoader } from '../../components/hoc';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IssueModal } from '../../components/IssueModal';
+import { ProjectEmployees } from '../../components/Board/ProjectEmployees';
 import { ROUTES } from '../../constants/routes';
 import { ACTIVITY } from '../../constants/activity';
 import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ISSUES } from '../../constants/issues';
-import { IProject, IIssue } from '../../definitions';
+import { IEmployee, IProject, IIssue } from '../../definitions';
 import {
   ProjectsRepository,
   IssuesRepository,
@@ -33,6 +33,7 @@ class _Board extends React.Component<IProps, IState> {
   state: IState = {
     project: null,
     employees: [],
+    projectEmployees: [],
     projectModalVisible: false,
     issueModalVisible: false,
   };
@@ -60,8 +61,10 @@ class _Board extends React.Component<IProps, IState> {
             issues: prepareData(projectRes.issues),
           },
           employees: prepareData(employeeRes),
+          projectEmployees: prepareData(employeeRes).filter((item) => item.projectId === id),
         });
-      });
+      })
+      .catch(() => this.props.history.push(ROUTES.NOT_FOUND));
   }
 
   setProjectModalVisible = (projectModalVisible: boolean) => this.setState({ projectModalVisible });
@@ -197,6 +200,10 @@ class _Board extends React.Component<IProps, IState> {
       )
       .then(() => {
         this.formRef.current?.resetFields();
+        const projectEmployee = this.state.employees.find((item) => item.id === employeeId)!;
+        const projectEmployees = [...this.state.projectEmployees];
+        projectEmployees.push(projectEmployee);
+        this.setState({ projectEmployees });
 
         if (employeeId === this.context.employee?.id) {
           this.context.setEmployee({
@@ -205,6 +212,13 @@ class _Board extends React.Component<IProps, IState> {
           });
         }
       });
+  };
+
+  onLeaveProject = (id: IEmployee['id']) => {
+    this.props.fetching(EmployeesRepository.update(id, { projectId: null })).then(() => {
+      const projectEmployees = this.state.projectEmployees.filter((item) => item.id !== id)!;
+      this.setState({ projectEmployees });
+    });
   };
 
   getSelect() {
@@ -221,7 +235,12 @@ class _Board extends React.Component<IProps, IState> {
       <Form<IFormValues>
         ref={this.formRef}
         onValuesChange={(_, values) => this.onAddEmployee(values.employeeId)}>
-        <FormSelect message='+ Add employee to project' name='employeeId' options={selectOptions} />
+        <FormSelect
+          message='+ Add employee to project'
+          name='employeeId'
+          options={selectOptions}
+          empty='Sorry, but all employees are busy. You cannot add new employee'
+        />
       </Form>
     );
   }
@@ -230,30 +249,6 @@ class _Board extends React.Component<IProps, IState> {
     if (!this.state.project) {
       return null;
     }
-
-    const collapsePanels = this.state.employees
-      .filter((employee) => employee.projectId === this.props.match.params.id)
-      .map((employee) => {
-        const issues =
-          this.state.project?.issues.filter((issue) => issue.assignee.id === employee.id) || [];
-        const header = (
-          <div className={styles.header}>
-            <span className={styles.name}>{`${employee.firstName} ${employee.lastName}`}</span>
-            <span className={styles.count}>{issues.length} issue(s)</span>
-          </div>
-        );
-
-        return (
-          <Collapse.Panel
-            key={employee.id}
-            header={header}
-            className={styles.panel}
-            collapsible={issues.length === 0 ? 'disabled' : 'header'}
-            showArrow={issues.length > 0}>
-            <AccordionContent issues={issues} />
-          </Collapse.Panel>
-        );
-      });
 
     return (
       <div className={styles.board}>
@@ -277,9 +272,12 @@ class _Board extends React.Component<IProps, IState> {
           </Button>
           {this.getSelect()}
         </div>
-        <Collapse bordered={false} accordion className={styles.collapse}>
-          {collapsePanels}
-        </Collapse>
+        <ProjectEmployees
+          project={this.state.project}
+          employees={this.state.projectEmployees}
+          currentEmployeeId={this.getEmployee().id}
+          onLeaveProject={this.onLeaveProject}
+        />
         <ProjectModal
           title='Edit project'
           buttonText='Edit'

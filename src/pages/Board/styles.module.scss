@@ -22,30 +22,4 @@
       margin: 0;
     }
   }
-
-  .collapse {
-    margin-top: 25px;
-    background-color: transparent;
-
-    .panel {
-      border: 1px solid rgba($black, 0.2);
-      margin-bottom: 20px;
-
-      .header {
-        .name {
-          margin-right: 5px;
-          font-size: 18px;
-          font-weight: 500;
-        }
-
-        .count {
-          font-size: 15px;
-        }
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
 }
