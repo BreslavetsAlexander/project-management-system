@@ -1,4 +1,4 @@
-import { API, API_KEY } from './../constants/api';
+import { API } from './../constants/api';
 import { getUrlWithParams } from '../utils';
 import { IEmployee } from '../definitions';
 import { HttpProvider } from './httpProvider';
@@ -33,7 +33,7 @@ type UpdateInfo = Partial<Pick<IEmployee, 'email' | 'password' | 'idToken'>>;
 
 class _AuthService {
   register(payload: Pick<IPayload, 'email' | 'password'>) {
-    const url = getUrlWithParams(API.REGISTER, { key: API_KEY });
+    const url = getUrlWithParams(API.REGISTER, { key: API.KEY });
 
     return HttpProvider.post<IPayload, IResponse | IError>(url, {
       returnSecureToken: true,
@@ -42,7 +42,7 @@ class _AuthService {
   }
 
   logIn(payload: Pick<IPayload, 'email' | 'password'>) {
-    const url = getUrlWithParams(API.LOG_IN, { key: API_KEY });
+    const url = getUrlWithParams(API.LOG_IN, { key: API.KEY });
 
     return HttpProvider.post<IPayload, IResponse | IError>(url, {
       returnSecureToken: true,
@@ -51,7 +51,7 @@ class _AuthService {
   }
 
   updateEmailOrPassword(data: UpdateInfo) {
-    const url = getUrlWithParams(API.UPDATE_EMAIL_OR_PASSWORD, { key: API_KEY });
+    const url = getUrlWithParams(API.UPDATE_EMAIL_OR_PASSWORD, { key: API.KEY });
 
     return HttpProvider.post<
       UpdateInfo & { returnSecureToken: boolean },

@@ -1,20 +1,22 @@
 import { API } from './../../constants/api';
 import { IEmployee } from './../../definitions';
-import { getUrlWithJsonExtension } from './../../utils';
+import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
+type EmployeeResponce = Omit<IEmployee, 'id'>;
+
 interface IEmployeesResponce {
-  [id: string]: Omit<IEmployee, 'id'>;
+  [id: string]: EmployeeResponce;
 }
 
 class _EmployeesRepository {
-  getAll() {
+  getAll(): Promise<IEmployee[]> {
     const url = getUrlWithJsonExtension(API.EMPLOYEES.LIST());
 
-    return HttpProvider.get<IEmployeesResponce>(url);
+    return HttpProvider.get<IEmployeesResponce>(url).then(prepareData);
   }
 
-  getById(id: number | string) {
+  getById(id: IEmployee['id']) {
     const url = getUrlWithJsonExtension(API.EMPLOYEES.DETAIL(id));
 
     return HttpProvider.get<IEmployee>(url);
@@ -26,7 +28,7 @@ class _EmployeesRepository {
     return HttpProvider.post<IEmployee>(url, data);
   }
 
-  update(id: number | string, data: Partial<Omit<IEmployee, 'id'>>) {
+  update(id: IEmployee['id'], data: Partial<Omit<IEmployee, 'id'>>) {
     const url = getUrlWithJsonExtension(API.EMPLOYEES.DETAIL(id));
 
     return HttpProvider.patch<IEmployee>(url, data);

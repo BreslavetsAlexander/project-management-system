@@ -13,7 +13,7 @@ export interface IWorkLog {
   id: number | string;
   date: string;
   time: IIssue['originalEstimate'];
-  employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
+  authorId: IEmployee['id'];
 }
 
 export interface IIssue {
@@ -22,9 +22,9 @@ export interface IIssue {
   description: string;
   status: string;
   priority: string;
-  project: Pick<IProject, 'id' | 'title'>;
-  author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
-  assignee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
+  projectId: IProject['id'];
+  authorId: IEmployee['id'];
+  assigneeId: IEmployee['id'];
   originalEstimate: {
     d: number;
     h: number;
@@ -38,7 +38,7 @@ export interface IProject {
   id: number | string;
   title: string;
   description: string;
-  issues: IIssue[];
+  issuesCount: number;
 }
 
 export interface IActivity {
@@ -56,6 +56,6 @@ export interface IActivity {
 export interface IComment {
   id: number | string;
   text: string;
-  author: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
+  authorId: IEmployee['id'];
   date: string;
 }

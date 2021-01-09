@@ -9,7 +9,6 @@ import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ROUTES } from '../../constants/routes';
 import { ACTIVITY } from '../../constants/activity';
 import { IProject } from '../../definitions';
-import { prepareData } from '../../utils';
 import { EmployeeContext } from './../../context';
 import { IState } from './types';
 import styles from './styles.module.scss';
@@ -24,30 +23,22 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
   };
 
   componentDidMount() {
-    this.props.fetching(ProjectsRepository.getAll()).then((res) => {
-      const projects = prepareData(res).map((item) => {
-        return {
-          ...item,
-          issues: prepareData(item.issues),
-        };
-      });
-
-      this.setState({ projects });
-    });
+    this.props
+      .fetching(ProjectsRepository.getAll())
+      .then((projects) => this.setState({ projects }));
   }
 
   setVisible = (visible: boolean) => this.setState({ visible });
 
   onSubmit = (values: Pick<IProject, 'title' | 'description'>) => {
-    const project = {
-      title: values.title,
-      description: values.description,
-    };
-
     this.props
       .fetching(
         Promise.all([
-          ProjectsRepository.create(project),
+          ProjectsRepository.create({
+            title: values.title,
+            description: values.description,
+            issuesCount: 0,
+          }),
           ActivityRepository.create({
             employee: {
               id: this.context.employee?.id!,
@@ -64,13 +55,9 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
           }),
         ]),
       )
-      .then(([res]) => {
+      .then(([project]) => {
         const projects = [...this.state.projects];
-        projects.push({
-          ...project,
-          id: res.name,
-          issues: [],
-        });
+        projects.push(project);
         this.setState({ projects });
         this.setVisible(false);
       });
@@ -95,7 +82,7 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
               <Card title={item.title} className={styles.card}>
                 <div className={styles.info}>
                   <div>{item.description}</div>
-                  <div>{item.issues.length}</div>
+                  <div>{item.issuesCount}</div>
                 </div>
                 <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(item.id)}>View board</Link>
               </Card>

@@ -1,6 +1,6 @@
 import { API } from './../../constants/api';
 import { IActivity } from './../../definitions';
-import { getUrlWithJsonExtension } from './../../utils';
+import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
 interface IActivityResponce {
@@ -12,10 +12,10 @@ interface ICreateActivityResponce {
 }
 
 class _ActivityRepository {
-  getAll() {
+  getAll(): Promise<IActivity[]> {
     const url = getUrlWithJsonExtension(API.ACTIVITY.LIST());
 
-    return HttpProvider.get<IActivityResponce>(url);
+    return HttpProvider.get<IActivityResponce>(url).then(prepareData);
   }
 
   create(data: Partial<IActivity>) {

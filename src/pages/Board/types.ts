@@ -1,6 +1,6 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { IWithLoaderProps } from '../../components/hoc';
-import { IEmployee, IProject } from './../../definitions';
+import { IEmployee, IProject, IIssue } from './../../definitions';
 
 interface IParams {
   id: string;
@@ -12,6 +12,7 @@ export interface IState {
   project: IProject | null;
   employees: IEmployee[];
   projectEmployees: IEmployee[];
+  projectIssues: IIssue[];
   projectModalVisible: boolean;
   issueModalVisible: boolean;
 }

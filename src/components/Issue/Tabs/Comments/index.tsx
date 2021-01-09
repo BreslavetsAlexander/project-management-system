@@ -27,18 +27,15 @@ export class CommentsTab extends React.Component<IProps, IState> {
             <span onClick={() => this.props.deleteComment(item.id)}>Delete</span>,
           ];
 
-          const isAuthor = this.props.employee?.id === item.author.id;
+          const author = this.props.employees.find((employee) => employee.id === item.authorId)!;
+          const isAuthor = this.props.employee?.id === item.authorId;
 
           return (
             <Comment
               key={item.id}
               className={styles.comment}
               avatar={<UserOutlined className={styles.avatar} />}
-              author={
-                <a className={styles.author}>
-                  {`${item.author.firstName} ${item.author.lastName}`}
-                </a>
-              }
+              author={<a className={styles.author}>{`${author.firstName} ${author.lastName}`}</a>}
               datetime={<p className={styles.datetime}>{item.date}</p>}
               content={<p className={styles.content}>{item.text}</p>}
               actions={isAuthor ? actions : []}

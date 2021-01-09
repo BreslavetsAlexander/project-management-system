@@ -25,7 +25,7 @@ export class AccordionContent extends React.Component<IProps> {
             {priorityIcon}
             <div>
               <h3 className={styles.issueName}>
-                <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.project.id, item.id)}>{item.title}</Link>
+                <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.projectId, item.id)}>{item.title}</Link>
               </h3>
               <h4 className={styles.description}>{item.description}</h4>
             </div>

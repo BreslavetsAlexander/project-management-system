@@ -1,44 +1,34 @@
-const BASE_URL = process.env.REACT_APP_API_URL || '';
+import { IEmployee, IProject, IIssue, IComment, IWorkLog } from '../definitions';
 
-export const API_KEY = process.env.REACT_APP_API_KEY || '';
+const BASE_URL = process.env.REACT_APP_API_URL || '';
+const KEY = process.env.REACT_APP_API_KEY || '';
 
 export const API = {
+  KEY,
   REGISTER: 'https://identitytoolkit.googleapis.com/v1/accounts:signUp',
   LOG_IN: 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword',
   UPDATE_EMAIL_OR_PASSWORD: 'https://identitytoolkit.googleapis.com/v1/accounts:update',
   EMPLOYEES: {
     LIST: () => `${BASE_URL}/employees`,
-    DETAIL: (id: number | string) => `${API.EMPLOYEES.LIST()}/${id}`,
+    DETAIL: (id: IEmployee['id']) => `${API.EMPLOYEES.LIST()}/${id}`,
   },
   PROJECTS: {
     LIST: () => `${BASE_URL}/projects`,
-    DETAIL: (id: number | string) => `${API.PROJECTS.LIST()}/${id}`,
-    ISSUES: {
-      LIST: (projectId: number | string) => `${API.PROJECTS.DETAIL(projectId)}/issues`,
-      DETAIL: (projectId: number | string, issueId: number | string) => {
-        return `${API.PROJECTS.ISSUES.LIST(projectId)}/${issueId}`;
+    DETAIL: (id: IProject['id']) => `${API.PROJECTS.LIST()}/${id}`,
+  },
+  ISSUES: {
+    LIST: () => `${BASE_URL}/issues`,
+    DETAIL: (id: IIssue['id']) => `${API.ISSUES.LIST()}/${id}`,
+    COMMENTS: {
+      LIST: (issueId: IIssue['id']) => `${API.ISSUES.DETAIL(issueId)}/comments`,
+      DETAIL: (issueId: IIssue['id'], commentId: IComment['id']) => {
+        return `${API.ISSUES.COMMENTS.LIST(issueId)}/${commentId}`;
       },
-      COMMENTS: {
-        LIST: (projectId: number | string, issueId: number | string) => {
-          return `${API.PROJECTS.ISSUES.DETAIL(projectId, issueId)}/comments`;
-        },
-        DETAIL: (
-          projectId: number | string,
-          issueId: number | string,
-          commentId: number | string,
-        ) => {
-          return `${API.PROJECTS.ISSUES.COMMENTS.LIST(projectId, issueId)}/${commentId}`;
-        },
-      },
-      WORKLOGS: {
-        LIST: (projectId: number | string, issueId: number | string) => {
-          return `${API.PROJECTS.ISSUES.DETAIL(projectId, issueId)}/worklogs`;
-        },
-        DETAIL: (
-          projectId: number | string,
-          issueId: number | string,
-          worklogId: number | string,
-        ) => `${API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId)}/${worklogId}`,
+    },
+    WORKLOGS: {
+      LIST: (issueId: IIssue['id']) => `${API.ISSUES.DETAIL(issueId)}/worklogs`,
+      DETAIL: (issueId: IIssue['id'], worklogId: IWorkLog['id']) => {
+        return `${API.ISSUES.WORKLOGS.LIST(issueId)}/${worklogId}`;
       },
     },
   },

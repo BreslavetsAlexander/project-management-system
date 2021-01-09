@@ -1,6 +1,6 @@
 import { API } from './../../constants/api';
 import { IIssue, IComment, IWorkLog } from './../../definitions';
-import { IParams, getUrlWithJsonExtension } from './../../utils';
+import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
 interface ICreateIssueResponce {
@@ -17,27 +17,57 @@ type IssueResponce = Omit<IIssue, 'id' | 'comments' | 'worklogs'> & {
   };
 };
 
+interface IIssuesResponce {
+  [id: string]: IssueResponce;
+}
+
 class _IssuesRepository {
-  getById(projectId: number | string, issueId: number | string, params?: IParams) {
-    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
+  getAll(): Promise<IIssue[]> {
+    const url = getUrlWithJsonExtension(API.ISSUES.LIST());
 
-    return HttpProvider.get<IssueResponce>(url, params);
+    return HttpProvider.get<IIssuesResponce>(url).then((res) => {
+      return prepareData(res).map((issue) => {
+        return {
+          ...issue,
+          comments: prepareData(issue.comments),
+          worklogs: prepareData(issue.worklogs),
+        };
+      });
+    });
   }
 
-  create(projectId: number | string, data: Partial<IIssue>) {
-    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.LIST(projectId));
+  getById(id: IIssue['id']): Promise<IIssue> {
+    const url = getUrlWithJsonExtension(API.ISSUES.DETAIL(id));
 
-    return HttpProvider.post<IIssue, ICreateIssueResponce>(url, data);
+    return HttpProvider.get<IssueResponce>(url).then((res) => {
+      return {
+        ...res,
+        comments: prepareData(res.comments),
+        worklogs: prepareData(res.worklogs),
+        id,
+      };
+    });
   }
 
-  update(projectId: number | string, issueId: number | string, data: Partial<IIssue>) {
-    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
+  create(data: Omit<IIssue, 'id'>): Promise<IIssue> {
+    const url = getUrlWithJsonExtension(API.ISSUES.LIST());
+
+    return HttpProvider.post<IIssue, ICreateIssueResponce>(url, data).then((res) => {
+      return {
+        ...data,
+        id: res.name,
+      };
+    });
+  }
+
+  update(id: IIssue['id'], data: Partial<IIssue>) {
+    const url = getUrlWithJsonExtension(API.ISSUES.DETAIL(id));
 
     return HttpProvider.patch<Omit<IIssue, 'id'>>(url, data);
   }
 
-  delete(projectId: number | string, issueId: number | string) {
-    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.DETAIL(projectId, issueId));
+  delete(id: IIssue['id']) {
+    const url = getUrlWithJsonExtension(API.ISSUES.DETAIL(id));
 
     return HttpProvider.delete(url);
   }

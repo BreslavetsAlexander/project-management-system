@@ -18,7 +18,7 @@ export const ProjectEmployees: React.FC<IProps> = (props) => {
   }
 
   const collapsePanels = props.employees.map((employee) => {
-    const issues = props.project?.issues.filter((issue) => issue.assignee.id === employee.id) || [];
+    const issues = props.issues.filter((issue) => issue.assigneeId === employee.id);
     const header = (
       <div className={styles.header}>
         <span className={styles.name}>{`${employee.firstName} ${employee.lastName}`}</span>

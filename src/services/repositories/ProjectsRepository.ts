@@ -1,48 +1,54 @@
 import { API } from './../../constants/api';
-import { IProject, IIssue } from './../../definitions';
-import { IParams, getUrlWithJsonExtension } from './../../utils';
+import { IProject } from './../../definitions';
+import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
 interface ICreateProjectResponce {
   name: string;
 }
 
-type ProjectResponce = Pick<IProject, 'title' | 'description'> & {
-  issues: {
-    [id: string]: Omit<IIssue, 'id'>;
-  };
-};
+type ProjectResponce = Omit<IProject, 'id'>;
 
 interface IProjectsResponce {
   [id: string]: ProjectResponce;
 }
 
 class _ProjectsRepository {
-  getAll() {
+  getAll(): Promise<IProject[]> {
     const url = getUrlWithJsonExtension(API.PROJECTS.LIST());
 
-    return HttpProvider.get<IProjectsResponce>(url);
+    return HttpProvider.get<IProjectsResponce>(url).then(prepareData);
   }
 
-  getById(id: number | string, params?: IParams) {
+  getById(id: IProject['id']): Promise<IProject> {
     const url = getUrlWithJsonExtension(API.PROJECTS.DETAIL(id));
 
-    return HttpProvider.get<ProjectResponce>(url, params);
+    return HttpProvider.get<ProjectResponce>(url).then((res) => {
+      return {
+        ...res,
+        id,
+      };
+    });
   }
 
-  create(data: Partial<IProject>) {
+  create(data: Omit<IProject, 'id'>): Promise<IProject> {
     const url = getUrlWithJsonExtension(API.PROJECTS.LIST());
 
-    return HttpProvider.post<IProject, ICreateProjectResponce>(url, data);
+    return HttpProvider.post<IProject, ICreateProjectResponce>(url, data).then((res) => {
+      return {
+        ...data,
+        id: res.name,
+      };
+    });
   }
 
-  update(id: number | string, data: Partial<IProject>) {
+  update(id: IProject['id'], data: Partial<IProject>) {
     const url = getUrlWithJsonExtension(API.PROJECTS.DETAIL(id));
 
     return HttpProvider.patch<Omit<IProject, 'id'>>(url, data);
   }
 
-  delete(id: number | string) {
+  delete(id: IProject['id']) {
     const url = getUrlWithJsonExtension(API.PROJECTS.DETAIL(id));
 
     return HttpProvider.delete(url);

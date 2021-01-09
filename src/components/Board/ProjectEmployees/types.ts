@@ -1,8 +1,8 @@
-import { IEmployee, IProject } from '../../../definitions';
+import { IEmployee, IIssue } from '../../../definitions';
 
 export interface IProps {
   employees: IEmployee[];
-  project: IProject;
+  issues: IIssue[];
   currentEmployeeId: IEmployee['id'];
   onLeaveProject: (id: IEmployee['id']) => void;
 }

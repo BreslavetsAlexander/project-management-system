@@ -1,0 +1,15 @@
+@import '../../assets/variables.scss';
+
+.formItem {
+  div[class*='ant-form-item-label'] {
+    label[class*='ant-form-item-required'] {
+      color: $black;
+      font-size: 14px;
+
+      &:before {
+        content: '';
+        margin: 0;
+      }
+    }
+  }
+}

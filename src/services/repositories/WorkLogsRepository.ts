@@ -1,5 +1,5 @@
 import { API } from './../../constants/api';
-import { IWorkLog } from './../../definitions';
+import { IIssue, IWorkLog } from './../../definitions';
 import { HttpProvider } from '../httpProvider';
 import { getUrlWithJsonExtension } from '../../utils';
 
@@ -8,16 +8,19 @@ interface ICreateWorkLogResponce {
 }
 
 class _WorkLogsRepository {
-  create(projectId: string | number, issueId: string | number, data: Partial<IWorkLog>) {
-    const url = getUrlWithJsonExtension(API.PROJECTS.ISSUES.WORKLOGS.LIST(projectId, issueId));
+  create(issueId: IIssue['id'], data: Omit<IWorkLog, 'id'>): Promise<IWorkLog> {
+    const url = getUrlWithJsonExtension(API.ISSUES.WORKLOGS.LIST(issueId));
 
-    return HttpProvider.post<IWorkLog, ICreateWorkLogResponce>(url, data);
+    return HttpProvider.post<IWorkLog, ICreateWorkLogResponce>(url, data).then((res) => {
+      return {
+        ...data,
+        id: res.name,
+      };
+    });
   }
 
-  delete(projectId: string | number, issueId: string | number, id: number | string) {
-    const url = getUrlWithJsonExtension(
-      API.PROJECTS.ISSUES.WORKLOGS.DETAIL(projectId, issueId, id),
-    );
+  delete(issueId: IIssue['id'], id: IWorkLog['id']) {
+    const url = getUrlWithJsonExtension(API.ISSUES.WORKLOGS.DETAIL(issueId, id));
 
     return HttpProvider.delete(url);
   }

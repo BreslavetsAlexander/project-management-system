@@ -8,15 +8,19 @@ import { withAuthorization, withLoader } from './../../components/hoc';
 import { ROUTES } from './../../constants/routes';
 import { EmployeeContext } from '../../context';
 import { IEmployee } from '../../definitions';
-import { EmployeesRepository, ProjectsRepository } from '../../services/repositories';
+import {
+  EmployeesRepository,
+  ProjectsRepository,
+  IssuesRepository,
+} from '../../services/repositories';
 import { AuthService } from '../../services/Auth';
-import { prepareData } from '../../utils';
 import { Props, IState } from './types';
 import styles from './styles.module.scss';
 
 class _Profile extends React.Component<Props, IState> {
   state: IState = {
     project: null,
+    issues: [],
   };
 
   static contextType = EmployeeContext;
@@ -29,15 +33,12 @@ class _Profile extends React.Component<Props, IState> {
       return;
     }
 
-    this.props.fetching(ProjectsRepository.getById(projectId)).then((res) => {
-      this.setState({
-        project: {
-          ...res,
-          issues: prepareData(res.issues),
-          id: projectId,
-        },
-      });
-    });
+    const projectPromise = ProjectsRepository.getById(projectId);
+    const issuesPromise = IssuesRepository.getAll();
+
+    this.props
+      .fetching(Promise.all([projectPromise, issuesPromise]))
+      .then(([project, issues]) => this.setState({ project, issues }));
   }
 
   saveInfo = (field: string, value: string) => {
@@ -85,7 +86,7 @@ class _Profile extends React.Component<Props, IState> {
           header={this.state.project.title}
           showArrow={false}
           collapsible='disabled'>
-          <AccordionContent issues={this.state.project.issues} />
+          <AccordionContent issues={this.state.issues} />
         </Collapse.Panel>
       </Collapse>
     );

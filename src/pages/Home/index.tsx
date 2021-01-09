@@ -11,10 +11,13 @@ import {
   HistoryOutlined,
 } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
-import { ProjectsRepository, ActivityRepository } from './../../services/repositories';
+import {
+  ProjectsRepository,
+  ActivityRepository,
+  IssuesRepository,
+} from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
 import { EmployeeContext } from './../../context';
-import { prepareData } from './../../utils';
 import { IState } from './types';
 import styles from './styles.module.scss';
 
@@ -25,6 +28,7 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
   state: IState = {
     project: null,
     activity: [],
+    issues: [],
   };
 
   componentDidMount() {
@@ -37,22 +41,17 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
       ? ProjectsRepository.getById(projectId)
       : Promise.resolve(null);
     const activityPromise = ActivityRepository.getAll();
+    const issuesPromise = IssuesRepository.getAll();
     this.props
-      .fetching(Promise.all([projectPromise, activityPromise]))
-      .then(([res, activityRes]) => {
-        const activity = prepareData(activityRes);
-
-        if (!res || !projectId) {
+      .fetching(Promise.all([projectPromise, activityPromise, issuesPromise]))
+      .then(([project, activity, issuesList]) => {
+        if (!projectId) {
           this.setState({ activity });
           return;
         }
 
-        const project = {
-          ...res,
-          id: projectId,
-          issues: prepareData(res.issues),
-        };
-        this.setState({ activity, project });
+        const issues = issuesList.filter((item) => item.projectId === projectId);
+        this.setState({ activity, project, issues });
       });
   }
 
@@ -97,12 +96,12 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
     const list = (
       <List
         size='large'
-        dataSource={this.state.project?.issues}
+        dataSource={this.state.issues}
         locale={{ emptyText: 'No assigned issues' }}
         renderItem={(item) => (
           <List.Item className={styles.listItem}>
-            <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.project.id, item.id)}>
-              {`[${item.project.title}] - ${item.title}`}
+            <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.projectId, item.id)}>
+              {`[${this.state.project?.title}] - ${item.title}`}
             </Link>
             <div>{item.status}</div>
           </List.Item>

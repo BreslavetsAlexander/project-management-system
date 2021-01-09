@@ -76,12 +76,15 @@ export class Worklogs extends React.Component<IProps> {
                 </Button>,
               ];
 
-              const isAuthor = this.props.employee?.id === item.employee.id;
+              const author = this.props.employees.find(
+                (employee) => employee.id === item.authorId,
+              )!;
+              const isAuthor = this.props.employee?.id === item.authorId;
 
               return (
                 <List.Item className={styles.listItem} actions={isAuthor ? actions : []}>
                   <List.Item.Meta
-                    title={`${item.employee.firstName} ${item.employee.lastName}`}
+                    title={`${author.firstName} ${author.lastName}`}
                     description={item.date}
                   />
                   <div>{getTimeAsString(item.time)}</div>

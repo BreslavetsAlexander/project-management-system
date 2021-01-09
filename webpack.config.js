@@ -7,6 +7,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const faviconPath = './node_modules/@ant-design/icons-svg/inline-svg/outlined/heat-map.svg';
+const favicon = path.resolve(__dirname, faviconPath);
 
 module.exports = {
   entry: path.resolve(__dirname, './src/index.tsx'),
@@ -68,6 +70,7 @@ module.exports = {
     new ErrorOverlayPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/index.html'),
+      favicon,
       minify: {
         collapseWhitespace: true,
       },
