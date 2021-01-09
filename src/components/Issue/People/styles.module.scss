@@ -3,17 +3,11 @@
   margin-top: 20px;
   font-size: 16px;
 
-  .assignee {
-    display: flex;
-    align-items: center;
+  .form {
+    width: 100%;
 
-    .form {
-      width: 100%;
-      margin-left: 15px;
-
-      div[class*='ant-form-item'] {
-        margin: 0;
-      }
+    div[class*='ant-form-item'] {
+      margin: 0;
     }
   }
 

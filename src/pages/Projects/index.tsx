@@ -47,7 +47,7 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
             },
             date: moment().format(DATES_FORMATS.FULL_FORMAT),
             entity: {
-              id: 1,
+              id: '1',
               name: values.title,
             },
             text: ACTIVITY.PROJECTS.CREATED,

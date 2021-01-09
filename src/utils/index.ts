@@ -38,7 +38,7 @@ export const prepareData = <T>(data: T) => {
   return (Object.keys(data) as Array<keyof typeof data>).map((key) => {
     return {
       ...data[key],
-      id: key,
+      id: key as string,
     };
   });
 };

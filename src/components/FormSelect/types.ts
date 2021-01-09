@@ -1,5 +1,5 @@
 interface IOption {
-  title: string;
+  title: string | number;
   value: string | number;
 }
 

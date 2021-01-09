@@ -21,6 +21,7 @@ export class IssuePeople extends React.Component<IProps> {
     return (
       <Form<IFormValues>
         className={styles.form}
+        layout='inline'
         initialValues={{ [INPUT_NAMES.assigneeId]: this.props.assigneeId }}
         onValuesChange={this.onValuesChange}>
         <FormSelect label='Assignee' name={INPUT_NAMES.assigneeId} options={selectOptions} />
@@ -34,10 +35,7 @@ export class IssuePeople extends React.Component<IProps> {
     return (
       <div className={styles.people}>
         <Typography.Title level={3}>People</Typography.Title>
-        {/* <div className={styles.assignee}> */}
-        {/* <span>Assignee:</span> */}
         {this.getSelect()}
-        {/* </div> */}
         <div className={styles.author}> Author: {`${author?.firstName} ${author?.lastName}`}</div>
       </div>
     );

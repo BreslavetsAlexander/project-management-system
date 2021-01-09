@@ -29,13 +29,21 @@ export class Worklogs extends React.Component<IProps> {
 
   getLoggedPercent = () => (this.getLoggedMinutes() / this.getOriginalEstimateMinutes()) * 100;
 
+  getRemainingEstimateString() {
+    const remainingEstimate = Object.values(this.getRemainingEstimate());
+    const isTimeOver =
+      remainingEstimate.some((item) => item < 0) || remainingEstimate.every((item) => item === 0);
+
+    if (isTimeOver) {
+      return 'Time is over';
+    }
+
+    return getTimeAsString(this.getRemainingEstimate());
+  }
+
   render() {
     const originalEstimate = getTimeAsString(this.props.originalEstimate);
     const logged = getTimeAsString(this.getLoggedTime());
-    const isTimeOver = Object.values(this.getRemainingEstimate()).some((item) => item < 0);
-    const remainingEstimate = isTimeOver
-      ? 'Time is over'
-      : getTimeAsString(this.getRemainingEstimate());
 
     return (
       <Row gutter={[24, 0]}>
@@ -46,7 +54,7 @@ export class Worklogs extends React.Component<IProps> {
             <Progress percent={100} format={() => null} strokeColor={blue.primary} />
           </div>
           <div>
-            <div>Remaining Estimate: {remainingEstimate}</div>
+            <div>Remaining Estimate: {this.getRemainingEstimateString()}</div>
             <Progress
               className={styles.remainingEstimateProgress}
               percent={100 - this.getLoggedPercent()}

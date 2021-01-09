@@ -41,7 +41,7 @@ export class IssueModal extends React.Component<IProps> {
       };
     });
 
-    const values = new Array(60).fill('').map((_, i) => `${i}`);
+    const values = new Array(60).fill(0).map((_, i) => i);
     const days = values.slice(0, 32).map((item) => {
       return {
         value: item,

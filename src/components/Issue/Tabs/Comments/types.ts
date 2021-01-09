@@ -10,7 +10,7 @@ export interface IProps {
 }
 
 export interface IState {
-  editedCommentId: number | string | null;
+  editedCommentId: IComment['id'] | null;
 }
 
 export type IFormValues = Pick<IComment, 'text'>;

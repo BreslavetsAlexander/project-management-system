@@ -3,6 +3,7 @@ import { Comment, Form, Button } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { UserOutlined } from '@ant-design/icons';
 import { FormTextArea } from '../../../FormTextArea';
+import { IComment } from '../../../../definitions';
 import { INPUT_NAMES } from './constants';
 import { IProps, IState, IFormValues } from './types';
 import styles from './styles.module.scss';
@@ -46,7 +47,7 @@ export class CommentsTab extends React.Component<IProps, IState> {
     );
   }
 
-  onEdit = (editedCommentId: number | string) => {
+  onEdit = (editedCommentId: IComment['id']) => {
     const comment = this.props.comments.find((item) => item.id === editedCommentId);
 
     this.formRef.current?.setFieldsValue({
