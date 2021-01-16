@@ -12,5 +12,9 @@
     form {
       width: 100%;
     }
+
+    div[class*='ant-form-item-explain'] {
+      text-align: left;
+    }
   }
 }

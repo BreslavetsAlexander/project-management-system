@@ -8,6 +8,7 @@ import { PasswordInput } from '../../components/PasswordInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
 import { INPUT_NAMES } from '../../components/ProfileForm/constants';
 import { IFormValues } from '../../components/ProfileForm/types';
+import { Logo } from '../../components/Logo';
 import { ROUTES } from '../../constants/routes';
 import { MESSAGES } from '../../constants/messages';
 import { EmployeeContext } from '../../context';
@@ -66,6 +67,7 @@ class _Registration extends React.Component<IWithLoaderProps & RouteComponentPro
 
     return (
       <div className={styles.registration}>
+        <Logo showName />
         <div className={styles.formWrapper}>
           <Typography.Title>
             <UserAddOutlined /> Registration
