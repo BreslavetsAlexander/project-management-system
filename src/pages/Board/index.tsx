@@ -119,19 +119,29 @@ class _Board extends React.Component<IProps, IState> {
         danger: true,
       },
       onOk: () => {
-        return Promise.all([
-          ProjectsRepository.delete(this.state.project?.id!),
-          ActivityRepository.create({
-            employee: this.getEmployee(),
-            date: moment().format(DATES_FORMATS.FULL_FORMAT),
-            entity: {
-              id: this.state.project?.id!,
-              name: this.state.project?.title!,
-            },
-            text: ACTIVITY.PROJECTS.DELETED,
-            type: 'issue',
-          }),
-        ]).then(() => {
+        const project = ProjectsRepository.delete(this.props.match.params.id);
+        const issues = this.state.projectIssues.map(item => IssuesRepository.delete(item.id));
+        const employees = this.state.projectEmployees.map(item => EmployeesRepository.update(item.id, {
+          projectId: null,
+        }));
+        const activity = ActivityRepository.create({
+          employee: this.getEmployee(),
+          date: moment().format(DATES_FORMATS.FULL_FORMAT),
+          entity: {
+            id: this.state.project?.id!,
+            name: this.state.project?.title!,
+          },
+          text: ACTIVITY.PROJECTS.DELETED,
+          type: 'issue',
+        })
+
+        return Promise.all([project, issues, employees, activity]).then(() => {
+          if (this.context.employee?.projectId === this.props.match.params.id) {
+            this.context.setEmployee({
+              ...this.context.employee,
+              projectId: null
+            })
+          }
           this.props.history.push(ROUTES.PROJECTS.LIST);
         });
       },
@@ -219,7 +229,14 @@ class _Board extends React.Component<IProps, IState> {
   };
 
   onLeaveProject = (id: IEmployee['id']) => {
-    this.props.fetching(EmployeesRepository.update(id, { projectId: null })).then(() => {
+    const employeePromise = EmployeesRepository.update(id, { projectId: null });
+    const issues = this.state.projectIssues
+      .filter(issue => issue.assigneeId === id)
+      .map(issue => IssuesRepository.update(issue.id, {
+      assigneeId: issue.authorId
+    }));
+
+    this.props.fetching(Promise.all([employeePromise, issues])).then(() => {
       const projectEmployees = this.state.projectEmployees.filter((item) => item.id !== id)!;
       const employee = this.state.projectEmployees.find((item) => item.id === id)!;
       this.setState({
@@ -233,6 +250,8 @@ class _Board extends React.Component<IProps, IState> {
           projectId: null,
         });
       }
+
+      this.props.history.push(ROUTES.PROJECTS.LIST)
     });
   };
 
