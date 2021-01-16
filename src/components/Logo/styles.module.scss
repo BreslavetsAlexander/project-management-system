@@ -1,0 +1,14 @@
+@import '../../assets/variables.scss';
+
+.logo {
+  text-align: center;
+
+  .icon {
+    color: $darkBlue;
+    font-size: 65px;
+
+    &.light {
+      color: $white;
+    }
+  }
+}

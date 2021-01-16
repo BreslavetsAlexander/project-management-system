@@ -9,21 +9,7 @@
   }
 
   .introduction {
-    .result {
-      margin: 20px 0 0;
-      padding: 0;
-
-      div[class*='ant-result-icon'] {
-        margin: 0;
-      }
-
-      span[class*='anticon'] {
-        color: $darkBlue;
-      }
-    }
-
     .text {
-      margin: 0 10px 10px;
       font-size: 18px;
 
       a {

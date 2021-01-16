@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu as MenuAntd, Layout } from 'antd';
-import { HeatMapOutlined } from '@ant-design/icons';
+// import { HeatMapOutlined } from '@ant-design/icons';
+import { Logo } from '../Logo';
 import { ROUTES } from '../../constants/routes';
 import { MENU } from '../../constants/menu';
 import styles from './styles.module.scss';
@@ -17,7 +18,7 @@ const _Menu: React.FC<RouteComponentProps> = (props) => {
       collapsed={collapsed}
       onCollapse={() => setCollapsed(!collapsed)}>
       <Link to={ROUTES.HOME} className={styles.logoLink}>
-        <HeatMapOutlined className={styles.logo} />
+        <Logo light />
       </Link>
       <MenuAntd
         theme='dark'

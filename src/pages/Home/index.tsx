@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Result, Typography, List, Button } from 'antd';
+import { Row, Col, Typography, List, Button } from 'antd';
 import {
-  HeatMapOutlined,
   UserOutlined,
   ClockCircleOutlined,
   ReadOutlined,
@@ -11,6 +10,7 @@ import {
   HistoryOutlined,
 } from '@ant-design/icons';
 import { IWithLoaderProps, withLoader } from './../../components/hoc';
+import { Logo } from './../../components/Logo';
 import {
   ProjectsRepository,
   ActivityRepository,
@@ -61,18 +61,16 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
         <div className={styles.sectionTitle}>
           <ReadOutlined /> Introduction
         </div>
-        <Result
-          className={styles.result}
-          icon={<HeatMapOutlined />}
-          title='Welcome to JIRA Clone'
-        />
+        <Logo showName />
         <p className={styles.text}>
           Welcome to JIRA Clone! Using this app you can create projects, work in issues, discuss
-          them
+          them.
           <br />
           Source code here:{' '}
           <span>
-            <a href='https://github.com/BreslavetsAlexander/project-management-system'>
+            <a
+              href='https://github.com/BreslavetsAlexander/project-management-system'
+              target='_blank'>
               <GithubOutlined /> project-management-system
             </a>
           </span>

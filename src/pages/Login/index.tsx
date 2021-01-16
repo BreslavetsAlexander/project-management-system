@@ -5,6 +5,7 @@ import { LoginOutlined } from '@ant-design/icons';
 import { EmailInput } from '../../components/EmailInput';
 import { PasswordInput } from '../../components/PasswordInput';
 import { IWithLoaderProps, withLoader } from '../../components/hoc';
+import { Logo } from '../../components/Logo';
 import { ROUTES } from '../../constants/routes';
 import { MESSAGES } from '../../constants/messages';
 import { IFormValues } from '../../components/ProfileForm/types';
@@ -61,6 +62,7 @@ class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
 
     return (
       <div className={styles.login}>
+        <Logo showName />
         <div className={styles.formWrapper}>
           <Typography.Title>
             <LoginOutlined /> Log In

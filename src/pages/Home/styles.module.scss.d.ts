@@ -1,7 +1,6 @@
 export const home: string;
 export const sectionTitle: string;
 export const introduction: string;
-export const result: string;
 export const text: string;
 export const assignedToMe: string;
 export const listItem: string;
