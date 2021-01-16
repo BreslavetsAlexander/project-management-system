@@ -9,6 +9,7 @@ import { withLoader } from '../../components/hoc';
 import { ProjectModal } from '../../components/ProjectModal';
 import { IssueModal } from '../../components/IssueModal';
 import { ProjectEmployees } from '../../components/Board/ProjectEmployees';
+import { NoAccess } from '../../components/NoAccess';
 import { ROUTES } from '../../constants/routes';
 import { ACTIVITY } from '../../constants/activity';
 import { DATES_FORMATS } from '../../constants/datesFormats';
@@ -46,7 +47,15 @@ class _Board extends React.Component<IProps, IState> {
     };
   }
 
+  isEmployeeProject() {
+    return this.context.employee?.projectId === this.props.match.params.id;
+  }
+
   componentDidMount() {
+    if (!this.isEmployeeProject()) {
+      return;
+    }
+
     const { id } = this.props.match.params;
     const projectPromise = ProjectsRepository.getById(id);
     const employeesPromise = EmployeesRepository.getAll();
@@ -101,10 +110,10 @@ class _Board extends React.Component<IProps, IState> {
       .then(() => {
         this.setState({
           project: {
+            ...this.state.project,
             ...updatedProject,
             id,
-            issuesCount: this.state.project?.issuesCount!,
-          },
+          } as IProject,
         });
         this.setProjectModalVisible(false);
       });
@@ -120,10 +129,12 @@ class _Board extends React.Component<IProps, IState> {
       },
       onOk: () => {
         const project = ProjectsRepository.delete(this.props.match.params.id);
-        const issues = this.state.projectIssues.map(item => IssuesRepository.delete(item.id));
-        const employees = this.state.projectEmployees.map(item => EmployeesRepository.update(item.id, {
-          projectId: null,
-        }));
+        const issues = this.state.projectIssues.map((item) => IssuesRepository.delete(item.id));
+        const employees = this.state.projectEmployees.map((item) =>
+          EmployeesRepository.update(item.id, {
+            projectId: null,
+          }),
+        );
         const activity = ActivityRepository.create({
           employee: this.getEmployee(),
           date: moment().format(DATES_FORMATS.FULL_FORMAT),
@@ -133,14 +144,14 @@ class _Board extends React.Component<IProps, IState> {
           },
           text: ACTIVITY.PROJECTS.DELETED,
           type: 'issue',
-        })
+        });
 
         return Promise.all([project, issues, employees, activity]).then(() => {
           if (this.context.employee?.projectId === this.props.match.params.id) {
             this.context.setEmployee({
               ...this.context.employee,
-              projectId: null
-            })
+              projectId: null,
+            });
           }
           this.props.history.push(ROUTES.PROJECTS.LIST);
         });
@@ -231,10 +242,12 @@ class _Board extends React.Component<IProps, IState> {
   onLeaveProject = (id: IEmployee['id']) => {
     const employeePromise = EmployeesRepository.update(id, { projectId: null });
     const issues = this.state.projectIssues
-      .filter(issue => issue.assigneeId === id)
-      .map(issue => IssuesRepository.update(issue.id, {
-      assigneeId: issue.authorId
-    }));
+      .filter((issue) => issue.assigneeId === id)
+      .map((issue) =>
+        IssuesRepository.update(issue.id, {
+          assigneeId: issue.authorId,
+        }),
+      );
 
     this.props.fetching(Promise.all([employeePromise, issues])).then(() => {
       const projectEmployees = this.state.projectEmployees.filter((item) => item.id !== id)!;
@@ -251,7 +264,7 @@ class _Board extends React.Component<IProps, IState> {
         });
       }
 
-      this.props.history.push(ROUTES.PROJECTS.LIST)
+      this.props.history.push(ROUTES.PROJECTS.LIST);
     });
   };
 
@@ -279,18 +292,9 @@ class _Board extends React.Component<IProps, IState> {
     );
   }
 
-  render() {
-    if (!this.state.project) {
-      return null;
-    }
-
-    return (
-      <div className={styles.board}>
-        <Link to={ROUTES.PROJECTS.LIST}>
-          <ArrowLeftOutlined className={styles.icon} />
-          <span>Projects list</span>
-        </Link>
-        <Typography.Title>{this.state.project.title}</Typography.Title>
+  getButtons() {
+    if (this.context.employee?.id === this.state.project?.authorId) {
+      return (
         <div className={styles.buttons}>
           <Button icon={<EditOutlined />} onClick={() => this.setProjectModalVisible(true)}>
             Edit
@@ -306,6 +310,39 @@ class _Board extends React.Component<IProps, IState> {
           </Button>
           {this.getSelect()}
         </div>
+      );
+    }
+
+    return null;
+  }
+
+  render() {
+    if (!this.isEmployeeProject()) {
+      return (
+        <NoAccess
+          title='You cannot see this project'
+          subTitle='Go to Projects list'
+          extra={
+            <Button type='primary'>
+              <Link to={ROUTES.PROJECTS.LIST}>Projects list</Link>
+            </Button>
+          }
+        />
+      );
+    }
+
+    if (!this.state.project) {
+      return null;
+    }
+
+    return (
+      <div className={styles.board}>
+        <Link to={ROUTES.PROJECTS.LIST}>
+          <ArrowLeftOutlined className={styles.icon} />
+          <span>Projects list</span>
+        </Link>
+        <Typography.Title>{this.state.project.title}</Typography.Title>
+        {this.getButtons()}
         <ProjectEmployees
           employees={this.state.projectEmployees}
           issues={this.state.projectIssues}

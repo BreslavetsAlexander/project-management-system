@@ -1,0 +1,37 @@
+@import '../../assets/variables.scss';
+
+.resultWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .result {
+    &[class*='ant-result'] {
+      margin: 0;
+      padding: 0;
+    }
+
+    div[class*='ant-result-image'] {
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    div[class*='ant-result-title'] {
+      color: $black;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    div[class*='ant-result-subtitle'] {
+      color: $black;
+      font-size: 15px;
+    }
+
+    div[class*='ant-result-extra'] {
+      margin: 10px 0 0;
+    }
+  }
+}

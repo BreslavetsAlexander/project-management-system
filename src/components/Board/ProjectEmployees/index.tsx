@@ -12,7 +12,7 @@ export const ProjectEmployees: React.FC<IProps> = (props) => {
         className={styles.result}
         icon={<UnorderedListOutlined />}
         title='There are no employees on this project'
-        extra='Add someone'
+        extra='The author of the project has not added anyone yet'
       />
     );
   }

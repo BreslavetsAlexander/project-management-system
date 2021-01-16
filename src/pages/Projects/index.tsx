@@ -38,6 +38,7 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
             title: values.title,
             description: values.description,
             issuesCount: 0,
+            authorId: this.context.employee?.id!,
           }),
           ActivityRepository.create({
             employee: {

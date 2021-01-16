@@ -39,6 +39,7 @@ export interface IProject {
   title: string;
   description: string;
   issuesCount: number;
+  authorId: IEmployee['id'];
 }
 
 export interface IActivity {
