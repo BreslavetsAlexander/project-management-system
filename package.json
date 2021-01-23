@@ -4,7 +4,7 @@
   "description": "project-management-system",
   "main": "index.tsx",
   "scripts": {
-    "start": "npm-run-all --parallel dev db",
+    "start": "npm-run-all --parallel dev",
     "dev": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production",
     "prettier": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,sass}",

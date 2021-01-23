@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Row, Col, Typography, List, Button } from 'antd';
 import {
@@ -17,6 +18,7 @@ import {
   EmployeesRepository,
 } from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
+import { DATES_FORMATS } from './../../constants/datesFormats';
 import { EmployeeContext } from './../../context';
 import { IState, IEmployeeActivity } from './types';
 import styles from './styles.module.scss';
@@ -55,7 +57,13 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
               };
             });
           })
-          .reduce((result, current) => result.concat(current), []);
+          .reduce((result, current) => result.concat(current), [])
+          .sort((a, b) => {
+            const aDate = moment(a.date, DATES_FORMATS.FULL_FORMAT);
+            const bDate = moment(b.date, DATES_FORMATS.FULL_FORMAT);
+
+            return aDate < bDate ? 1 : -1;
+          });
 
         if (!projectId) {
           this.setState({ activity });
