@@ -1,3 +1,5 @@
+import { IProject, IIssue } from '../definitions';
+
 const buildRoute = (template: string, value: string) => template.replace(/:[A-Za-z]+/gi, value);
 
 export const ROUTES = {
@@ -6,11 +8,11 @@ export const ROUTES = {
     LIST: '/projects',
     DETAIL: {
       TEMPLATE: '/projects/:id',
-      ROUTE: (id: number | string) => buildRoute(ROUTES.PROJECTS.DETAIL.TEMPLATE, `${id}`),
+      ROUTE: (id: IProject['id']) => buildRoute(ROUTES.PROJECTS.DETAIL.TEMPLATE, `${id}`),
     },
     ISSUE: {
       TEMPLATE: '/projects/:projectId/:issueId',
-      ROUTE: (projectId: number | string, issueId: number | string) => {
+      ROUTE: (projectId: IProject['id'], issueId: IIssue['id']) => {
         return `${ROUTES.PROJECTS.DETAIL.ROUTE(projectId)}/${issueId}`;
       },
     },

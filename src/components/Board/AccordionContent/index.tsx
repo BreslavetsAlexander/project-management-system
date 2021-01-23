@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { CommentOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { ISSUES } from '../../../constants/issues';
 import { ROUTES } from './../../../constants/routes';
 import { IProps } from './types';
@@ -12,10 +13,10 @@ export class AccordionContent extends React.Component<IProps> {
       .map((item) => {
         const issuePriority = Object.values(ISSUES.PRIORITIES).find(
           (priority) => priority.name === item.priority,
-        );
-        const priorityIcon = issuePriority ? (
+        )!;
+        const priorityIcon = (
           <issuePriority.icon style={{ color: issuePriority.color }} className={styles.icon} />
-        ) : null;
+        );
 
         return (
           <div
@@ -24,10 +25,20 @@ export class AccordionContent extends React.Component<IProps> {
             key={item.id}>
             {priorityIcon}
             <div>
-              <h3 className={styles.issueName}>
-                <Link to={ROUTES.PROJECTS.ISSUE.ROUTE(item.projectId, item.id)}>{item.title}</Link>
-              </h3>
-              <h4 className={styles.description}>{item.description}</h4>
+              <Link
+                to={ROUTES.PROJECTS.ISSUE.ROUTE(item.projectId, item.id)}
+                className={styles.title}>
+                {item.title}
+              </Link>
+              <p className={styles.description}>{item.description}</p>
+              <div className={styles.icons}>
+                <div>
+                  <CommentOutlined /> {item.comments.length}
+                </div>
+                <div>
+                  <ClockCircleOutlined /> {item.worklogs.length}
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -35,10 +46,7 @@ export class AccordionContent extends React.Component<IProps> {
 
     return (
       <div className={styles.section} key={status}>
-        <div className={styles.title}>
-          <span>{status}</span>
-          <span className={styles.count}>{issues.length}</span>
-        </div>
+        <p className={styles.title}>{`${status} ${issues.length}`}</p>
         <div className={styles.issues}>{issues}</div>
       </div>
     );
