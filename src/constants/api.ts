@@ -11,6 +11,7 @@ export const API = {
   EMPLOYEES: {
     LIST: () => `${BASE_URL}/employees`,
     DETAIL: (id: IEmployee['id']) => `${API.EMPLOYEES.LIST()}/${id}`,
+    ACTIVITY: (id: IEmployee['id']) => `${API.EMPLOYEES.DETAIL(id)}/activity`,
   },
   PROJECTS: {
     LIST: () => `${BASE_URL}/projects`,
@@ -31,8 +32,5 @@ export const API = {
         return `${API.ISSUES.WORKLOGS.LIST(issueId)}/${worklogId}`;
       },
     },
-  },
-  ACTIVITY: {
-    LIST: () => `${BASE_URL}/activity`,
   },
 };

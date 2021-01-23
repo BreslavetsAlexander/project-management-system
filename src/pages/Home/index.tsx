@@ -13,12 +13,12 @@ import { IWithLoaderProps, withLoader } from './../../components/hoc';
 import { Logo } from './../../components/Logo';
 import {
   ProjectsRepository,
-  ActivityRepository,
   IssuesRepository,
+  EmployeesRepository,
 } from './../../services/repositories';
 import { ROUTES } from './../../constants/routes';
 import { EmployeeContext } from './../../context';
-import { IState } from './types';
+import { IState, IEmployeeActivity } from './types';
 import styles from './styles.module.scss';
 
 class _Home extends React.Component<IWithLoaderProps, IState> {
@@ -40,11 +40,23 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
     const projectPromise = projectId
       ? ProjectsRepository.getById(projectId)
       : Promise.resolve(null);
-    const activityPromise = ActivityRepository.getAll();
     const issuesPromise = IssuesRepository.getAll();
+    const employeesPromise = EmployeesRepository.getAll();
+
     this.props
-      .fetching(Promise.all([projectPromise, activityPromise, issuesPromise]))
-      .then(([project, activity, issuesList]) => {
+      .fetching(Promise.all([projectPromise, issuesPromise, employeesPromise]))
+      .then(([project, issuesList, employees]) => {
+        const activity: IEmployeeActivity[] = employees
+          .map((employee) => {
+            return employee.activity.map((item) => {
+              return {
+                ...item,
+                employeeName: `${employee.firstName} ${employee.lastName}`,
+              };
+            });
+          })
+          .reduce((result, current) => result.concat(current), []);
+
         if (!projectId) {
           this.setState({ activity });
           return;
@@ -124,19 +136,20 @@ class _Home extends React.Component<IWithLoaderProps, IState> {
       <List
         className={styles.list}
         itemLayout='horizontal'
-        dataSource={this.state.activity.reverse()}
+        dataSource={this.state.activity}
         locale={{ emptyText: 'Empty activity stream' }}
         renderItem={(item) => {
           const title = (
-            <p>
-              {`${item.employee.firstName} ${item.employee.lastName} ${item.text} ${item.entity.name}`}
-            </p>
+            <>
+              {`${item.employeeName} ${item.text} `}
+              <Link to={item.link}>{item.type}</Link>
+            </>
           );
           const description = (
-            <p>
+            <>
               <ClockCircleOutlined />
               {item.date}
-            </p>
+            </>
           );
 
           return (

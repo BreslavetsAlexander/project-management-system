@@ -7,6 +7,7 @@ export interface IEmployee {
   password: string;
   email: string;
   projectId: IProject['id'] | null;
+  activity: IActivity[];
 }
 
 export interface IWorkLog {
@@ -46,12 +47,8 @@ export interface IActivity {
   id: string;
   text: string;
   date: string;
-  employee: Pick<IEmployee, 'firstName' | 'lastName' | 'id'>;
+  link: string;
   type: 'issue' | 'project';
-  entity: {
-    id: string;
-    name: string;
-  };
 }
 
 export interface IComment {

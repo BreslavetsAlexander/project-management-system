@@ -95,15 +95,11 @@ class _Board extends React.Component<IProps, IState> {
       .fetching(
         Promise.all([
           ProjectsRepository.update(id, updatedProject),
-          ActivityRepository.create({
-            employee: this.getEmployee(),
-            date: moment().format(DATES_FORMATS.FULL_FORMAT),
-            entity: {
-              id: this.state.project.id!,
-              name: this.state.project?.title!,
-            },
+          ActivityRepository.create(this.getEmployee().id, {
             text: ACTIVITY.PROJECTS.UPDATED,
-            type: 'issue',
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
+            type: 'project',
+            link: ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.id),
           }),
         ]),
       )
@@ -135,15 +131,11 @@ class _Board extends React.Component<IProps, IState> {
             projectId: null,
           }),
         );
-        const activity = ActivityRepository.create({
-          employee: this.getEmployee(),
-          date: moment().format(DATES_FORMATS.FULL_FORMAT),
-          entity: {
-            id: this.state.project?.id!,
-            name: this.state.project?.title!,
-          },
+        const activity = ActivityRepository.create(this.getEmployee().id, {
           text: ACTIVITY.PROJECTS.DELETED,
-          type: 'issue',
+          date: moment().format(DATES_FORMATS.FULL_FORMAT),
+          type: 'project',
+          link: ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.id),
         });
 
         return Promise.all([project, issues, employees, activity]).then(() => {
@@ -181,15 +173,11 @@ class _Board extends React.Component<IProps, IState> {
       issuesCount: this.state.project.issuesCount + 1,
     });
 
-    const activityPromise = ActivityRepository.create({
-      employee: this.getEmployee(),
-      date: moment().format(DATES_FORMATS.FULL_FORMAT),
-      entity: {
-        id: projectId,
-        name: this.state.project.title,
-      },
+    const activityPromise = ActivityRepository.create(this.getEmployee().id, {
       text: ACTIVITY.PROJECTS.ADDED_ISSUE,
-      type: 'issue',
+      date: moment().format(DATES_FORMATS.FULL_FORMAT),
+      type: 'project',
+      link: ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.id),
     });
 
     this.props
@@ -207,15 +195,11 @@ class _Board extends React.Component<IProps, IState> {
           EmployeesRepository.update(employeeId, {
             projectId: this.props.match.params.id,
           }),
-          ActivityRepository.create({
-            employee: this.getEmployee(),
-            date: moment().format(DATES_FORMATS.FULL_FORMAT),
-            entity: {
-              id: this.state.project?.id!,
-              name: this.state.project?.title!,
-            },
+          ActivityRepository.create(this.getEmployee().id, {
             text: ACTIVITY.PROJECTS.ADDED_EMPLOYEE,
-            type: 'issue',
+            date: moment().format(DATES_FORMATS.FULL_FORMAT),
+            type: 'project',
+            link: ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.id),
           }),
         ]),
       )

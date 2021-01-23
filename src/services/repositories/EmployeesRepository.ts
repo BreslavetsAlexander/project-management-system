@@ -1,9 +1,13 @@
 import { API } from './../../constants/api';
-import { IEmployee } from './../../definitions';
+import { IEmployee, IActivity } from './../../definitions';
 import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
-type EmployeeResponce = Omit<IEmployee, 'id'>;
+type EmployeeResponce = Omit<IEmployee, 'id'> & {
+  activity: {
+    [id: string]: Omit<IActivity, 'id'>;
+  };
+};
 
 interface IEmployeesResponce {
   [id: string]: EmployeeResponce;
@@ -13,7 +17,14 @@ class _EmployeesRepository {
   getAll(): Promise<IEmployee[]> {
     const url = getUrlWithJsonExtension(API.EMPLOYEES.LIST());
 
-    return HttpProvider.get<IEmployeesResponce>(url).then(prepareData);
+    return HttpProvider.get<IEmployeesResponce>(url).then((res) => {
+      return prepareData(res).map((employee) => {
+        return {
+          ...employee,
+          activity: prepareData(employee.activity),
+        };
+      });
+    });
   }
 
   getById(id: IEmployee['id']) {

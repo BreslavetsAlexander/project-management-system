@@ -43,8 +43,13 @@
           font-size: 60px;
         }
 
+        h4[class*='ant-list-item-meta-title'] {
+          margin-bottom: 5px;
+        }
+
         div[class*='ant-list-item-meta-description'] {
           color: $black;
+          line-height: 14px;
 
           span {
             margin-right: 5px;

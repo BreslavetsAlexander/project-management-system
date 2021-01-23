@@ -5,4 +5,4 @@ export interface IProps {
   saveInfo: (field: string, value: string) => void;
 }
 
-export type IFormValues = Omit<IEmployee, 'id' | 'idToken' | 'projectId'>;
+export type IFormValues = Omit<IEmployee, 'id' | 'idToken' | 'projectId' | 'activity'>;

@@ -1,19 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
 import { List, Button, Card, Typography } from 'antd';
 import { ProjectModal } from '../../components/ProjectModal';
-import { IWithLoaderProps, withLoader, withAuthorization } from '../../components/hoc';
-import { ProjectsRepository, ActivityRepository } from '../../services/repositories';
+import { withLoader, withAuthorization } from '../../components/hoc';
+import {
+  ProjectsRepository,
+  EmployeesRepository,
+  ActivityRepository,
+} from '../../services/repositories';
 import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ROUTES } from '../../constants/routes';
 import { ACTIVITY } from '../../constants/activity';
 import { IProject } from '../../definitions';
 import { EmployeeContext } from './../../context';
-import { IState } from './types';
+import { IState, Props } from './types';
 import styles from './styles.module.scss';
 
-class _Projects extends React.Component<IWithLoaderProps, IState> {
+class _Projects extends React.Component<Props, IState> {
   static contextType = EmployeeContext;
   context!: React.ContextType<typeof EmployeeContext>;
 
@@ -30,38 +34,38 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
 
   setVisible = (visible: boolean) => this.setState({ visible });
 
-  onSubmit = (values: Pick<IProject, 'title' | 'description'>) => {
-    this.props
-      .fetching(
-        Promise.all([
-          ProjectsRepository.create({
-            title: values.title,
-            description: values.description,
-            issuesCount: 0,
-            authorId: this.context.employee?.id!,
-          }),
-          ActivityRepository.create({
-            employee: {
-              id: this.context.employee?.id!,
-              firstName: this.context.employee?.firstName!,
-              lastName: this.context.employee?.lastName!,
-            },
-            date: moment().format(DATES_FORMATS.FULL_FORMAT),
-            entity: {
-              id: '1',
-              name: values.title,
-            },
-            text: ACTIVITY.PROJECTS.CREATED,
-            type: 'issue',
-          }),
-        ]),
-      )
-      .then(([project]) => {
-        const projects = [...this.state.projects];
-        projects.push(project);
-        this.setState({ projects });
-        this.setVisible(false);
-      });
+  onSubmit = async (values: Pick<IProject, 'title' | 'description'>) => {
+    const { id: employeeId } = this.context.employee!;
+    const projectRes = await this.props.fetching(
+      ProjectsRepository.create({
+        title: values.title,
+        description: values.description,
+        issuesCount: 0,
+        authorId: employeeId,
+      }),
+    );
+
+    const { id: projectId } = projectRes;
+    const link = ROUTES.PROJECTS.DETAIL.ROUTE(projectId);
+
+    await this.props.fetching(
+      Promise.all([
+        ActivityRepository.create(employeeId, {
+          text: ACTIVITY.PROJECTS.CREATED,
+          date: moment().format(DATES_FORMATS.FULL_FORMAT),
+          type: 'project',
+          link,
+        }),
+        EmployeesRepository.update(employeeId, { projectId }),
+      ]),
+    );
+
+    this.context.setEmployee({
+      ...this.context.employee!,
+      projectId,
+    });
+    this.setVisible(false);
+    this.props.history.push(link);
   };
 
   render() {
@@ -107,4 +111,4 @@ class _Projects extends React.Component<IWithLoaderProps, IState> {
   }
 }
 
-export const Projects = withAuthorization(withLoader(_Projects));
+export const Projects = withAuthorization(withRouter(withLoader(_Projects)));
