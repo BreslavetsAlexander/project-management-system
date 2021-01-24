@@ -40,6 +40,11 @@ export class LogWorkModal extends React.Component<IProps> {
             className={styles.formDatePicker}
             label={INPUTS.DATE.label}
             name={INPUTS.DATE.name}
+            disabledDate={(date) => {
+              return (
+                date < moment(this.props.createdAt, DATES_FORMATS.FULL_FORMAT) || date > moment()
+              );
+            }}
           />
           <FormTimePicker
             label={INPUTS.TIME.label}
@@ -49,10 +54,14 @@ export class LogWorkModal extends React.Component<IProps> {
         </div>
         <div className={styles.buttonsWrap}>
           <Form.Item className={styles.buttons}>
-            <Button danger className={styles.cancel} onClick={() => this.props.setVisible(false)}>
+            <Button
+              danger
+              className={styles.cancel}
+              onClick={() => this.props.setVisible(false)}
+              disabled={this.props.loading}>
               Cancel
             </Button>
-            <Button type='primary' htmlType='submit'>
+            <Button type='primary' htmlType='submit' loading={this.props.loading}>
               Save
             </Button>
           </Form.Item>
@@ -66,6 +75,7 @@ export class LogWorkModal extends React.Component<IProps> {
       <Modal
         visible={this.props.visible}
         title='Log Work'
+        centered
         className={styles.modal}
         closable={false}>
         {this.getForm()}

@@ -8,7 +8,7 @@ export const FormDatePicker: React.FC<IProps> = (props) => {
 
   return (
     <Form.Item className={props.className} label={props.label} name={props.name} rules={rules}>
-      <DatePicker format={DATES_FORMATS.DAY_MONTH_YEAR} />
+      <DatePicker disabledDate={props.disabledDate} format={DATES_FORMATS.DAY_MONTH_YEAR} />
     </Form.Item>
   );
 };

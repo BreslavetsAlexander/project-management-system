@@ -167,6 +167,7 @@ class _Board extends React.Component<IProps, IState> {
       projectId,
       comments: [],
       worklogs: [],
+      createdAt: moment().format(DATES_FORMATS.FULL_FORMAT),
     });
 
     const projectPromise = ProjectsRepository.update(this.props.match.params.id, {

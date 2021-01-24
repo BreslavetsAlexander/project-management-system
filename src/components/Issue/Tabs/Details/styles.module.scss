@@ -1,8 +1,7 @@
 .detailsTab {
   font-size: 15px;
 
-  .priority,
-  .description {
+  & > p {
     span {
       font-size: 18px;
       font-weight: 500;

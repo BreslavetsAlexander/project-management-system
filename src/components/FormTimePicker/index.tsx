@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, TimePicker } from 'antd';
 import { DATES_FORMATS } from '../../constants/datesFormats';
 import { IProps } from './types';
+import styles from './styles.module.scss';
 
 export const FormTimePicker: React.FC<IProps> = (props) => {
   const rules = [{ required: true, message: props.message || 'Field is required' }];
@@ -11,6 +12,7 @@ export const FormTimePicker: React.FC<IProps> = (props) => {
       <TimePicker
         format={DATES_FORMATS.HOURS_MINUTES}
         showNow={false}
+        popupClassName={styles.popupClassName}
         placeholder={props.placeholder}
         disabledHours={() => [0]}
         disabledMinutes={() => [0]}

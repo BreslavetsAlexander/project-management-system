@@ -150,17 +150,19 @@ class _Issue extends React.Component<IProps, IState> {
       authorId: employee.id,
     });
 
-    Promise.all([workLogPromise, activityPromise]).then(([worklog, _]) => {
-      const worklogs = [...this.state.issue?.worklogs!];
-      worklogs.push(worklog);
-      this.setState({
-        issue: {
-          ...this.state.issue,
-          worklogs,
-        } as IIssue,
-      });
-      this.setLogWorkVisible(false);
-    });
+    this.props.fetching(
+      Promise.all([workLogPromise, activityPromise]).then(([worklog, _]) => {
+        const worklogs = [...this.state.issue?.worklogs!];
+        worklogs.push(worklog);
+        this.setState({
+          issue: {
+            ...this.state.issue,
+            worklogs,
+          } as IIssue,
+        });
+        this.setLogWorkVisible(false);
+      }),
+    );
   };
 
   addComment = (text: IComment['text']) => {
@@ -338,9 +340,11 @@ class _Issue extends React.Component<IProps, IState> {
           loading={this.props.loading}
         />
         <LogWorkModal
+          createdAt={this.state.issue.createdAt}
           visible={this.state.logWorkVisible}
           setVisible={this.setLogWorkVisible}
           onSubmit={this.onLogWork}
+          loading={this.props.loading}
         />
       </div>
     );

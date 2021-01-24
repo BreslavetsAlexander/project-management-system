@@ -1,0 +1,7 @@
+.popupClassName {
+  ul[class*='ant-picker-time-panel-column'] {
+    &:after {
+      height: auto !important;
+    }
+  }
+}

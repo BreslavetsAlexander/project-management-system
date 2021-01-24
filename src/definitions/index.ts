@@ -33,6 +33,7 @@ export interface IIssue {
   };
   comments: IComment[];
   worklogs: IWorkLog[];
+  createdAt: string;
 }
 
 export interface IProject {
