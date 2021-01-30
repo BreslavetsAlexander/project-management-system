@@ -1,21 +1,21 @@
 import React from 'react';
-import { withRouter, Redirect, Link, RouteComponentProps } from 'react-router-dom';
+import { withRouter, Redirect, Link } from 'react-router-dom';
 import { Form, Button, Typography, message } from 'antd';
 import { LoginOutlined } from '@ant-design/icons';
 import { EmailInput } from '../../components/EmailInput';
 import { PasswordInput } from '../../components/PasswordInput';
-import { IWithLoaderProps, withLoader } from '../../components/hoc';
+import { withLoader } from '../../components/hoc';
 import { Logo } from '../../components/Logo';
 import { ROUTES } from '../../constants/routes';
 import { MESSAGES } from '../../constants/messages';
-import { IFormValues } from '../../components/ProfileForm/types';
 import { INPUT_NAMES } from '../../components/ProfileForm/constants';
 import { EmployeeContext } from '../../context';
 import { EmployeesRepository } from '../../services/repositories';
 import { AuthService, IResponse, IError } from '../../services/Auth';
+import { Props, IFormValues } from './types';
 import styles from './styles.module.scss';
 
-class _Login extends React.Component<IWithLoaderProps & RouteComponentProps> {
+class _Login extends React.Component<Props> {
   static contextType = EmployeeContext;
   context!: React.ContextType<typeof EmployeeContext>;
 

@@ -2,10 +2,7 @@ import { API } from './../../constants/api';
 import { IProject } from './../../definitions';
 import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
-
-interface ICreateProjectResponce {
-  name: string;
-}
+import { ICreateResponce } from '../types';
 
 type ProjectResponce = Omit<IProject, 'id'>;
 
@@ -34,7 +31,7 @@ class _ProjectsRepository {
   create(data: Omit<IProject, 'id'>): Promise<IProject> {
     const url = getUrlWithJsonExtension(API.PROJECTS.LIST());
 
-    return HttpProvider.post<IProject, ICreateProjectResponce>(url, data).then((res) => {
+    return HttpProvider.post<IProject, ICreateResponce>(url, data).then((res) => {
       return {
         ...data,
         id: res.name,

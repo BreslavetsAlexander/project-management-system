@@ -2,10 +2,7 @@ import { API } from './../../constants/api';
 import { IIssue, IComment, IWorkLog } from './../../definitions';
 import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
-
-interface ICreateIssueResponce {
-  name: string;
-}
+import { ICreateResponce } from '../types';
 
 type IssueResponce = Omit<IIssue, 'id' | 'comments' | 'worklogs'> & {
   comments: {
@@ -52,7 +49,7 @@ class _IssuesRepository {
   create(data: Omit<IIssue, 'id'>): Promise<IIssue> {
     const url = getUrlWithJsonExtension(API.ISSUES.LIST());
 
-    return HttpProvider.post<IIssue, ICreateIssueResponce>(url, data).then((res) => {
+    return HttpProvider.post<IIssue, ICreateResponce>(url, data).then((res) => {
       return {
         ...data,
         id: res.name,

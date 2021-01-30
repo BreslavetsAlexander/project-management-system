@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu as MenuAntd, Layout } from 'antd';
-// import { HeatMapOutlined } from '@ant-design/icons';
 import { Logo } from '../Logo';
 import { ROUTES } from '../../constants/routes';
 import { MENU } from '../../constants/menu';

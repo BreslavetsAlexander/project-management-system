@@ -2,16 +2,13 @@ import { API } from './../../constants/api';
 import { IIssue, IComment } from './../../definitions';
 import { getUrlWithJsonExtension } from './../../utils';
 import { HttpProvider } from '../httpProvider';
-
-interface ICreateCommentResponce {
-  name: string;
-}
+import { ICreateResponce } from '../types';
 
 class _CommentsRepository {
   create(issueId: IIssue['id'], data: Omit<IComment, 'id'>): Promise<IComment> {
     const url = getUrlWithJsonExtension(API.ISSUES.COMMENTS.LIST(issueId));
 
-    return HttpProvider.post<IComment, ICreateCommentResponce>(url, data).then((res) => {
+    return HttpProvider.post<IComment, ICreateResponce>(url, data).then((res) => {
       return {
         ...data,
         id: res.name,
