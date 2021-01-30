@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import { List, Button, Card, Typography } from 'antd';
+import { List, Button, Card, Typography, Tag } from 'antd';
+import { blue } from '@ant-design/colors';
 import { ProjectModal } from '../../components/ProjectModal';
 import { withLoader, withAuthorization } from '../../components/hoc';
 import {
@@ -68,13 +69,23 @@ class _Projects extends React.Component<Props, IState> {
     this.props.history.push(link);
   };
 
+  getButton() {
+    if (this.context.employee?.projectId) {
+      return null;
+    }
+
+    return (
+      <Button type='primary' onClick={() => this.setVisible(true)}>
+        Create project
+      </Button>
+    );
+  }
+
   render() {
     return (
       <div className={styles.projects}>
         <Typography.Title>Projects list</Typography.Title>
-        <Button type='primary' onClick={() => this.setVisible(true)}>
-          Create project
-        </Button>
+        {this.getButton()}
         <List
           className={styles.list}
           grid={{ gutter: 16, column: 4 }}
@@ -82,17 +93,28 @@ class _Projects extends React.Component<Props, IState> {
           loading={false}
           loadMore={false}
           locale={{ emptyText: 'Projects list is empty' }}
-          renderItem={(item) => (
-            <List.Item>
-              <Card title={item.title} className={styles.card}>
-                <div className={styles.info}>
-                  <div>{item.description}</div>
-                  <div>{item.issuesCount}</div>
-                </div>
-                <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(item.id)}>View board</Link>
-              </Card>
-            </List.Item>
-          )}
+          renderItem={(item) => {
+            const title = (
+              <>
+                <div>{item.title}</div>
+                {this.context.employee?.projectId === item.id && (
+                  <Tag color={blue.primary}>My project</Tag>
+                )}
+              </>
+            );
+
+            return (
+              <List.Item>
+                <Card title={title} className={styles.card}>
+                  <div className={styles.info}>
+                    <div>{item.description}</div>
+                    <div>{item.issuesCount}</div>
+                  </div>
+                  <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(item.id)}>View board</Link>
+                </Card>
+              </List.Item>
+            );
+          }}
         />
         <ProjectModal
           title='Create project'

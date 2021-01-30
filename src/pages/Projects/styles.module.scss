@@ -16,6 +16,16 @@
       div[class*='ant-card-head'] {
         border-color: rgba($black, 0.2);
       }
+
+      div[class*='ant-card-head-title'] {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span[class*='ant-tag'] {
+          margin: 0;
+        }
+      }
     }
   }
 }

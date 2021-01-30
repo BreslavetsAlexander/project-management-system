@@ -38,7 +38,10 @@ class _Profile extends React.Component<Props, IState> {
 
     this.props
       .fetching(Promise.all([projectPromise, issuesPromise]))
-      .then(([project, issues]) => this.setState({ project, issues }));
+      .then(([project, issuesList]) => {
+        const issues = issuesList.filter((item) => item.projectId === projectId);
+        this.setState({ project, issues });
+      });
   }
 
   saveInfo = (field: string, value: string) => {
