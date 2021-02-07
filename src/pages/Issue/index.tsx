@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
-import { Typography, Button } from 'antd';
+import { Typography, Button, message } from 'antd';
 import { EditOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { withLoader } from './../../components/hoc';
 import { IssueStatus, IssuePeople, Tabs, LogWorkModal } from './../../components/Issue';
@@ -9,6 +9,7 @@ import { IssueModal } from './../../components/IssueModal';
 import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
+import { MESSAGES } from './../../constants/messages';
 import { ROUTES } from './../../constants/routes';
 import { IIssue, IComment, IWorkLog } from './../../definitions';
 import { EmployeeContext } from './../../context';
@@ -56,12 +57,35 @@ class _Issue extends React.Component<IProps, IState> {
           return item.projectId === this.props.match.params.projectId;
         });
 
-        this.setState({
-          issue,
-          employees,
-          project,
-        });
+        this.setState(
+          {
+            issue,
+            employees,
+            project,
+          },
+          () => {
+            if (this.isReadonly()) {
+              message.warning(MESSAGES.CANNOT_CHANGE_ANYTHING_ON_ISSUE, 10);
+            }
+          },
+        );
       });
+  }
+
+  isReadonly() {
+    const { issue, project } = this.state;
+
+    if (!issue) {
+      return true;
+    }
+
+    const personsIds = [issue.assigneeId, issue.authorId, project?.authorId];
+
+    if (personsIds.includes(this.getEmployee().id)) {
+      return false;
+    }
+
+    return true;
   }
 
   updateStatus(status: string) {
@@ -76,12 +100,15 @@ class _Issue extends React.Component<IProps, IState> {
     });
 
     this.props.fetching(Promise.all([issuePromise, activityPromise])).then(() =>
-      this.setState({
-        issue: {
-          ...this.state.issue,
-          status,
-        } as IIssue,
-      }),
+      this.setState(
+        {
+          issue: {
+            ...this.state.issue,
+            status,
+          } as IIssue,
+        },
+        () => message.success(MESSAGES.UPDATED_ISSUE),
+      ),
     );
   }
 
@@ -104,9 +131,9 @@ class _Issue extends React.Component<IProps, IState> {
       link: ROUTES.PROJECTS.ISSUE.ROUTE(projectId, issueId),
     });
 
-    this.props.fetching(
-      Promise.all([IssuesRepository.update(issueId, { assigneeId }), activityPromise]),
-    );
+    this.props
+      .fetching(Promise.all([IssuesRepository.update(issueId, { assigneeId }), activityPromise]))
+      .then(() => message.success(MESSAGES.UPDATED_ISSUE));
   };
 
   setEditVisible = (editVisible: boolean) => this.setState({ editVisible });
@@ -131,6 +158,7 @@ class _Issue extends React.Component<IProps, IState> {
         },
       });
       this.setEditVisible(false);
+      message.success(MESSAGES.UPDATED_ISSUE);
     });
   };
 
@@ -160,6 +188,8 @@ class _Issue extends React.Component<IProps, IState> {
             worklogs,
           } as IIssue,
         });
+
+        message.success(MESSAGES.UPDATED_ISSUE);
         this.setLogWorkVisible(false);
       }),
     );
@@ -195,6 +225,7 @@ class _Issue extends React.Component<IProps, IState> {
             comments,
           } as IIssue,
         });
+        message.success(MESSAGES.UPDATED_ISSUE);
       });
   };
 
@@ -237,6 +268,8 @@ class _Issue extends React.Component<IProps, IState> {
             comments,
           } as IIssue,
         });
+
+        message.success(MESSAGES.UPDATED_ISSUE);
       });
   };
 
@@ -264,6 +297,8 @@ class _Issue extends React.Component<IProps, IState> {
             comments,
           } as IIssue,
         });
+
+        message.success(MESSAGES.UPDATED_ISSUE);
       });
   };
 
@@ -278,6 +313,8 @@ class _Issue extends React.Component<IProps, IState> {
           worklogs,
         } as IIssue,
       });
+
+      message.success(MESSAGES.UPDATED_ISSUE);
     });
   };
 
@@ -285,6 +322,8 @@ class _Issue extends React.Component<IProps, IState> {
     if (!this.state.issue) {
       return null;
     }
+
+    const isReadonly = this.isReadonly();
 
     return (
       <div className={styles.layoutContent}>
@@ -296,22 +335,36 @@ class _Issue extends React.Component<IProps, IState> {
         </div>
         <Typography.Title>{`[${this.state.project?.title}] - ${this.state.issue.title}`}</Typography.Title>
         <div className={styles.buttons}>
-          <Button icon={<EditOutlined />} onClick={() => this.setEditVisible(true)}>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => this.setEditVisible(true)}
+            disabled={isReadonly}>
             Edit
           </Button>
-          <Button className={styles.changeIssueStatus} onClick={this.onChange}>
+          <Button
+            className={styles.changeIssueStatus}
+            onClick={this.onChange}
+            disabled={isReadonly}>
             {BUTTON_STATUS_TEXT[this.state.issue.status]}
           </Button>
-          <Button icon={<ClockCircleOutlined />} onClick={() => this.setLogWorkVisible(true)}>
+          <Button
+            icon={<ClockCircleOutlined />}
+            onClick={() => this.setLogWorkVisible(true)}
+            disabled={isReadonly}>
             Log Work
           </Button>
         </div>
-        <IssueStatus issueStatus={this.state.issue.status} onChange={this.onChangeStep} />
+        <IssueStatus
+          issueStatus={this.state.issue.status}
+          onChange={this.onChangeStep}
+          disabled={isReadonly}
+        />
         <IssuePeople
           assigneeId={this.state.issue.assigneeId}
           authorId={this.state.issue.authorId}
           employees={this.state.employees}
           onChangeAssignee={this.onChangeAssignee}
+          disabled={isReadonly}
         />
         <Tabs
           className={styles.tabs}

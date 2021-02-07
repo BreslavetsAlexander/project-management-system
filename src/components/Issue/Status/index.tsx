@@ -13,7 +13,7 @@ export const IssueStatus: React.FC<IProps> = (props) => {
       <Typography.Title level={3}>Status</Typography.Title>
       <Steps current={current} onChange={props.onChange}>
         {statuses.map((status) => (
-          <Steps.Step key={status} title={status} />
+          <Steps.Step key={status} title={status} disabled={props.disabled} />
         ))}
       </Steps>
     </div>

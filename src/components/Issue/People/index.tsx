@@ -11,6 +11,16 @@ export class IssuePeople extends React.Component<IProps> {
   };
 
   getSelect() {
+    if (this.props.disabled) {
+      const assignee = this.props.employees.find((item) => item.id === this.props.assigneeId);
+
+      return (
+        <div className={styles.author}>
+          Assignee: {`${assignee?.firstName} ${assignee?.lastName}`}
+        </div>
+      );
+    }
+
     const selectOptions = this.props.employees.map((item) => {
       return {
         title: `${item.firstName} ${item.lastName}`,
@@ -36,7 +46,7 @@ export class IssuePeople extends React.Component<IProps> {
       <div className={styles.people}>
         <Typography.Title level={3}>People</Typography.Title>
         {this.getSelect()}
-        <div className={styles.author}> Author: {`${author?.firstName} ${author?.lastName}`}</div>
+        <div className={styles.author}>Author: {`${author?.firstName} ${author?.lastName}`}</div>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import { Typography, Button, Modal, Form } from 'antd';
+import { Typography, Button, Modal, Form, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import { FormSelect } from '../../components/FormSelect';
@@ -11,6 +11,7 @@ import { IssueModal } from '../../components/IssueModal';
 import { ProjectEmployees } from '../../components/Board/ProjectEmployees';
 import { NoAccess } from '../../components/NoAccess';
 import { ROUTES } from '../../constants/routes';
+import { MESSAGES } from './../../constants/messages';
 import { ACTIVITY } from '../../constants/activity';
 import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ISSUES } from '../../constants/issues';
@@ -112,6 +113,7 @@ class _Board extends React.Component<IProps, IState> {
           } as IProject,
         });
         this.setProjectModalVisible(false);
+        message.success(MESSAGES.UPDATED_PROJECT);
       });
   };
 
@@ -145,6 +147,8 @@ class _Board extends React.Component<IProps, IState> {
               projectId: null,
             });
           }
+
+          message.success(MESSAGES.DELETED_PROJECT);
           this.props.history.push(ROUTES.PROJECTS.LIST);
         });
       },
@@ -186,6 +190,7 @@ class _Board extends React.Component<IProps, IState> {
       .then(([issue]) => {
         this.setIssueModalVisible(false);
         this.props.history.push(ROUTES.PROJECTS.ISSUE.ROUTE(projectId, issue.id));
+        message.success(MESSAGES.CREATED_ISSUE);
       });
   };
 
@@ -221,6 +226,8 @@ class _Board extends React.Component<IProps, IState> {
             projectId: this.props.match.params.id,
           });
         }
+
+        message.success(MESSAGES.ADDED_EMPLOYEE);
       });
   };
 
@@ -230,7 +237,7 @@ class _Board extends React.Component<IProps, IState> {
       .filter((issue) => issue.assigneeId === id)
       .map((issue) =>
         IssuesRepository.update(issue.id, {
-          assigneeId: issue.authorId,
+          assigneeId: this.state.project?.authorId,
         }),
       );
 
@@ -249,6 +256,7 @@ class _Board extends React.Component<IProps, IState> {
         });
       }
 
+      message.success(MESSAGES.LEFT_PROJECT);
       this.props.history.push(ROUTES.PROJECTS.LIST);
     });
   };
@@ -332,6 +340,7 @@ class _Board extends React.Component<IProps, IState> {
           employees={this.state.projectEmployees}
           issues={this.state.projectIssues}
           currentEmployeeId={this.getEmployee().id}
+          projectAuthorId={this.state.project.authorId}
           onLeaveProject={this.onLeaveProject}
         />
         <ProjectModal

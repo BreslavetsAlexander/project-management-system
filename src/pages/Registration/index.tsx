@@ -12,6 +12,7 @@ import { Logo } from '../../components/Logo';
 import { ROUTES } from '../../constants/routes';
 import { MESSAGES } from '../../constants/messages';
 import { EmployeeContext } from '../../context';
+import { IEmployee } from '../../definitions';
 import { AuthService, IError, IResponse } from '../../services/Auth';
 import { EmployeesRepository } from '../../services/repositories';
 import styles from './styles.module.scss';
@@ -20,7 +21,7 @@ class _Registration extends React.Component<IWithLoaderProps & RouteComponentPro
   static contextType = EmployeeContext;
   context!: React.ContextType<typeof EmployeeContext>;
 
-  getEmployee = async (values: IFormValues) => {
+  getEmployee = async (values: IFormValues): Promise<IEmployee | null> => {
     const authRes = await AuthService.register({
       email: values.email,
       password: values.password,
@@ -51,7 +52,8 @@ class _Registration extends React.Component<IWithLoaderProps & RouteComponentPro
 
   onSubmit = (values: IFormValues) => {
     this.props.fetching(this.getEmployee(values)).then((res) => {
-      if (!res) {
+      if (!res?.idToken) {
+        message.error(MESSAGES.SOMETHING_WENT_WRONG);
         return;
       }
 

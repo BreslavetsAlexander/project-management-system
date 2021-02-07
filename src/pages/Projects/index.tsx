@@ -1,8 +1,7 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import { List, Button, Card, Typography, Tag } from 'antd';
-import { blue } from '@ant-design/colors';
+import { List, Button, Card, Typography, Tag, message } from 'antd';
 import { ProjectModal } from '../../components/ProjectModal';
 import { withLoader, withAuthorization } from '../../components/hoc';
 import {
@@ -13,6 +12,7 @@ import {
 import { DATES_FORMATS } from '../../constants/datesFormats';
 import { ROUTES } from '../../constants/routes';
 import { ACTIVITY } from '../../constants/activity';
+import { MESSAGES } from '../../constants/messages';
 import { IProject } from '../../definitions';
 import { EmployeeContext } from './../../context';
 import { IState, Props } from './types';
@@ -66,6 +66,7 @@ class _Projects extends React.Component<Props, IState> {
       projectId,
     });
     this.setVisible(false);
+    message.success(MESSAGES.CREATED_PROJECT);
     this.props.history.push(link);
   };
 
@@ -98,7 +99,7 @@ class _Projects extends React.Component<Props, IState> {
               <>
                 <div>{item.title}</div>
                 {this.context.employee?.projectId === item.id && (
-                  <Tag color={blue.primary}>My project</Tag>
+                  <Tag color='processing'>My project</Tag>
                 )}
               </>
             );
@@ -106,11 +107,10 @@ class _Projects extends React.Component<Props, IState> {
             return (
               <List.Item>
                 <Card title={title} className={styles.card}>
-                  <div className={styles.info}>
-                    <div>{item.description}</div>
-                    <div>{item.issuesCount}</div>
-                  </div>
-                  <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(item.id)}>View board</Link>
+                  <div className={styles.info}>{item.description}</div>
+                  <Button type='primary'>
+                    <Link to={ROUTES.PROJECTS.DETAIL.ROUTE(item.id)}>View board</Link>
+                  </Button>
                 </Card>
               </List.Item>
             );

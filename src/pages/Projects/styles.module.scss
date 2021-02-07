@@ -8,9 +8,16 @@
       border-color: rgba($black, 0.2);
 
       .info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: block;
+        display: -webkit-box;
+        overflow: hidden;
+        max-width: 100%;
+        margin: 0 0 10px;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        white-space: normal;
       }
 
       div[class*='ant-card-head'] {

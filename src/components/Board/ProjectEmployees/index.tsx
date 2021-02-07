@@ -32,11 +32,14 @@ export const ProjectEmployees: React.FC<IProps> = (props) => {
       </div>
     );
 
+    const isCurrentEmployee = employee.id === props.currentEmployeeId;
+    const isShowExtra = isCurrentEmployee && employee.id !== props.projectAuthorId;
+
     return (
       <Collapse.Panel
         key={employee.id}
         header={header}
-        extra={employee.id === props.currentEmployeeId ? extra : null}
+        extra={isShowExtra ? extra : null}
         className={styles.panel}
         showArrow>
         <AccordionContent issues={issues} />

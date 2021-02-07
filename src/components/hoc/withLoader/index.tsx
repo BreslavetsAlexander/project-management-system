@@ -1,6 +1,7 @@
 import React from 'react';
 import { Spin, message, Result, Button } from 'antd';
 import { Loader } from '../../Loader';
+import { MESSAGES } from '../../../constants/messages';
 import { IWithLoaderProps, IState } from './types';
 import styles from './styles.module.scss';
 
@@ -20,7 +21,7 @@ export const withLoader = <TProps extends IWithLoaderProps>(
 
       return promise
         .catch(() => {
-          message.error('Sorry, something went wrong');
+          message.error(MESSAGES.SOMETHING_WENT_WRONG);
           this.setState({ error: true });
           return promise;
         })
@@ -35,7 +36,7 @@ export const withLoader = <TProps extends IWithLoaderProps>(
               className={styles.error}
               status='500'
               title='Error loading data'
-              subTitle='Sorry, something went wrong'
+              subTitle={MESSAGES.SOMETHING_WENT_WRONG}
               extra={
                 <Button type='primary' onClick={() => window.location.reload()}>
                   Reload the page
