@@ -1,7 +1,8 @@
 import React from 'react';
-import { Spin, message, Result, Button } from 'antd';
+import { Spin, message, Button } from 'antd';
 import { Loader } from '../../Loader';
 import { MESSAGES } from '../../../constants/messages';
+import { ServerError } from '../../../components/ServerError';
 import { IWithLoaderProps, IState } from './types';
 import styles from './styles.module.scss';
 
@@ -30,21 +31,13 @@ export const withLoader = <TProps extends IWithLoaderProps>(
 
     render() {
       if (this.state.error) {
-        return (
-          <div className={styles.errorWrapper}>
-            <Result
-              className={styles.error}
-              status='500'
-              title='Error loading data'
-              subTitle={MESSAGES.SOMETHING_WENT_WRONG}
-              extra={
-                <Button type='primary' onClick={() => window.location.reload()}>
-                  Reload the page
-                </Button>
-              }
-            />
-          </div>
+        const extra = (
+          <Button type='primary' onClick={() => window.location.reload()}>
+            Reload the page
+          </Button>
         );
+
+        return <ServerError extra={extra} />;
       }
 
       return (

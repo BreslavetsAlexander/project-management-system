@@ -5,4 +5,6 @@ export interface IEmployeeContext {
   setEmployee: (employee: IEmployee | null) => void;
 }
 
-export type IState = Pick<IEmployeeContext, 'employee'>;
+export type IState = Pick<IEmployeeContext, 'employee'> & {
+  loading: boolean;
+};

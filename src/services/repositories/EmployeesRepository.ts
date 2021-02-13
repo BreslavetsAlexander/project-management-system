@@ -27,10 +27,15 @@ class _EmployeesRepository {
     });
   }
 
-  getById(id: IEmployee['id']) {
+  getById(id: IEmployee['id']): Promise<IEmployee> {
     const url = getUrlWithJsonExtension(API.EMPLOYEES.DETAIL(id));
 
-    return HttpProvider.get<IEmployee>(url);
+    return HttpProvider.get<EmployeeResponce>(url).then((employee) => {
+      return {
+        ...employee,
+        id,
+      };
+    });
   }
 
   create(data: Partial<IEmployee>) {

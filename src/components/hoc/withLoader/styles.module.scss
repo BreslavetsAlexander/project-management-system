@@ -17,24 +17,3 @@
     height: 100%;
   }
 }
-
-.errorWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-
-  .error {
-    &[class*='ant-result'] {
-      margin: 0;
-      padding: 0;
-    }
-
-    div[class*='ant-result-image'] {
-      width: auto;
-      height: auto;
-      margin: 0;
-      padding: 0;
-    }
-  }
-}
