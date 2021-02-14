@@ -37,7 +37,7 @@ export const withLoader = <TProps extends IWithLoaderProps>(
           </Button>
         );
 
-        return <ServerError extra={extra} />;
+        return <ServerError className={styles.serverError} extra={extra} />;
       }
 
       return (

@@ -15,8 +15,10 @@
   }
 
   .buttons {
-    .changeIssueStatus {
-      margin: 0 10px;
+    button {
+      &:first-of-type {
+        margin-right: 10px;
+      }
     }
   }
 

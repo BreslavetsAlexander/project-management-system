@@ -14,7 +14,6 @@ export const FormTimePicker: React.FC<IProps> = (props) => {
         showNow={false}
         popupClassName={styles.popupClassName}
         placeholder={props.placeholder}
-        disabledHours={() => [0]}
         disabledMinutes={() => [0]}
       />
     </Form.Item>

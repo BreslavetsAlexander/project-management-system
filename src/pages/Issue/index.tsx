@@ -21,7 +21,6 @@ import {
   CommentsRepository,
   ProjectsRepository,
 } from './../../services/repositories';
-import { BUTTON_STATUS_TEXT, TRANSFORM_STATUS } from './constants';
 import { IProps, IState } from './types';
 import styles from './styles.module.scss';
 
@@ -111,14 +110,6 @@ class _Issue extends React.Component<IProps, IState> {
       ),
     );
   }
-
-  onChange = () => {
-    if (!this.state.issue) {
-      return;
-    }
-
-    this.updateStatus(TRANSFORM_STATUS[this.state.issue.status]);
-  };
 
   onChangeStep = (current: number) => this.updateStatus(Object.values(ISSUES.STATUSES)[current]);
 
@@ -340,12 +331,6 @@ class _Issue extends React.Component<IProps, IState> {
             onClick={() => this.setEditVisible(true)}
             disabled={isReadonly}>
             Edit
-          </Button>
-          <Button
-            className={styles.changeIssueStatus}
-            onClick={this.onChange}
-            disabled={isReadonly}>
-            {BUTTON_STATUS_TEXT[this.state.issue.status]}
           </Button>
           <Button
             icon={<ClockCircleOutlined />}
