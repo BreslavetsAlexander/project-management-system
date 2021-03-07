@@ -6,6 +6,7 @@ import { EditOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-desig
 import { withLoader } from './../../components/hoc';
 import { IssueStatus, IssuePeople, Tabs, LogWorkModal } from './../../components/Issue';
 import { IssueModal } from './../../components/IssueModal';
+import { NoAccess } from './../../components/NoAccess';
 import { ISSUES } from './../../constants/issues';
 import { ACTIVITY } from './../../constants/activity';
 import { DATES_FORMATS } from './../../constants/datesFormats';
@@ -44,8 +45,17 @@ class _Issue extends React.Component<IProps, IState> {
     };
   }
 
+  isEmployeeProject() {
+    return this.context.employee?.projectId === this.props.match.params.projectId;
+  }
+
   componentDidMount() {
     const { projectId, issueId } = this.props.match.params;
+
+    if (!this.isEmployeeProject()) {
+      return;
+    }
+
     const projectPromise = ProjectsRepository.getById(projectId);
     const issuePromise = IssuesRepository.getById(issueId);
     const employeesPromise = EmployeesRepository.getAll();
@@ -310,6 +320,24 @@ class _Issue extends React.Component<IProps, IState> {
   };
 
   render() {
+    if (!this.isEmployeeProject()) {
+      const { projectId } = this.context.employee!;
+      const subTitle = projectId ? 'Go to your project' : 'Go to Projects list';
+      const to = projectId ? ROUTES.PROJECTS.DETAIL.ROUTE(projectId) : ROUTES.PROJECTS.LIST;
+
+      return (
+        <NoAccess
+          title='You cannot see this issue'
+          subTitle={subTitle}
+          extra={
+            <Button type='primary'>
+              <Link to={to}>Go to</Link>
+            </Button>
+          }
+        />
+      );
+    }
+
     if (!this.state.issue) {
       return null;
     }

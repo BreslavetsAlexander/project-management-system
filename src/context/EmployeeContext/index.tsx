@@ -21,6 +21,7 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
     const id = this.getEmployeeId();
 
     if (!id) {
+      this.stopLoading();
       return;
     }
 
@@ -32,12 +33,14 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
 
         this.setEmployee(employee);
       })
-      .finally(() => {
-        this.setState({
-          loading: false,
-        });
-      });
+      .finally(() => this.stopLoading());
   }
+
+  stopLoading = () => {
+    this.setState({
+      loading: false,
+    });
+  };
 
   setEmployee = (employee: IState['employee']) => {
     this.setState({ employee });
@@ -76,32 +79,47 @@ export class EmployeeContextProvider extends React.Component<{}, IState> {
     window.location.reload();
   };
 
-  render() {
-    const { loading, employee } = this.state;
-    const employeeId = this.getEmployeeId();
-
-    if (loading && employeeId) {
-      return (
-        <div className={styles.wrap}>
-          <Loader />
-        </div>
-      );
-    }
-
-    if (!loading && !employee) {
-      const extra = (
-        <Button type='primary' onClick={this.onReload}>
-          Reload the page
-        </Button>
-      );
-
-      return <ServerError extra={extra} />;
-    }
-
+  getContextProvider() {
     return (
       <EmployeeContext.Provider value={this.getValues()}>
         {this.props.children}
       </EmployeeContext.Provider>
     );
+  }
+
+  getServerError() {
+    const extra = (
+      <Button type='primary' onClick={this.onReload}>
+        Reload the page
+      </Button>
+    );
+
+    return <ServerError extra={extra} />;
+  }
+
+  getLoader() {
+    return (
+      <div className={styles.wrap}>
+        <Loader />
+      </div>
+    );
+  }
+
+  render() {
+    const employeeId = this.getEmployeeId();
+
+    if (!employeeId) {
+      return this.getContextProvider();
+    }
+
+    if (this.state.loading) {
+      return this.getLoader();
+    }
+
+    if (!this.state.employee) {
+      return this.getServerError();
+    }
+
+    return this.getContextProvider();
   }
 }
