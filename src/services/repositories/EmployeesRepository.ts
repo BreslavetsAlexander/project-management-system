@@ -3,7 +3,7 @@ import { IEmployee, IActivity } from './../../definitions';
 import { getUrlWithJsonExtension, prepareData } from './../../utils';
 import { HttpProvider } from '../httpProvider';
 
-type EmployeeResponce = Omit<IEmployee, 'id'> & {
+type EmployeeResponce = Omit<IEmployee, 'id' | 'activity'> & {
   activity: {
     [id: string]: Omit<IActivity, 'id'>;
   };
@@ -34,6 +34,7 @@ class _EmployeesRepository {
       return {
         ...employee,
         id,
+        activity: prepareData(employee.activity),
       };
     });
   }

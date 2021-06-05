@@ -24,10 +24,7 @@
     margin-bottom: 20px;
 
     & > div[class*='ant-collapse-header'] > span[class*='ant-collapse-arrow'] {
-      top: 50%;
-      margin: 0;
       padding: 0;
-      transform: translateY(-50%);
     }
 
     .header {
