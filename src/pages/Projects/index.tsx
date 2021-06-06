@@ -41,7 +41,6 @@ class _Projects extends React.Component<Props, IState> {
       ProjectsRepository.create({
         title: values.title,
         description: values.description,
-        issuesCount: 0,
         authorId: employeeId,
       }),
     );

@@ -174,10 +174,6 @@ class _Board extends React.Component<IProps, IState> {
       createdAt: moment().format(DATES_FORMATS.FULL_FORMAT),
     });
 
-    const projectPromise = ProjectsRepository.update(this.props.match.params.id, {
-      issuesCount: this.state.project.issuesCount + 1,
-    });
-
     const activityPromise = ActivityRepository.create(this.getEmployee().id, {
       text: ACTIVITY.PROJECTS.ADDED_ISSUE,
       date: moment().format(DATES_FORMATS.FULL_FORMAT),
@@ -185,13 +181,11 @@ class _Board extends React.Component<IProps, IState> {
       link: ROUTES.PROJECTS.DETAIL.ROUTE(this.props.match.params.id),
     });
 
-    this.props
-      .fetching(Promise.all([issuePromise, activityPromise, projectPromise]))
-      .then(([issue]) => {
-        this.setIssueModalVisible(false);
-        this.props.history.push(ROUTES.PROJECTS.ISSUE.ROUTE(projectId, issue.id));
-        message.success(MESSAGES.CREATED_ISSUE);
-      });
+    this.props.fetching(Promise.all([issuePromise, activityPromise])).then(([issue]) => {
+      this.setIssueModalVisible(false);
+      this.props.history.push(ROUTES.PROJECTS.ISSUE.ROUTE(projectId, issue.id));
+      message.success(MESSAGES.CREATED_ISSUE);
+    });
   };
 
   onAddEmployee = (employeeId: IFormValues['employeeId']) => {
