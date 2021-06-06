@@ -28,6 +28,14 @@ export class ProfileForm extends React.Component<IProps> {
       return;
     }
 
+    const isSomeFieldEmpty = (Object.keys(values) as Array<keyof typeof values>).some((key) => {
+      return !values[key];
+    });
+
+    if (isSomeFieldEmpty) {
+      return;
+    }
+
     if (values[name] === this.props.employee[name]) {
       return;
     }
