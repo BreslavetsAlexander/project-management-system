@@ -6,4 +6,5 @@ export interface IProps {
   currentEmployeeId: IEmployee['id'];
   projectAuthorId: IProject['authorId'];
   onLeaveProject: (id: IEmployee['id']) => void;
+  onDeleteFromProject: (id: IEmployee['id']) => void;
 }

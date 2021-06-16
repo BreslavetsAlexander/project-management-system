@@ -1,6 +1,6 @@
 import React from 'react';
 import { Collapse, Result } from 'antd';
-import { UnorderedListOutlined, ExportOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, ExportOutlined, DeleteOutlined } from '@ant-design/icons';
 import { AccordionContent } from '../AccordionContent';
 import { IProps } from './types';
 import styles from './styles.module.scss';
@@ -17,6 +17,8 @@ export const ProjectEmployees: React.FC<IProps> = (props) => {
     );
   }
 
+  const isProjectAuthor = props.currentEmployeeId === props.projectAuthorId;
+
   const collapsePanels = props.employees.map((employee) => {
     const issues = props.issues.filter((issue) => issue.assigneeId === employee.id);
     const header = (
@@ -26,20 +28,25 @@ export const ProjectEmployees: React.FC<IProps> = (props) => {
       </div>
     );
 
-    const extra = (
+    const leaveProjectExtra = !isProjectAuthor ? (
       <div className={styles.extra} onClick={() => props.onLeaveProject(employee.id)}>
         <ExportOutlined /> <span>Leave project</span>
       </div>
-    );
+    ) : null;
 
-    const isCurrentEmployee = employee.id === props.currentEmployeeId;
-    const isShowExtra = isCurrentEmployee && employee.id !== props.projectAuthorId;
+    const deleteFromProjectExtra = isProjectAuthor ? (
+      <div className={styles.extra} onClick={() => props.onDeleteFromProject(employee.id)}>
+        <DeleteOutlined /> <span>Delete from project</span>
+      </div>
+    ) : null;
+
+    const extra = employee.id === props.currentEmployeeId ? leaveProjectExtra : deleteFromProjectExtra;
 
     return (
       <Collapse.Panel
         key={employee.id}
         header={header}
-        extra={isShowExtra ? extra : null}
+        extra={extra}
         className={styles.panel}
         showArrow>
         <AccordionContent issues={issues} />

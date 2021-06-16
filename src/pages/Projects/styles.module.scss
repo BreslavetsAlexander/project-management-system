@@ -29,7 +29,13 @@
         justify-content: space-between;
         align-items: center;
 
+        & > div {
+          word-break: break-word;
+          white-space: normal;
+        }
+
         span[class*='ant-tag'] {
+          align-self: flex-start;
           margin: 0;
         }
       }

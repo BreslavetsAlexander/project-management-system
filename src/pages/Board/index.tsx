@@ -236,13 +236,6 @@ class _Board extends React.Component<IProps, IState> {
       );
 
     this.props.fetching(Promise.all([employeePromise, issues])).then(() => {
-      const projectEmployees = this.state.projectEmployees.filter((item) => item.id !== id)!;
-      const employee = this.state.projectEmployees.find((item) => item.id === id)!;
-      this.setState({
-        employees: [...this.state.employees, employee],
-        projectEmployees,
-      });
-
       if (id === this.context.employee?.id) {
         this.context.setEmployee({
           ...this.context.employee,
@@ -252,6 +245,43 @@ class _Board extends React.Component<IProps, IState> {
 
       message.success(MESSAGES.LEFT_PROJECT);
       this.props.history.push(ROUTES.PROJECTS.LIST);
+    });
+  };
+
+  onDeleteFromProject = (id: IEmployee['id']) => {
+    const employeePromise = EmployeesRepository.update(id, { projectId: null });
+    const issues = this.state.projectIssues
+      .filter((issue) => issue.assigneeId === id)
+      .map((issue) =>
+        IssuesRepository.update(issue.id, {
+          assigneeId: this.state.project?.authorId,
+        }),
+      );
+
+    this.props.fetching(Promise.all([employeePromise, issues])).then(() => {
+      const projectEmployees = this.state.projectEmployees.filter((item) => item.id !== id)!;
+      const employee = this.state.projectEmployees.find((item) => item.id === id)!;
+      const projectIssues = this.state.projectIssues.map((issue) => {
+        return {
+          ...issue,
+          assigneeId: this.state.project?.authorId!,
+        };
+      });
+
+      this.setState({
+        employees: [...this.state.employees, employee],
+        projectEmployees,
+        projectIssues,
+      });
+
+      if (id === this.context.employee?.id) {
+        this.context.setEmployee({
+          ...this.context.employee,
+          projectId: null,
+        });
+      }
+
+      message.success(MESSAGES.DELETED_FROM_PROJECT);
     });
   };
 
@@ -336,6 +366,7 @@ class _Board extends React.Component<IProps, IState> {
           currentEmployeeId={this.getEmployee().id}
           projectAuthorId={this.state.project.authorId}
           onLeaveProject={this.onLeaveProject}
+          onDeleteFromProject={this.onDeleteFromProject}
         />
         <ProjectModal
           title='Edit project'

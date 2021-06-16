@@ -15,5 +15,6 @@ export const MESSAGES = {
   UPDATED_ISSUE: 'You have successfully updated an issue',
   ADDED_EMPLOYEE: 'You have successfully added an employee to the project',
   LEFT_PROJECT: 'You have successfully left the project',
+  DELETED_FROM_PROJECT: 'You have successfully deleted an employee from project',
   CANNOT_CHANGE_ANYTHING_ON_ISSUE: 'You cannot change anything on this issue',
 };
